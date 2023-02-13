@@ -1,18 +1,26 @@
 import React from 'react'
-import { DocsThemeConfig } from 'nextra-theme-docs'
+import { useConfig } from 'nextra-theme-docs'
+import { useRouter } from 'next/router'
 
-const config: DocsThemeConfig = {
-  logo: <span>My Project</span>,
-  project: {
-    link: 'https://github.com/shuding/nextra-docs-template',
-  },
-  chat: {
-    link: 'https://discord.com',
-  },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+export default {
+  logo: <span>♜ prediction<b>Guard</b></span>,
+  logoLink: 'https://docs.predictionguard.com',
+  primaryHue: 136,
+  // project: {
+  //   link: 'https://github.com/shuding/nextra-docs-template',
+  // },
+  // chat: {
+  //   link: 'https://discord.com',
+  // },
+  //docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
   footer: {
-    text: 'Nextra Docs Template',
+    text: '♜ Prediction Guard docs',
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: '%s – Prediction Guard'
+    }
+  }
 }
 
-export default config
+//export default config
