@@ -5,4 +5,124 @@ description: Reliable, future proof AI predictions
 
 # Supported Tasks
 
-Coming soon...
+As of now, Prediction Guard supports the following tasks:
+
+- Sentiment analysis - `sentiment`
+- Question Answering - `qa`
+- Machine Translation - `mt`
+
+Coming soon (in the works):
+
+- Text Generation
+- Speech-to-text (STT, ASR)
+- Image Classification
+
+The examples you provide, when configuring a proxy endpoint, differ for each of these tasks. See below for examples. 
+
+## Sentiment analysis
+
+Input:
+
+- `phrase` - string
+
+output
+
+- `sentiment` - POS, NEU, NEG
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
+        },
+        "output: {
+            "sentiment": "POS"
+        }
+    },
+    {
+        "input": {
+            "phrase": "AI development without Prediction Guard is bad. It's really terrible."
+        },
+        "output": {
+            "sentiment": "NEG"
+        }
+    }
+]
+```
+
+## Question Answering
+
+Input:
+
+- `context` - string
+- `question` - string
+
+output
+
+- `answer` - string
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "context": "The answer to the question is five.",
+            "question": "What is the answer?"
+        },
+        "output": {
+            "answer": "five"
+        }
+    },
+    {
+        "input": {
+            "context": "The answer to the question is blue.",
+            "question": "What is the answer?"
+        },
+        "output": {
+            "answer": "blue"
+        }
+    }
+]
+```
+
+## Machine Translation
+
+Input:
+
+- `source` - ISO639-3 language code
+- `target` - ISO639-3 language code
+- `text` - string, source text to be translated
+
+output
+
+- `translation` - string, predicted translation
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "source": "eng",
+            "target": "afr",
+            "text": "In the beginning God created the heavens and the earth."
+        },
+        "output": {
+            "translation": "In die begin het God die hemel en die aarde geskep."
+        }
+    },
+    {
+        "input": {
+            "source": "eng",
+            "target": "afr",
+            "text": "Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters."
+        },
+        "output": {
+            "translation": "Die aarde was heeltemal onbewoonbaar, dit was donker op die diep waters, maar die Gees van God het oor die waters gesweef."
+        }
+    }
+]
+```
