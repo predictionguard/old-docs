@@ -1,7 +1,7 @@
 {
-  "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
+  "index": "Getting Started",
+  "tasks": "Supported Tasks",
+  "python": "Python Reference",
   "contact": {
     "title": "About ↗",
     "type": "page",

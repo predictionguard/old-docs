@@ -1,17 +1,313 @@
 ---
 title: Getting Started
-text: blah
 description: Reliable, future proof AI predictions
 ---
 
-# Introduction
+# Getting Started
+
+With Prediction Guard, you no longer need to search through a staggering number of state-of-the-art (SOTA) models to find the 
+best one for your use case. In fact, you can stop worrying about models, keeping up with the latest releases,
+and buggy research implementations altogether. With Prediction Guard you:
+
+- Create some examples of the input and expected output you are wanting 
+- Send those examples to Prediction Guard
+
+Prediction Guard then:
+
+- Searches through a host of SOTA models to find one that best matches your expected input/output behavior
+- Configures an inference endpoint (aka a "proxy") for you with the best model
+
+You can then immediately start making reliable predictions! Moreover, Prediction Guard will periodically (around once
+a week) re-evaluate your input/output examples in light of new models. If a better model comes on to the scene, you're
+proxy endpoint will automatically start using the better model. Now your application is future proofed!
+
+## 1. Sign up for Prediction Guard
  
-Welcome to Nextra! This is a basic docs template. You can use it as a starting point for your own project :)
+Sign up for a Prediction Guard account [here](https://predictionguard.com/auth/signup). If you signed up via email/password
+you will need to verify your email. Check your email for the verification link.
 
-## What is Nextra?
+After verifying your email, you can [sign up for a subscription](https://predictionguard.com/#pricing) that makes sense for you. Our pricing is simple. Pay for a 
+number of prediction endpoints (e.g., one for sentiment analysis and one for question answering) and the rate limit you 
+require (# of requested predictions or inferences per second).
 
-A **simple**, **powerful** and **flexible** site generation framework with everything you love from Next.js.
+## 2. Grab an access token
 
-## Documentation
+Once you are all signed up (and signed in), head over to the [access tokens page](https://predictionguard.com/app). Click
+on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
+token. You will need this below.
 
-The documentation is available at [https://nextra.site](https://nextra.site).
+## 3. Create your first proxy (endpoint)
+
+Prediction Guard allows you to make predictions, or inferences, using "proxy" endpoints. These endpoints proxy a bunch 
+of SOTA models on the backend, and make sure you are always getting the best possible output.
+
+Let's create our first proxy endpoint for a sentiment analysis task:
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+ 
+<Tabs items={['Python', 'Go', 'JavaScript - Fetch', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = Client(token=<your access token>)
+
+    # Create some examples illustrating the kind of predictions you
+    # want to make (domain/ use case specific).
+    examples = [
+        {
+            "input": {
+                "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
+            },
+            "output: {
+                "sentiment": "POS"
+            }
+        },
+        {
+            "input": {
+                "phrase": "AI development without Prediction Guard is bad. It's really terrible."
+            },
+            "output": {
+                "sentiment": "NEG"
+            }
+        }
+    ]
+
+    # Create a prediction "proxy." This proxy will save your examples, evaluate
+    # SOTA models to find the best one for your use case, and expose the best model
+    # at an endpoint corresponding to the proxy.
+    client.create_proxy(task='sentiment', name='my-sentiment-proxy', examples=examples)
+    ```
+  </Tab>
+  <Tab>
+    ```go filename="proxy.go" copy
+    package main
+
+    import (
+      "fmt"
+      "strings"
+      "net/http"
+      "io/ioutil"
+    )
+
+    func main() {
+
+      url := "https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy"
+      method := "POST"
+
+      payload := strings.NewReader(`[
+          {
+              "input": {
+                  "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
+              },
+              "output": {
+                  "sentiment": "POS"
+              }
+          },
+          {
+              "input": {
+                  "phrase": "AI development without Prediction Guard is bad. It's really terrible."
+              },
+              "output": {
+                  "sentiment": "NEG"
+              }
+          }
+      ]`)
+
+      client := &http.Client {
+      }
+      req, err := http.NewRequest(method, url, payload)
+
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      req.Header.Add("Authorization", "Bearer <your access token>")
+      req.Header.Add("Content-Type", "application/json")
+
+      res, err := client.Do(req)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      defer res.Body.Close()
+
+      body, err := ioutil.ReadAll(res.Body)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+  <Tab>
+    ```js filename="proxy.js" copy
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer <your access token>");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify([
+      {
+        "input": {
+          "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
+        },
+        "output": {
+          "sentiment": "POS"
+        }
+      },
+      {
+        "input": {
+          "phrase": "AI development without Prediction Guard is bad. It's really terrible."
+        },
+        "output": {
+          "sentiment": "NEG"
+        }
+      }
+    ]);
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '[
+        {
+            "input": {
+                "phrase": "I'\''m so excited about Prediction Guard. It'\''s gonna be awesome!"
+            },
+            "output": {
+                "sentiment": "POS"
+            }
+        },
+        {
+            "input": {
+                "phrase": "AI development without Prediction Guard is bad. It'\''s really terrible."
+            },
+            "output": {
+                "sentiment": "NEG"
+            }
+        }
+    ]'
+    ```
+  </Tab>
+</Tabs>
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="info" emoji="ℹ️">
+  Note, you will need to replace `<your access token>` in the above examples with your actual access token retrieved
+  from [your user dashboard](https://predictionguard.com/app).
+</Callout>
+
+## 4. Start making predictions!
+
+It will take around 5 seconds to one minute for your proxy endpoint to become "available." You can check the status by 
+listing your proxies, as further discussed [TODO]().
+
+Once available, you can start generating inferences/ predictiongs:
+ 
+<Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    # Now your ready to start getting reliable, future proof predictions. No fuss!
+    client.predict(name='test-client-sentiment4', data={
+        "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+    })
+    ```
+  </Tab>
+  <Tab>
+    ```go filename="prediction.go" copy
+    package main
+
+    import (
+      "fmt"
+      "strings"
+      "net/http"
+      "io/ioutil"
+    )
+
+    func main() {
+
+      url := "https://api.predictionguard.com/predict?name=my-sentiment-proxy"
+      method := "POST"
+
+      payload := strings.NewReader(`{
+          "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+      }`)
+
+      client := &http.Client {
+      }
+      req, err := http.NewRequest(method, url, payload)
+
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      req.Header.Add("Authorization", "Bearer <your access token>")
+      req.Header.Add("Content-Type", "application/json")
+
+      res, err := client.Do(req)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      defer res.Body.Close()
+
+      body, err := ioutil.ReadAll(res.Body)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+  <Tab>
+    ```js filename="predict.js" copy
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer <your access token>");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://api.predictionguard.com/predict?name=my-sentiment-proxy", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    curl --location --request POST 'https://api.predictionguard.com/predict?name=my-sentiment-proxy' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "phrase": "Isn'\''t this great! I'\''m so happy I'\''m using Prediction Guard"
+    }'
+    ```
+  </Tab>
+</Tabs>
