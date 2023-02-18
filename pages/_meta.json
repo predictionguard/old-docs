@@ -2,6 +2,7 @@
   "index": "Getting Started",
   "tasks": "Supported Tasks",
   "python": "Python Reference",
+  "rest": "REST API Reference",
   "contact": {
     "title": "About ↗",
     "type": "page",
