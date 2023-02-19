@@ -1,0 +1,32 @@
+# Predict
+
+Once you have [created a proxy](proxy) (and have listed the proxies to make sure that the given 
+proxy endpoint is "available"), you can start making predictions (aka inferences).
+
+## Make a prediction/ inference
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    # Now your ready to start getting reliable, future proof predictions. No fuss!
+    client.predict(name='test-client-sentiment', data={
+        "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard."
+    })
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/predict?name=my-sentiment-proxy' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "phrase": "Isn'\''t this great! I'\''m so happy I'\''m using Prediction Guard"
+    }'
+    ```
+  </Tab>
+</Tabs>
+
+The input data provided to `predict` needs to match the input format defined by the "task." See [tasks](../tasks) 
+for more information.

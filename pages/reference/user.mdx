@@ -1,0 +1,34 @@
+# User
+
+You can provision named [access tokens](https://website-prod-git-dev-predictionguard.vercel.app/app) in Prediction Guard 
+that authenticate your account and allow you to access your proxy endpoints and make predictions. The `user` API calls 
+below allow you to confirm the validity of an access token.
+
+## Check if an access token is valid
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = pg.Client(token=<your access token>)
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request GET 'https://api.predictionguard.com/user?token=<your access token>'
+    ```
+  </Tab>
+</Tabs>
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="info" emoji="ℹ️">
+  When using the Python client, you should only need to provide your access token to `pg.Client()` once. Prediction Guard
+  will create a config file at `~/.predictionguard` to keep track of this access token for future use. You can also 
+  optionally set the environment variable `PREDICTIONGUARD_TOKEN` to avoid explicitly providing the access token to the
+  `pg.Client()` method.
+</Callout>

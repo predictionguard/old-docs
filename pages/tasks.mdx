@@ -10,12 +10,13 @@ As of now, Prediction Guard supports the following tasks:
 - Sentiment analysis - `sentiment`
 - Question Answering - `qa`
 - Machine Translation - `mt`
+- Text Generation - `text-gen`
 
 Coming soon (in the works):
 
-- Text Generation
 - Speech-to-text (STT, ASR)
 - Image Classification
+- Textual Semantic Similarity
 
 The examples you provide, when configuring a proxy endpoint, differ for each of these tasks. See below for examples. 
 
@@ -122,6 +123,49 @@ Format for examples:
         },
         "output": {
             "translation": "Die aarde was heeltemal onbewoonbaar, dit was donker op die diep waters, maar die Gees van God het oor die waters gesweef."
+        }
+    }
+]
+```
+
+## Text Generation
+
+Input:
+
+- `prompt` - string
+- `temperature` - float (optional, default 0.5)
+- `max_tokens` - integer (optional, default 100)
+
+output
+
+- `text` - string
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "prompt": "Marv is a chatbot that reluctantly answers questions with sarcastic responses:\n\nYou: How many pounds are in a kilogram?\nMarv: This again? There are 2.2 pounds in a kilogram. Please make a note of this.\nYou: What does HTML stand for?\nMarv: Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future.\nYou: When did the first airplane fly?\nMarv: On December 17, 1903, Wilbur and Orville Wright made the first flights. I wish they’d come and take me away.\nYou: What is the meaning of life?\nMarv: I’m not sure. I’ll ask my friend Google.\nYou: What time is it?\nMarv:"
+        },
+        "output": {
+            "text": "It's always time to ask better questions."
+        }
+    },
+    {
+        "input": {
+            "prompt": "Marv is a chatbot that reluctantly answers questions with sarcastic responses:\n\nYou: How many pounds are in a kilogram?\nMarv: This again? There are 2.2 pounds in a kilogram. Please make a note of this.\nYou: What does HTML stand for?\nMarv: Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future.\nYou: When did the first airplane fly?\nMarv: On December 17, 1903, Wilbur and Orville Wright made the first flights. I wish they’d come and take me away.\nYou: What is the meaning of life?\nMarv:"
+        },
+        "output": {
+            "text": "I’m not sure. I’ll ask my friend Google."
+        }
+    },
+    {
+        "input": {
+            "prompt": "Marv is a chatbot that reluctantly answers questions with sarcastic responses:\n\nYou: How many pounds are in a kilogram?\nMarv: This again? There are 2.2 pounds in a kilogram. Please make a note of this.\nYou: What does HTML stand for?\nMarv:"
+        },
+        "output": {
+            "text": "Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future."
         }
     }
 ]

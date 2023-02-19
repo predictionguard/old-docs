@@ -1,0 +1,124 @@
+# Proxy
+
+The most core concept of Prediction Guard is that of the "proxy." You can think of a proxy as an easy-to-configure, 
+and standardized, endpoint for predictions/ inferences. Instead of having to test out a bunch of state-of-the-art
+models (with a variety of implementation concerns and inconsistent APIs), Prediction Guard allows you to create a 
+"proxy" endpoint for your inferences by providing Prediction Guard examples of the model input/ output you want. 
+
+Prediction Guard automatically uses your examples to search through its stable of SOTA models. Once Prediction Guard 
+finds the "best" model for you, you can immediately call the proxy endpoint by name to start performing inference. There
+is no need to maintain credentials to systems like OpenAI, co:here, Hugging Face, etc. Prediction Guard handles all that
+under the hood so you can just focus on the behavior you need in your application.  
+
+## Create a proxy
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+ 
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = pg.Client(token=<your access token>)
+
+    # Create some examples illustrating the kind of predictions you
+    # want to make (domain/ use case specific).
+    examples = [
+        {
+            "input": {
+                "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
+            },
+            "output: {
+                "sentiment": "POS"
+            }
+        },
+        {
+            "input": {
+                "phrase": "AI development without Prediction Guard is bad. It's really terrible."
+            },
+            "output": {
+                "sentiment": "NEG"
+            }
+        }
+    ]
+
+    # Create a prediction "proxy." This proxy will save your examples, evaluate
+    # SOTA models to find the best one for your use case, and expose the best model
+    # at an endpoint corresponding to the proxy.
+    client.create_proxy(task='sentiment', name='my-sentiment-proxy', examples=examples)
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '[
+        {
+            "input": {
+                "phrase": "I'\''m so excited about Prediction Guard. It'\''s gonna be awesome!"
+            },
+            "output": {
+                "sentiment": "POS"
+            }
+        },
+        {
+            "input": {
+                "phrase": "AI development without Prediction Guard is bad. It'\''s really terrible."
+            },
+            "output": {
+                "sentiment": "NEG"
+            }
+        }
+    ]'
+    ```
+  </Tab>
+</Tabs>
+
+The examples provided to Prediction Guard need to match a certain format defined by the "task." See [tasks](../tasks) 
+for more information.
+
+## List proxies
+ 
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = Client(token=<your access token>)
+
+    # List proxies.
+    client.list_proxies()
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request GET 'https://api.predictionguard.com/proxy' \
+--header 'Authorization: Bearer <your access token>'
+    ```
+  </Tab>
+</Tabs>
+
+## Delete a proxy
+ 
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = Client(token=<your access token>)
+
+    # Delete a proxy named "my-proxy-name"
+    client.delete_proxy(name="my-proxy-name")
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request DELETE 'https://api.predictionguard.com/proxy?name=my-qa-proxy' \
+--header 'Authorization: Bearer <your access token>'
+    ```
+  </Tab>
+</Tabs>

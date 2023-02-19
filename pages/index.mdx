@@ -24,29 +24,17 @@ proxy endpoint will automatically start using the better model. Now your applica
 ## 1. Sign up for Prediction Guard
 
 import { Callout } from 'nextra-theme-docs'
-
-<Callout type="warning" emoji="⚠️">
-  The user signup and access token management pages are under development. Further the subscriptions are still being 
-  finalized. If you are participating in the Latent Space Demo day, contact Daniel Whitenack in Discord for a trial 
-  access token, which you can use to execute the below functionality.
-</Callout>
  
-Sign up for a Prediction Guard account (link forthcoming). If you signed up via email/password
+Sign up for a [Prediction Guard account](https://website-prod-git-dev-predictionguard.vercel.app/auth/signup). If you signed up via email/password
 you will need to verify your email. Check your email for the verification link.
 
-After verifying your email, you can sign up for a subscription (link forthcoming) that makes sense for you. Our pricing is simple. Pay for a 
+After verifying your email, you can [sign up for a subscription](https://website-prod-git-dev-predictionguard.vercel.app/#pricing) that makes sense for you. Our pricing is simple. Pay for a 
 number of prediction endpoints (e.g., one for sentiment analysis and one for question answering) and the rate limit you 
 require (# of requested predictions or inferences per second).
 
 ## 2. Grab an access token
 
-<Callout type="warning" emoji="⚠️">
-  The user signup and access token management pages are under development. Further the subscriptions are still being 
-  finalized. If you are participating in the Latent Space Demo day, contact Daniel Whitenack in Discord for a trial 
-  access token, which you can use to execute the below functionality.
-</Callout>
-
-Once you are all signed up (and signed in), head over to the access tokens page (link forthcoming). Click
+Once you are all signed up (and signed in), head over to the [access tokens page](https://website-prod-git-dev-predictionguard.vercel.app/app). Click
 on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
 token. You will need this below.
 
@@ -69,7 +57,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     import predictionguard as pg
 
     # Initialize a Prediction Guard client.
-    client = Client(token=<your access token>)
+    client = pg.Client(token=<your access token>)
 
     # Create some examples illustrating the kind of predictions you
     # want to make (domain/ use case specific).
@@ -241,7 +229,7 @@ Once available, you can start generating inferences/ predictiongs:
   <Tab>
     ```python filename="main.py" copy
     # Now your ready to start getting reliable, future proof predictions. No fuss!
-    client.predict(name='test-client-sentiment4', data={
+    client.predict(name='test-client-sentiment', data={
         "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
     })
     ```
@@ -318,7 +306,7 @@ Once available, you can start generating inferences/ predictiongs:
   </Tab>
   <Tab>
     ```bash copy
-    curl --location --request POST 'https://api.predictionguard.com/predict?name=my-sentiment-proxy' \
+    $ curl --location --request POST 'https://api.predictionguard.com/predict?name=my-sentiment-proxy' \
     --header 'Authorization: Bearer <your access token>' \
     --header 'Content-Type: application/json' \
     --data-raw '{

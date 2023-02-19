@@ -12,7 +12,7 @@ export default {
   // chat: {
   //   link: 'https://discord.com',
   // },
-  //docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
+  docsRepositoryBase: 'https://github.com/predictionguard',
   footer: {
     text: '♜ Prediction Guard docs',
   },
