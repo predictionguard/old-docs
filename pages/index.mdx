@@ -7,14 +7,16 @@ description: Reliable, future proof AI predictions
 
 With Prediction Guard, you no longer need to search through a staggering number of state-of-the-art (SOTA) models to find the 
 best one for your use case. In fact, you can stop worrying about models, keeping up with the latest releases,
-and buggy research implementations altogether. With Prediction Guard you:
+and buggy research implementations altogether. 
 
-- Create some examples of the input and expected output you are wanting 
+With Prediction Guard you:
+
+- Create examples of the input and the output you expect
 - Send those examples to Prediction Guard
 
 Prediction Guard then:
 
-- Searches through a host of SOTA models to find one that best matches your expected input/output behavior
+- Searches through a host of SOTA models to find the best match for your expected input/output behavior
 - Configures an inference endpoint (aka a "proxy") for you with the best model
 
 You can then immediately start making reliable predictions! Moreover, Prediction Guard will periodically (around once
@@ -34,16 +36,16 @@ require (# of requested predictions or inferences per second).
 
 ## 2. Grab an access token
 
-Once you are all signed up (and signed in), head over to the [access tokens page](https://website-prod-git-dev-predictionguard.vercel.app/app). Click
+Once you are signed up (and signed in), head over to the [access tokens page](https://website-prod-git-dev-predictionguard.vercel.app/app). Click
 on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
-token. You will need this below.
+token. You will need this in the next step.
 
 ## 3. Create your first proxy (endpoint)
 
 Prediction Guard allows you to make predictions, or inferences, using "proxy" endpoints. These endpoints proxy a bunch 
-of SOTA models on the backend, and make sure you are always getting the best possible output.
+of SOTA models on the backend, and ensure the best possible output.
 
-Let's create our first proxy endpoint for a sentiment analysis task:
+To create your first proxy endpoint for a sentiment analysis task:
 
 <Callout type="info" emoji="ℹ️">
   See the [tasks section](/tasks) to see how you can provide examples for a variety of tasks. 
@@ -221,9 +223,9 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 ## 4. Start making predictions!
 
 It will take around 5 seconds to one minute for your proxy endpoint to become "available." You can check the status by 
-listing your proxies, as further discussed [TODO]().
+listing your proxies, as further discussed [here](./reference/proxy).
 
-Once available, you can start generating inferences/ predictiongs:
+Once available, you can start generating inferences/ predictions:
  
 <Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
   <Tab>
