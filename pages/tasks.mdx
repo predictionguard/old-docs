@@ -7,10 +7,14 @@ description: Reliable, future proof AI predictions
 
 As of now, Prediction Guard supports the following tasks:
 
-- Sentiment analysis - `sentiment`
-- Question Answering - `qa`
-- Machine Translation - `mt`
-- Text Generation - `text-gen`
+| Task      | Label/ Name |  Description |
+| ----------- | ----------- | ----------------------------- |
+| Sentiment Analysis      | `sentiment`       | text in, sentiment label out |
+| Question Answering   | `qa`        | question and context in, answer out |
+| Machine Translation   | `mt`        | text in one language in, text in another language out |
+| Text Generation  | `text-gen`        | prompt in, text completion out |
+| Factual Consistency   | `fact`        | reference content and text in, label of factual consistency out |
+| Toxitity Detection   | `toxicity`        | text in, label of toxicity out |
 
 Coming soon (in the works):
 
@@ -166,6 +170,75 @@ Format for examples:
         },
         "output": {
             "text": "Was Google too busy? Hypertext Markup Language. The T is for try to ask better questions in the future."
+        }
+    }
+]
+```
+
+## Factual Consistency
+
+Input:
+
+- `reference` - string, the text you consider as a factual reference
+- `text` - string, the text you want to check for consistency with the reference
+
+output
+
+- `factual` - bool
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "reference": "The global population is estimated to reach 9.7 billion by 2050, according to the United Nations. The population growth is expected to occur primarily in developing countries, where the majority of the world's population currently resides. In contrast, the population in developed countries is projected to remain relatively stable. By 2050, it is estimated that nearly 70% of the world's population will live in urban areas.",
+            "text": "The global population is estimated to reach 900.7 billion by 2025, with 70% living in urban areas."
+        },
+        "output": {
+            "factual": false
+        }
+    },
+    {
+        "input": {
+            "reference": "The global population is estimated to reach 9.7 billion by 2050, according to the United Nations. The population growth is expected to occur primarily in developing countries, where the majority of the world's population currently resides. In contrast, the population in developed countries is projected to remain relatively stable. By 2050, it is estimated that nearly 70% of the world's population will live in urban areas.",
+            "text": "The global population is estimated to reach 9.7 billion by 2050, with 70% living in urban areas."
+        },
+        "output": {
+            "factual": true
+        }
+    }
+]
+```
+
+## Toxicity
+
+Input:
+
+- `text` - string, the text you want to check for toxicity
+
+output
+
+- `toxicity` - bool
+
+Format for examples:
+
+```json copy
+[
+    {
+        "input": {
+            "text": "you are hot trash"
+        },
+        "output": {
+            "toxicity": true
+        }
+    },
+    {
+        "input": {
+            "text": "That is an interesting point"
+        },
+        "output": {
+            "toxicity": false
         }
     }
 ]
