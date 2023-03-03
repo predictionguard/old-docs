@@ -5,7 +5,7 @@ description: Reliable, future proof AI predictions
 
 # Getting Started
 
-With Prediction Guard, you no longer need to search through a staggering number of state-of-the-art (SOTA) models to find the 
+You no longer need to search through a staggering number of state-of-the-art (SOTA) models to find the 
 best one for your use case. In fact, you can stop worrying about models, keeping up with the latest releases,
 and buggy research implementations altogether. 
 
@@ -17,22 +17,28 @@ With Prediction Guard you:
 Prediction Guard then:
 
 - Searches through a host of SOTA models to find the best match for your expected input/output behavior
-- Configures an inference endpoint (aka a "proxy") for you with the best model
+- Configures an inference endpoint (aka a "proxy") for you to use the best model
 
-You can then immediately start making reliable predictions! Moreover, Prediction Guard will periodically (around once
+You can then immediately start using the proxy to get new inferences! Moreover, Prediction Guard will periodically (around once
 a week) re-evaluate your input/output examples in light of new models. If a better model comes on to the scene, you're
 proxy endpoint will automatically start using the better model. Now your application is future proofed!
 
-## 1. Sign up for Prediction Guard
+Sounds pretty great right? Follow the steps below to create your first Prediction Guard proxy:
+
+## 1. Create your account
 
 import { Callout } from 'nextra-theme-docs'
  
-Sign up for a [Prediction Guard account](https://website-prod-git-dev-predictionguard.vercel.app/auth/signup). If you signed up via email/password
+Sign up for a Prediction Guard account [here](https://website-prod-git-dev-predictionguard.vercel.app/auth/signup). If you signed up via email/password
 you will need to verify your email. Check your email for the verification link.
 
-After verifying your email, you can [sign up for a subscription](https://website-prod-git-dev-predictionguard.vercel.app/#pricing) that makes sense for you. Our pricing is simple. Pay for a 
-number of prediction endpoints (e.g., one for sentiment analysis and one for question answering) and the rate limit you 
-require (# of requested predictions or inferences per second).
+After verifying your email, you will need to [pick a subscription level](https://website-prod-git-dev-predictionguard.vercel.app/#pricing) 
+that makes sense for you. Our pricing is simple. Pay for a number of prediction endpoints (e.g., one for 
+text generation and one for question answering) and the rate limit you require (# of requested predictions or inferences per second).
+
+<Callout type="info" emoji="ℹ️">
+  If you need a higher rate limit and are scaling up, that's totally possible. Just contact us at **contact@predictionguard.com**. 
+</Callout>
 
 ## 2. Grab an access token
 
@@ -40,15 +46,24 @@ Once you are signed up (and signed in), head over to the [access tokens page](ht
 on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
 token. You will need this in the next step.
 
-## 3. Create your first proxy (endpoint)
+## 3. Create your first proxy (inference endpoint)
 
-Prediction Guard allows you to make predictions, or inferences, using "proxy" endpoints. These endpoints proxy a bunch 
-of SOTA models on the backend, and ensure the best possible output.
+Prediction Guard allows you to make predictions, or inferences, using a "proxy." These endpoints proxy a bunch 
+of SOTA models on the backend (hence the name), and ensure the best possible output.
 
-To create your first proxy endpoint for a sentiment analysis task:
+To create your first proxy for a sentiment analysis task you need to construct example inputs and outputs that match
+your domain or use case. Under the hood, Prediction Guard uses these examples to test many different models. Some of these
+models, given your input, will produce better results than others. 
+
+When you send your examples to Prediction Guard, the system: 
+
+1. Runs your example inputs through many models in parallel
+2. Ranks the model outputs according to how well they match your provided example outputs
+3. Selects the top ranking model as a default model for your task and selects the runner up as a fallback model for your task
+4. Configures an inference endpoint with the selected models, such that you can start making new inferences/ predictions (via Python or REST API)
 
 <Callout type="info" emoji="ℹ️">
-  See the [tasks section](/tasks) to see how you can provide examples for a variety of tasks. 
+  See the [tasks section](/tasks) to see how you can provide examples for a variety of tasks. See the [models page](/models) if you are curious about the many models that Prediction Guard implements.  
 </Callout>
 
 import { Tab, Tabs } from 'nextra-theme-docs'
@@ -223,9 +238,10 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 ## 4. Start making predictions!
 
 It will take around 5 seconds to one minute for your proxy endpoint to become "available." You can check the status by 
-listing your proxies, as further discussed [here](./reference/proxy).
+listing your proxies, as further discussed [here](./reference/proxy). If you are using the python client, you will seeing a
+spinner while Prediction Guard finds you a model and configures your endpoint. 
 
-Once available, you can start generating inferences/ predictions:
+Once available, you can start using the proxy to run new inferences/ predictions:
  
 <Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
   <Tab>

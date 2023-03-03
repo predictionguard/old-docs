@@ -1,22 +1,14 @@
-# Nextra Docs Template 
+# Prediction Guard documentation site
 
-This is a template for creating documentation with [Nextra](https://nextra.site).
+This is the documentation website for [Prediction Guard](https://predictionguard.com). It is built with [Nextra](https://nextra.site) and deployed on [Vercel](https://vercel.com)
 
-[**Live Demo →**](https://nextra-docs-template.vercel.app)
+[**Live Site →**](https://docs.predictionguard.com)
 
-[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+## Local development
 
-## Quick Start
+First, run `npm install` to install the dependencies.
 
-Click the button to clone this repository and deploy it on Vercel:
-
-[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
-
-## Local Development
-
-First, run `pnpm i` to install the dependencies.
-
-Then, run `pnpm dev` to start the development server and visit localhost:3000.
+Then, run `npm run dev` to start the development server and visit localhost:3000.
 
 ## License
 

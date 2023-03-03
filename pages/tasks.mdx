@@ -9,10 +9,10 @@ As of now, Prediction Guard supports the following tasks:
 
 | Task      | Label/ Name |  Description |
 | ----------- | ----------- | ----------------------------- |
+| Text Generation  | `text-gen`        | prompt in, text completion out |
 | Sentiment Analysis      | `sentiment`       | text in, sentiment label out |
 | Question Answering   | `qa`        | question and context in, answer out |
 | Machine Translation   | `mt`        | text in one language in, text in another language out |
-| Text Generation  | `text-gen`        | prompt in, text completion out |
 | Factual Consistency   | `fact`        | reference content and text in, label of factual consistency out |
 | Toxitity Detection   | `toxicity`        | text in, label of toxicity out |
 
@@ -22,7 +22,8 @@ Coming soon (in the works):
 - Image Classification
 - Textual Semantic Similarity
 
-The examples you provide, when configuring a proxy endpoint, differ for each of these tasks. See below for examples. 
+The examples you provide, when configuring a proxy endpoint, differ for each of these tasks. See below for details
+on how to format the examples for each task. 
 
 ## Sentiment Analysis
 
@@ -32,7 +33,7 @@ Input:
 
 output
 
-- `sentiment` - POS, NEU, NEG
+- `sentiment` - POS, NEU, NEG label
 
 Format for examples:
 
@@ -97,13 +98,13 @@ Format for examples:
 
 Input:
 
-- `source` - ISO639-3 language code
-- `target` - ISO639-3 language code
-- `text` - string, source text to be translated
+- `source` - [ISO639-3](iso639-3.sil.org/) language code of the source language
+- `target` - [ISO639-3](iso639-3.sil.org/) language code of the target language
+- `text` - string, source text to be translated from the source language to the target language
 
 output
 
-- `translation` - string, predicted translation
+- `translation` - string, the predicted translation
 
 Format for examples:
 

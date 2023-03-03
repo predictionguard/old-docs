@@ -79,7 +79,7 @@ gen_examples = [
 client.create_proxy(task="text-gen", name=chatGen, examples=gen_examples)
 ```
 
-Now that this endpoint named `chatpg-gen` is created, we can call it with a prompt to generate new responses. Instead of doing this in a Jupyter notebook or Python script, let's use Gradio:
+The above code will create a `chatpg-gen` proxy. We can call this proxy with an input prompt to generate new responses. Instead of doing this in a Jupyter notebook or Python script, let's use Gradio:
 
 ```python filename="app.py" copy
 import gradio as gr
@@ -168,7 +168,7 @@ In order to run this demo:
     $ export PREDICTIONGUARD_TOKEN=<your access token>
     ```
 
-4. Run `configure.py` to setup the Prediction Guard endpoint for generating chat responses:
+4. Run `configure.py` to setup the Prediction Guard proxy for generating chat responses:
 
     ```
     $ python configure.py
