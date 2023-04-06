@@ -10,6 +10,12 @@ finds the "best" model for you, you can immediately call the proxy endpoint by n
 is no need to maintain credentials to systems like OpenAI, co:here, Hugging Face, etc. Prediction Guard handles all that
 under the hood so you can just focus on the behavior you need in your application.  
 
+import { Callout } from 'nextra-theme-docs'
+ 
+<Callout type="info" emoji="ℹ️">
+  Prediction Guard uses serverless endpoints. You are NOT charged for CPU or GPU time, and there is no need to actively shut down your endpoints. 
+</Callout>
+
 ## Create a proxy
 
 import { Tab, Tabs } from 'nextra-theme-docs'

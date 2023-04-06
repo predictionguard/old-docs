@@ -29,12 +29,16 @@ Sounds pretty great right? Follow the steps below to create your first Predictio
 
 import { Callout } from 'nextra-theme-docs'
  
-Sign up for a Prediction Guard account [here](https://website-prod-git-dev-predictionguard.vercel.app/auth/signup). If you signed up via email/password
+Sign up for a Prediction Guard account [here](https://beta.predictionguard.com/auth/signup). If you signed up via email/password
 you will need to verify your email. Check your email for the verification link.
 
-After verifying your email, you will need to [pick a subscription level](https://website-prod-git-dev-predictionguard.vercel.app/#pricing) 
+After verifying your email, you will need to [pick a subscription level](https://beta.predictionguard.com/#pricing) 
 that makes sense for you. Our pricing is simple. Pay for a number of prediction endpoints (e.g., one for 
 text generation and one for question answering) and the rate limit you require (# of requested predictions or inferences per second).
+
+**You do NOT need to have access tokens to all the various AI platforms (OpenAI, co:here, etc.) or do any model 
+hosting yourself.** We take care of all that, and our infrastructure is serverless. That mean you don't pay for CPU/GPU
+time. You just pay a fixed fee for the volume of requests that makes sense for you.
 
 <Callout type="info" emoji="ℹ️">
   If you need a higher rate limit and are scaling up, that's totally possible. Just contact us at **contact@predictionguard.com**. 
@@ -42,11 +46,19 @@ text generation and one for question answering) and the rate limit you require (
 
 ## 2. Grab an access token
 
-Once you are signed up (and signed in), head over to the [access tokens page](https://website-prod-git-dev-predictionguard.vercel.app/app). Click
+Once you are signed up (and signed in), head over to the [access tokens page](https://beta.predictionguard.com/app). Click
 on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
 token. You will need this in the next step.
 
-## 3. Create your first proxy (inference endpoint)
+## 3. (Optional) Install the Python client
+
+You can configure and use Prediction Guard using our Python client or via REST API directly. If you are wanting to use the Python client, you can install it as follows:
+
+```sh
+$ pip install predictionguard
+```
+
+## 4. Create your first proxy (inference endpoint)
 
 Prediction Guard allows you to make predictions, or inferences, using a "proxy." These endpoints proxy a bunch 
 of SOTA models on the backend (hence the name), and ensure the best possible output.
@@ -235,7 +247,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   from [your user dashboard](https://predictionguard.com/app).
 </Callout>
 
-## 4. Start making predictions!
+## 5. Start making predictions!
 
 It will take around 5 seconds to one minute for your proxy endpoint to become "available." You can check the status by 
 listing your proxies, as further discussed [here](./reference/proxy). If you are using the python client, you will seeing a
@@ -247,9 +259,11 @@ Once available, you can start using the proxy to run new inferences/ predictions
   <Tab>
     ```python filename="main.py" copy
     # Now your ready to start getting reliable, future proof predictions. No fuss!
-    client.predict(name='test-client-sentiment', data={
+    prediction = client.predict(name='test-client-sentiment', data={
         "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
     })
+
+    print(prediction)
     ```
   </Tab>
   <Tab>
