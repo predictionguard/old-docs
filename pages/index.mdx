@@ -260,7 +260,7 @@ Once available, you can start using the proxy to run new inferences/ predictions
     ```python filename="main.py" copy
     # Now your ready to start getting reliable, future proof predictions. No fuss!
     prediction = client.predict(name='test-client-sentiment', data={
-        "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+        "phrase": "This is great! I'm so happy I'm using Prediction Guard"
     })
 
     print(prediction)
@@ -283,7 +283,7 @@ Once available, you can start using the proxy to run new inferences/ predictions
       method := "POST"
 
       payload := strings.NewReader(`{
-          "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+          "phrase": "This is great! I'm so happy I'm using Prediction Guard"
       }`)
 
       client := &http.Client {
@@ -320,7 +320,7 @@ Once available, you can start using the proxy to run new inferences/ predictions
     myHeaders.append("Content-Type", "application/json");
 
     var raw = JSON.stringify({
-      "phrase": "Isn't this great! I'm so happy I'm using Prediction Guard"
+      "phrase": "This is great! I'm so happy I'm using Prediction Guard"
     });
 
     var requestOptions = {
@@ -342,7 +342,7 @@ Once available, you can start using the proxy to run new inferences/ predictions
     --header 'Authorization: Bearer <your access token>' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "phrase": "Isn'\''t this great! I'\''m so happy I'\''m using Prediction Guard"
+        "phrase": "This is great! I'\''m so happy I'\''m using Prediction Guard"
     }'
     ```
   </Tab>
