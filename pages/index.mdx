@@ -58,9 +58,126 @@ You can configure and use Prediction Guard using our Python client or via REST A
 $ pip install predictionguard
 ```
 
-## 4. Create your first proxy (inference endpoint)
+## 4. Make your first prediction!
 
-Prediction Guard allows you to make predictions, or inferences, using a "proxy." These endpoints proxy a bunch 
+Although prediction guard allows you to optimize and future proof your own inference endpoints (or proxies), you can also
+use Prediction Guard's "default" models to make predictions without any further configuration. It's as easy as calling
+our [predict API](reference/predict) with a `default-` proxy name. 
+
+Try out the following to quickly SOTA LLM output before we move on to configure a customized model proxy:
+
+<Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import predictionguard as pg
+
+    # Initialize a Prediction Guard client.
+    client = pg.Client(token=<your access token>)
+    
+    # Use the default text-gen model to get a completion
+    output = client.predict(name="default-text-gen", data={
+        "prompt": "Tell me a joke"
+    })
+    print(output)
+    ```
+  </Tab>
+  <Tab>
+    ```go filename="prediction.go" copy
+    package main
+
+    import (
+      "fmt"
+      "strings"
+      "net/http"
+      "io/ioutil"
+    )
+
+    func main() {
+
+      url := "https://api.predictionguard.com/predict?name=default-text-gen"
+      method := "POST"
+
+      payload := strings.NewReader(`{
+          "prompt": "Tell me a joke"
+      }`)
+
+      client := &http.Client {
+      }
+      req, err := http.NewRequest(method, url, payload)
+
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      req.Header.Add("Authorization", "Bearer <your access token>")
+      req.Header.Add("Content-Type", "application/json")
+
+      res, err := client.Do(req)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      defer res.Body.Close()
+
+      body, err := ioutil.ReadAll(res.Body)
+      if err != nil {
+        fmt.Println(err)
+        return
+      }
+      fmt.Println(string(body))
+    }
+    ```
+  </Tab>
+  <Tab>
+    ```js filename="predict.js" copy
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer <your access token>");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+        "prompt": "Tell me a joke"
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("https://api.predictionguard.com/predict?name=default-text-gen", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/predict?name=default-text-gen' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "prompt": "Tell me a joke"
+    }'
+    ```
+  </Tab>
+</Tabs>
+
+<Callout type="info" emoji="ℹ️">
+  Note, you will need to replace `<your access token>` in the above examples with your actual access token retrieved
+  from [your user dashboard](https://predictionguard.com/app).
+</Callout>
+
+This should result in something like the following output:
+
+```
+{'text': '\n\nQ: What did the fish say when it hit the wall?\nA: Dam!'}
+```
+
+## 5. Create your first proxy (inference endpoint)
+
+Prediction Guard allows you to make predictions, or inferences, using a customized "proxy" in addition to our
+pre-configured default models. These endpoints proxy a bunch 
 of SOTA models on the backend (hence the name), and ensure the best possible output.
 
 To create your first proxy for a sentiment analysis task you need to construct example inputs and outputs that match
@@ -242,14 +359,9 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   </Tab>
 </Tabs>
 
-<Callout type="info" emoji="ℹ️">
-  Note, you will need to replace `<your access token>` in the above examples with your actual access token retrieved
-  from [your user dashboard](https://predictionguard.com/app).
-</Callout>
+## 6. Start making customized predictions!
 
-## 5. Start making predictions!
-
-It will take around 5 seconds to one minute for your proxy endpoint to become "available." You can check the status by 
+It will take around 5 seconds to 5 minutes for your proxy endpoint to become "available." You can check the status by 
 listing your proxies, as further discussed [here](./reference/proxy). If you are using the python client, you will seeing a
 spinner while Prediction Guard finds you a model and configures your endpoint. 
 

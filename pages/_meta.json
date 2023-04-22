@@ -1,6 +1,7 @@
 {
   "index": "Getting Started",
   "models": "Available Models",
+  "defaults": "Default Models",
   "tasks": "Supported Tasks",
   "guides": "Guides",
   "reference": "Reference",
@@ -8,7 +9,7 @@
   "contact": {
     "title": "Sign Up ↗",
     "type": "page",
-    "href": "https://website-prod-git-dev-predictionguard.vercel.app/",
+    "href": "https://beta.predictionguard.com/",
     "newWindow": true
   }
 }
