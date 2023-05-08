@@ -18,7 +18,7 @@ export default class MyDocument extends Document {
              t.src="https://www.clarity.ms/tag/"+i;
              y=l.getElementsByTagName(r)[0];
              y.parentNode.insertBefore(t,y);
-         })(window, document, "clarity", "script", "gpm8utc3xm");`,
+         })(window, document, "clarity", "script", "process.env.doc_clarity");`,
    }}
  />;
         </Head>
