@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
              y.parentNode.insertBefore(t,y);
          })(window, document, "clarity", "script", "${process.env.doc_clarity}");`,
    }}
- />;
+ />
         </Head>
         <body>
           <Main />
