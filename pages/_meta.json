@@ -3,6 +3,7 @@
   "models": "Available Models",
   "defaults": "Default Models",
   "tasks": "Supported Tasks",
+  "agents": "(beta) Task Agents",
   "guides": "Guides",
   "reference": "Reference",
   "support": "Support",
