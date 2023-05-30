@@ -5,43 +5,30 @@ description: Reliable, future proof AI predictions
 
 # Getting Started
 
-You no longer need to search through a staggering number of state-of-the-art (SOTA) models to find the 
-best one for your use case. In fact, you can stop worrying about models, keeping up with the latest releases,
-and buggy research implementations altogether. 
+Technical teams need to figure out how to integrate the latest Large Language Models (LLMs), but:
+- You can’t build robust systems with inconsistent, unstructured text blob output; and
+- LLM integrations scare corporate lawyers, finance departments, and security professionals due to hallucinations, cost, lack of compliance (e.g., HIPAA), leaked IP/PII, and “injection” vulnerabilities.
 
-With Prediction Guard you:
+Some companies are moving forward anyway by investing tons of engineering time/money in their own wrappers around LLMs and expensive hosting with OpenAI/Azure. Others are ignoring these issues and pressing forward with fragile and risky LLM integrations. 
 
-- Create examples of the input and the output you expect
-- Send those examples to Prediction Guard
+At Prediction Guard, we think that you should get consistent, structured output from compliant AI systems (without crazy implementation/ hosting costs), so our solution lets you:
+1. **Control the structure of and easily constrain LLM output** to the types, formats, and information relevant to your business; 
+2. **Validate and check LLM output** to guard against hallucination; and
+3. **Implement compliant LLM systems** (SOC 2, HIPAA, and self-hosted) that give your legal counsel warm fuzzy feeling while still delighting your customers with AI features.
 
-Prediction Guard then:
-
-- Searches through a host of SOTA models to find the best match for your expected input/output behavior
-- Configures an inference endpoint (aka a "proxy") for you to use the best model
-
-You can then immediately start using the proxy to get new inferences! Moreover, Prediction Guard will periodically (around once
-a week) re-evaluate your input/output examples in light of new models. If a better model comes on to the scene, you're
-proxy endpoint will automatically start using the better model. Now your application is future proofed!
-
-Sounds pretty great right? Follow the steps below to create your first Prediction Guard proxy:
+Sounds pretty great right? Follow the steps below to starting controlling SOTA LLMs:
 
 ## 1. Create your account
 
 import { Callout } from 'nextra-theme-docs'
  
-Sign up for a Prediction Guard account [here](https://beta.predictionguard.com/auth/signup). If you signed up via email/password
-you will need to verify your email. Check your email for the verification link.
+We host the latest LLMs for you, so you can focus on your prompts. To access the hosted LLMs (and our guarded interfaces to closed LLMs like OpenAI), sign up for a Prediction Guard account [here](https://beta.predictionguard.com/auth/signup). If you signed up via email/password you will need to verify your email. Check your email for the verification link.
 
 After verifying your email, you will need to [pick a subscription level](https://beta.predictionguard.com/#pricing) 
-that makes sense for you. Our pricing is simple. Pay for a number of prediction endpoints (e.g., one for 
-text generation and one for question answering) and the rate limit you require (# of requested predictions or inferences per second).
-
-**You do NOT need to have access tokens to all the various AI platforms (OpenAI, co:here, etc.) or do any model 
-hosting yourself.** We take care of all that, and our infrastructure is serverless. That mean you don't pay for CPU/GPU
-time. You just pay a fixed fee for the volume of requests that makes sense for you.
+that makes sense for you. However, you can get started for free with our Basic plan.
 
 <Callout type="info" emoji="ℹ️">
-  If you need a higher rate limit and are scaling up, that's totally possible. Just contact us at **contact@predictionguard.com**. 
+  If you need a higher rate limit and are scaling up, contact us at **contact@predictionguard.com**. 
 </Callout>
 
 ## 2. Grab an access token
@@ -58,27 +45,54 @@ You can configure and use Prediction Guard using our Python client or via REST A
 $ pip install predictionguard
 ```
 
-## 4. Make your first prediction!
+## 4. Start using controlled LLMs!
 
-Although prediction guard allows you to optimize and future proof your own inference endpoints (or proxies), you can also
-use Prediction Guard's "default" models to make predictions without any further configuration. It's as easy as calling
-our [predict API](reference/predict) with a `default-` proxy name. 
+Suppose you want to prompt an LLM to perform zero-shot text classification with the following prompt:
 
-Try out the following to quickly SOTA LLM output before we move on to configure a customized model proxy:
+```
+Does the following input text refer to a politician, actor, infrastructure, or a societal event?
 
-<Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
+Input Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.
+
+Category: 
+```
+
+You can use our Python client or REST API to prompt one of many open or closed LLMs (MPT-7B, Camel-5B, OpenAI text-davinci-003, etc.). Our API is very similar to the OpenAI API for text completion, but we've added an `output` argument/field that let's you control, constrain, and perform checks on the output of LLMs. For this example, let's contrain the `output` of the LLM to one of the following classes: `politician`, `actor`, `infrastructure`, and `societal_event` (i.e., we are enforcing a categorical type):
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'Go', 'NodeJS', 'cURL']}  defaultIndex="0">
   <Tab>
     ```python filename="main.py" copy
+    import os
     import predictionguard as pg
 
-    # Initialize a Prediction Guard client.
-    client = pg.Client(token=<your access token>)
+    # Set your Prediction Guard token as an environmental variable.
+    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+    # Define our prompt.
+    prompt = """Does the following input text refer to a politician, actor, infrastructure, or a societal event?
+
+Input Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.
+
+Category: """
     
-    # Use the default text-gen model to get a completion
-    output = client.predict(name="default-text-gen", data={
-        "prompt": "Tell me a joke"
-    })
-    print(output)
+    # Use the MPT-7B-Instruct LLM to perform the controlled text classification.
+    result = pg.Completion.create(
+        model="MPT-7B-Instruct",
+        prompt=prompt,
+        output={
+            "type": "categorical",
+            "categories": ["politician", "actor", "infrastructure", and "societal_event"]
+        }
+    )
+
+    print(json.dumps(
+        result,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
     ```
   </Tab>
   <Tab>
@@ -94,15 +108,19 @@ Try out the following to quickly SOTA LLM output before we move on to configure 
 
     func main() {
 
-      url := "https://api.predictionguard.com/predict?name=default-text-gen"
+      url := "https://api.predictionguard.com/completions"
       method := "POST"
 
       payload := strings.NewReader(`{
-          "prompt": "Tell me a joke"
-      }`)
+        "model": "MPT-7B-Instruct",
+        "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
+        "output": {
+            "type": "categorical",
+            "categories": ["politician", "actor", "infrastructure", "societal_event"]
+        }
+    }`)
 
-      client := &http.Client {
-      }
+      client := &http.Client{}
       req, err := http.NewRequest(method, url, payload)
 
       if err != nil {
@@ -129,35 +147,53 @@ Try out the following to quickly SOTA LLM output before we move on to configure 
     ```
   </Tab>
   <Tab>
-    ```js filename="predict.js" copy
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer <your access token>");
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-        "prompt": "Tell me a joke"
+    ```js copy
+    var axios = require('axios');
+    var data = JSON.stringify({
+      "model": "MPT-7B-Instruct",
+      "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
+      "output": {
+        "type": "categorical",
+        "categories": [
+          "politician",
+          "actor",
+          "infrastructure",
+          "societal_event"
+        ]
+      }
     });
 
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
+    var config = {
+      method: 'post',
+      url: 'https://api.predictionguard.com/completions',
+      headers: { 
+        'Authorization': 'Bearer <your access key>', 
+        'Content-Type': 'application/json'
+      },
+      data : data
     };
 
-    fetch("https://api.predictionguard.com/predict?name=default-text-gen", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
     ```
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/predict?name=default-text-gen' \
+    $ curl --location --request POST 'https://api.predictionguard.com/completions' \
     --header 'Authorization: Bearer <your access token>' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "prompt": "Tell me a joke"
+        "model": "MPT-7B-Instruct",
+        "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
+        "output": {
+            "type": "categorical",
+            "categories": ["politician", "actor", "infrastructure", "societal_event"]
+        }
     }'
     ```
   </Tab>
@@ -168,294 +204,51 @@ Try out the following to quickly SOTA LLM output before we move on to configure 
   from [your user dashboard](https://predictionguard.com/app).
 </Callout>
 
-This should result in something like the following output:
+Prediction Guard modifies the inference code around the model contraining the possible output to one of the provided categorical values in the optional `output` field/argument. Thus, this should result in the following output:
 
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": "politician",
+            "status": "success",
+            "text": "politician"
+        }
+    ],
+    "created": 1685445446,
+    "id": "cmpl-pmwldq6Zl2xNvCgjFU0FUrMdynwm4",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+}
 ```
-{'text': '\n\nQ: What did the fish say when it hit the wall?\nA: Dam!'}
+
+The `choices[0].text` field contains the raw LLM output. The `choices[0].output` field contains any typed output from Prediction Guard (relevant for integer, float, and boolean outputs). Without Prediction Guard's `output` argument/field to guide the LLM, the output looks like the following text vomit 🤮: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "status": "success",
+            "text": "\nThe text refers to a politician#Bill Clinton#president of the United States#actor#Bill Clinton#politician---\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n"
+        }
+    ],
+    "created": 1685445589,
+    "id": "cmpl-P5LYYYJfVWnIxRFfTiCe4QSjUwtm4",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+}
 ```
-
-## 5. Create your first proxy (inference endpoint)
-
-Prediction Guard allows you to make predictions, or inferences, using a customized "proxy" in addition to our
-pre-configured default models. These endpoints proxy a bunch 
-of SOTA models on the backend (hence the name), and ensure the best possible output.
-
-To create your first proxy for a sentiment analysis task you need to construct example inputs and outputs that match
-your domain or use case. Under the hood, Prediction Guard uses these examples to test many different models. Some of these
-models, given your input, will produce better results than others. 
-
-When you send your examples to Prediction Guard, the system: 
-
-1. Runs your example inputs through many models in parallel
-2. Ranks the model outputs according to how well they match your provided example outputs
-3. Selects the top ranking model as a default model for your task and selects the runner up as a fallback model for your task
-4. Configures an inference endpoint with the selected models, such that you can start making new inferences/ predictions (via Python or REST API)
 
 <Callout type="info" emoji="ℹ️">
-  See the [tasks section](/tasks) to see how you can provide examples for a variety of tasks. See the [models page](/models) if you are curious about the many models that Prediction Guard implements.  
+  Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
 </Callout>
 
-import { Tab, Tabs } from 'nextra-theme-docs'
- 
-<Tabs items={['Python', 'Go', 'JavaScript - Fetch', 'cURL']}  defaultIndex="0">
-  <Tab>
-    ```python filename="main.py" copy
-    import predictionguard as pg
+## 5. Explore other output types, models, and guides
 
-    # Initialize a Prediction Guard client.
-    client = pg.Client(token=<your access token>)
+This is only the beginning of what your can do with Prediction Guard (not to mention what is on our roadmap). Now that you have a working example, consider exploring:
 
-    # Create some examples illustrating the kind of predictions you
-    # want to make (domain/ use case specific).
-    examples = [
-        {
-            "input": {
-                "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
-            },
-            "output": {
-                "sentiment": "POS"
-            }
-        },
-        {
-            "input": {
-                "phrase": "AI development without Prediction Guard is bad. It's really terrible."
-            },
-            "output": {
-                "sentiment": "NEG"
-            }
-        }
-    ]
-
-    # Create a prediction "proxy." This proxy will save your examples, evaluate
-    # SOTA models to find the best one for your use case, and expose the best model
-    # at an endpoint corresponding to the proxy.
-    client.create_proxy(task='sentiment', name='my-sentiment-proxy', examples=examples)
-    ```
-  </Tab>
-  <Tab>
-    ```go filename="proxy.go" copy
-    package main
-
-    import (
-      "fmt"
-      "strings"
-      "net/http"
-      "io/ioutil"
-    )
-
-    func main() {
-
-      url := "https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy"
-      method := "POST"
-
-      payload := strings.NewReader(`[
-          {
-              "input": {
-                  "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
-              },
-              "output": {
-                  "sentiment": "POS"
-              }
-          },
-          {
-              "input": {
-                  "phrase": "AI development without Prediction Guard is bad. It's really terrible."
-              },
-              "output": {
-                  "sentiment": "NEG"
-              }
-          }
-      ]`)
-
-      client := &http.Client {
-      }
-      req, err := http.NewRequest(method, url, payload)
-
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      req.Header.Add("Authorization", "Bearer <your access token>")
-      req.Header.Add("Content-Type", "application/json")
-
-      res, err := client.Do(req)
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      defer res.Body.Close()
-
-      body, err := ioutil.ReadAll(res.Body)
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      fmt.Println(string(body))
-    }
-    ```
-  </Tab>
-  <Tab>
-    ```js filename="proxy.js" copy
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer <your access token>");
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify([
-      {
-        "input": {
-          "phrase": "I'm so excited about Prediction Guard. It's gonna be awesome!"
-        },
-        "output": {
-          "sentiment": "POS"
-        }
-      },
-      {
-        "input": {
-          "phrase": "AI development without Prediction Guard is bad. It's really terrible."
-        },
-        "output": {
-          "sentiment": "NEG"
-        }
-      }
-    ]);
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-    fetch("https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
-    ```
-  </Tab>
-  <Tab>
-    ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/proxy?task=sentiment&name=my-sentiment-proxy' \
-    --header 'Authorization: Bearer <your access token>' \
-    --header 'Content-Type: application/json' \
-    --data-raw '[
-        {
-            "input": {
-                "phrase": "I'\''m so excited about Prediction Guard. It'\''s gonna be awesome!"
-            },
-            "output": {
-                "sentiment": "POS"
-            }
-        },
-        {
-            "input": {
-                "phrase": "AI development without Prediction Guard is bad. It'\''s really terrible."
-            },
-            "output": {
-                "sentiment": "NEG"
-            }
-        }
-    ]'
-    ```
-  </Tab>
-</Tabs>
-
-## 6. Start making customized predictions!
-
-It will take around 5 seconds to 5 minutes for your proxy endpoint to become "available." You can check the status by 
-listing your proxies, as further discussed [here](./reference/proxy). If you are using the python client, you will seeing a
-spinner while Prediction Guard finds you a model and configures your endpoint. 
-
-Once available, you can start using the proxy to run new inferences/ predictions:
- 
-<Tabs items={['Python', 'Go', 'JavaScript', 'cURL']}  defaultIndex="0">
-  <Tab>
-    ```python filename="main.py" copy
-    # Now your ready to start getting reliable, future proof predictions. No fuss!
-    prediction = client.predict(name='test-client-sentiment', data={
-        "phrase": "This is great! I'm so happy I'm using Prediction Guard"
-    })
-
-    print(prediction)
-    ```
-  </Tab>
-  <Tab>
-    ```go filename="prediction.go" copy
-    package main
-
-    import (
-      "fmt"
-      "strings"
-      "net/http"
-      "io/ioutil"
-    )
-
-    func main() {
-
-      url := "https://api.predictionguard.com/predict?name=my-sentiment-proxy"
-      method := "POST"
-
-      payload := strings.NewReader(`{
-          "phrase": "This is great! I'm so happy I'm using Prediction Guard"
-      }`)
-
-      client := &http.Client {
-      }
-      req, err := http.NewRequest(method, url, payload)
-
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      req.Header.Add("Authorization", "Bearer <your access token>")
-      req.Header.Add("Content-Type", "application/json")
-
-      res, err := client.Do(req)
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      defer res.Body.Close()
-
-      body, err := ioutil.ReadAll(res.Body)
-      if err != nil {
-        fmt.Println(err)
-        return
-      }
-      fmt.Println(string(body))
-    }
-    ```
-  </Tab>
-  <Tab>
-    ```js filename="predict.js" copy
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer <your access token>");
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify({
-      "phrase": "This is great! I'm so happy I'm using Prediction Guard"
-    });
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    };
-
-    fetch("https://api.predictionguard.com/predict?name=my-sentiment-proxy", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
-    ```
-  </Tab>
-  <Tab>
-    ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/predict?name=my-sentiment-proxy' \
-    --header 'Authorization: Bearer <your access token>' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-        "phrase": "This is great! I'\''m so happy I'\''m using Prediction Guard"
-    }'
-    ```
-  </Tab>
-</Tabs>
+- [Other output types and checks](output) to further control and validate LLM outputs
+- The [variety of models available](models) via Prediction Guard's easy-to-use API
+- One of our [guides](guides) (which walk you through example applications)

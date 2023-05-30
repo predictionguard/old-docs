@@ -1,16 +1,15 @@
 {
   "index": "Getting Started",
   "models": "Available Models",
-  "defaults": "Default Models",
-  "tasks": "Supported Tasks",
-  "agents": "(beta) Task Agents",
+  "output": "Controlling LLM Output",
+  "compliance": "Compliance",
   "guides": "Guides",
   "reference": "Reference",
   "support": "Support",
   "contact": {
     "title": "Sign Up ↗",
     "type": "page",
-    "href": "https://beta.predictionguard.com/",
+    "href": "https://predictionguard.com/",
     "newWindow": true
   }
 }

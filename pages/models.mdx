@@ -5,46 +5,51 @@ description: Reliable, future proof AI predictions
 
 # Available Models
 
-Using Prediction Guard gives you quick and easy access to 100's of state-of-the-art AI models, without you needing to spend
-days and weeks figuring out all of the implementation details, managing a bunch of API keys, and setting up the infrastructure
-for model deployments. 
+Using Prediction Guard gives you quick and easy access to state-of-the-art open and closed access LLMs, without you needing to spend days and weeks figuring out all of the implementation details, managing a bunch of different API specs, and setting up the infrastructure for model deployments. 
 
-However, the convenience doesn't stop there. You can stop worrying about which particular model you are using on the backend 
-altogether, because Prediction Guard's [automated (and continuously monitored) model selection](/#3-create-your-first-proxy-inference-endpoint) ensures that you are 
-using the best model for your particular use case. It then proxies that model, such that you can acces it with 
-a standardized API (no OpenAI, co:here, etc. keys needed).  
+## Open Access LLMs
 
-All that said, your boss is probably asking you: 
+These LLMs are hosted by Prediction Guard with custom inference code that allows you to control the type/structure of and validate outputs. Check here for updates, as we are adding new models every week!
 
-> Are you using ChatGPT yet? Is that something I can tell our customers?
+**Note - These models are hosted by Prediction Guard in a private and compliant manner. Prediction Guard does NOT save or share any data sent to these models. Further, customers needing HIPAA compliance can use these models with out enterprise deploy. [Contact support](support) with any questions.**
 
-So to help you tell the story of which models you have access to through Prediction Guard and to give you confidence that
-we are implementing the best of the best, here is a partial list of models that we've integrated. We are adding new ones
-every day, so this is only a selection!
+**Note - We only integrate models that are licensed permissively for commercial use.**
 
-- **OpenAI** text generation models (GPT-3.5, davinci, curie, and all the flavors)
-- **co:here** text generation and classification models (in all the flavors)
-- Pre-trained, open access models including
-    - T5
-    - flan-t5-xl
-    - StableLM
-    - BART
-    - GPT2
-    - XLNet
-    - UniEval
-    - Sentence Transformers
-    - ViT
-    - wav2vec2
-    - etc.
-- Cloud provider managed AI services from:
-    - **Google**
-    - **Microsoft/ Azure**
-    - **Alibaba**
-    - etc.
-- Task/ domain specific APIs including:
-    - **DeepL** machine translation
-- Tried and true models available or implemented in:
-    - **SpaCy**
-    - Vader
-    - textblob
-    - etc.
+|          Model Name          | Model Card                                                                        | Parameters | Context Length |
+|----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
+| Camel-5B                     | [link](https://huggingface.co/Writer/camel-5b-hf)                                 | 5B         | 2048           |
+| Dolly-3B                     | [link](https://huggingface.co/databricks/dolly-v2-3b)                             | 3B         | 2048           |
+| Dolly-7B                     | [link](https://huggingface.co/databricks/dolly-v2-7b)                             | 7B         | 2048           |
+| h2oGPT-6_9B                  | [link](https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6_9b)                   | 6.9B       | 2048           |
+| MPT-7B-Instruct              | [link](https://huggingface.co/mosaicml/mpt-7b-instruct)                           | 7B         | 4096           |
+| Pythia-6_9-Deduped           | [link](https://huggingface.co/EleutherAI/pythia-6.9b-deduped)                     | 6.9B       | 2048           |
+| RedPajama-INCITE-Instruct-7B | [link](https://huggingface.co/togethercomputer/RedPajama-INCITE-Instruct-7B-v0.1) | 7B         | 2048           |
+
+
+<Callout type="info" emoji="ℹ️">
+  Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
+</Callout>
+
+## Closed LLMs
+
+These LLMs are integrated with Prediction Guard with custom inference code that allows you to control the type/structure of and validate outputs. However, these are not hosted by Prediction Guard in the same manner as the models above.
+
+**Note - You will need your own OpenAI API key to use the models below. Customers worried about data privacy, IP/PII leakage, HIPAA compliance, etc. should look into the above "Open Access LLMs" and/or our enterprise deploy. [Contact support](support) with any questions.**
+
+|        Model Name       | Generation | Context Length |
+|-----------------------|------------|----------------|
+| OpenAI-text-davinci-003 | GPT-3.5    | 4097           |
+| OpenAI-text-davinci-002 | GPT-3.5    | 4097           |
+| OpenAI-text-curie-001   | GPT-3      | 2049           |
+| OpenAI-text-babbage-001 | GPT-3      | 2049           |
+| OpenAI-text-ada-001     | GPT-3      | 2049           |
+| OpenAI-davinci          | GPT-3      | 2049           |
+| OpenAI-babbage          | GPT-3      | 2049           |
+| OpenAI-ada              | GPT-3      | 2049           |
+| OpenAI-curie            | GPT-3      | 2049           |
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="info" emoji="ℹ️">
+  To use the OpenAI models above, make sure you either: (1) define the environment variable `OPENAI_API_KEY` if you are using the Python client; or (2) set the header parameter `OpenAI-ApiKey` if you are using the REST API. 
+</Callout>

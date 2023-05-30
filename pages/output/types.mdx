@@ -1,0 +1,245 @@
+---
+title: Structure/type
+description: Controlled and compliant AI applications
+---
+
+# Structure/type
+
+Without any control or guidance, LLMs just output blobs of text. It is difficult to build robust systems on such unstructured and untyped output. Prediction Guard's `output` configuration allows you to specify a type or structure that is enforced on the LLM output. This `output` configuration is used at inference time to guide the LLM while it is performing text completion (rather than just using it as a filter). In this way, the performance of open access LLMs can be improved (along with your ability to keep IP/PII and other sensitive information private).
+
+The parameters of an `output` configuration for Prediction Guard are:
+
+- `type` (required) - one of `integer`, `float`, `boolean`, `categorical`, or `json` (more options and custom types coming soon)
+- `categories` (optional) - categories to use for the categorical output type
+
+When provided to the Prediction Guard API or Python client [completion functionality](../reference/completions), the corresponding result choices will include an additional `output` field with the typed and structured output (in addition to the normal `text` field, which is untyped).
+
+See below for examples of the currently supported output types and structures. For all of the below examples, we will use the following prompt template (although this is just by way of example):
+
+```python copy
+import os
+import json
+
+import predictionguard as pg
+from langchain import PromptTemplate
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+template = """Respond to the following query based on the context.
+
+Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
+Exclusive Candle Box - $80 
+Monthly Candle Box - $45 (NEW!)
+Scent of The Month Box - $28 (NEW!)
+Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
+
+Query: {query}
+
+Result: """
+prompt = PromptTemplate(template=template, input_variables=["query"])
+```
+
+## Integer
+
+The following constrains the LLM output to be a valid integer:
+
+```python copy
+result = pg.Completion.create(
+    model="MPT-7B-Instruct",
+    prompt=prompt.format(query="How many emojis are used?"),
+    output={
+        "type": "integer"
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following (or similar) integer typed output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": 3,
+            "status": "success",
+            "text": "3"
+        }
+    ],
+    "created": 1685451515,
+    "id": "cmpl-TDvN9hKfkktuvdbSxiH0UYCogL8tF",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+}
+```
+
+## Float
+
+The following constrains the LLM output to be a valid float number:
+
+```python copy
+result = pg.Completion.create(
+    model="MPT-7B-Instruct",
+    prompt=prompt.format(query="What is the highest price listed?"),
+    output={
+        "type": "float"
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following (or similar) float typed output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": 80,
+            "status": "success",
+            "text": "80.0"
+        }
+    ],
+    "created": 1685451884,
+    "id": "cmpl-syOJBuYCRRJpmtTVXyYDnT9mIT5bg",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+}
+```
+
+## Boolean
+
+The following constrains the LLM output to be a valid boolean:
+
+```python copy
+result = pg.Completion.create(
+    model="MPT-7B-Instruct",
+    prompt=prompt.format(query="Is the sentiment of this post positive?"),
+    output={
+        "type": "boolean"
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following (or similar) boolean typed output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": true,
+            "status": "success",
+            "text": "true"
+        }
+    ],
+    "created": 1685451992,
+    "id": "cmpl-aNrI8voOuwIXPVc8MMdRnuyZpVhvZ",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+}
+```
+
+## Categorical
+
+The following constrains the LLM output to be a valid choice of category:
+
+```python copy
+result = pg.Completion.create(
+    model="MPT-7B-Instruct",
+    prompt=prompt.format(query="What kind of post is this?"),
+    output={
+        "type": "categorical",
+        "categories": ["product announcement", "apology", "relational"]
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following categorical output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": "product announcement",
+            "status": "success",
+            "text": "product announcement"
+        }
+    ],
+    "created": 1685387155,
+    "id": "cmpl-PNqipH9iBGRPd8MZLO6VH7LFf9aua",
+    "model": "OpenAI-text-davinci-003",
+    "object": "text_completion"
+}
+```
+
+## JSON
+
+The following constrains the LLM output to be valid JSON:
+
+```python copy
+result = pg.Completion.create(
+    model="MPT-7B-Instruct",
+    prompt=prompt.format(query="Output the products mentioned in this post in JSON format."),
+    output={
+        "type": "json"
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following categorical output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": {
+                ".Scent of The Month Box": 28,
+                "Exclusive Candle Box": 80,
+                "Monthly Candle Box": 45
+            },
+            "status": "success",
+            "text": "{\"Exclusive Candle Box\":80,\"Monthly Candle Box\":45,\".Scent of The Month Box\":28}"
+        }
+    ],
+    "created": 1685395817,
+    "id": "cmpl-gZtxFyOPBs5UeWAKhmuyWQ8G0cBBO",
+    "model": "MPT-7B-Instruct",
+    "object": "text_completion"
+
+```
