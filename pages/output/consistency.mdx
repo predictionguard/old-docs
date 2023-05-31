@@ -5,4 +5,83 @@ description: Controlled and compliant AI applications
 
 # Consistency
 
-Information coming soon...
+You might be struggling with inconsistent output from LLMs. Even if you set parameters like `temperature` low, you could
+get non-deterministic output from your models. In addition to [enforcing type/structure](types), Prediction Guard has built in consistency checks. 
+
+Rather than looping over multiple API calls, you can make one API call that will concurrently prompt an LLM multiple times, check for consistent output, and return an error if there is inconsistent output. 
+
+Let's use the following example prompt template to illustrate the feature.
+
+```python copy
+import os
+import json
+
+import predictionguard as pg
+from langchain import PromptTemplate
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+template = """Respond to the following query based on the context.
+
+Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
+Exclusive Candle Box - $80 
+Monthly Candle Box - $45 (NEW!)
+Scent of The Month Box - $28 (NEW!)
+Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
+
+Query: {query}
+
+Result: """
+prompt = PromptTemplate(template=template, input_variables=["query"])
+```
+
+To enforce consistency on any output, it's as simple as setting `consistency` equal to a boolean `True` in the `output` field/argument to Prediction Guard:
+
+```
+result = pg.Completion.create(
+    model="Falcon-7B-Instruct",
+    prompt=prompt.format(query="What kind of post is this?"),
+    output={
+        "type": "categorical",
+        "categories": ["product announcement", "apology", "relational"],
+        "consistency": True
+    }
+)
+```
+
+If there is consistency in the calls to the LLM, you get standard output similar to:
+
+```
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": "product announcement",
+            "status": "success",
+            "text": "product announcement"
+        }
+    ],
+    "created": 1685539044,
+    "id": "cmpl-4oFZt63m9EkydxJaDG1Fg2RwAebrK",
+    "model": "Falcon-7B-Instruct",
+    "object": "text_completion"
+}
+```
+
+But if the LLM isn't consistent in the output (in this case the classification of the text), you get an error:
+
+```
+{
+    "choices": [
+        {
+            "index": 0,
+            "status": "error: inconsistent results",
+            "text": ""
+        }
+    ],
+    "created": 1685538920,
+    "id": "cmpl-dom2Lnj7vJZcqGzjHKTihBI7zNqr4",
+    "model": "Falcon-7B-Instruct",
+    "object": "text_completion"
+}
+```
