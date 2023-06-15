@@ -241,5 +241,104 @@ This results in the following categorical output:
     "id": "cmpl-gZtxFyOPBs5UeWAKhmuyWQ8G0cBBO",
     "model": "MPT-7B-Instruct",
     "object": "text_completion"
+}
+```
 
+## Custom JSON
+
+Although the above JSON type might give you valid JSON, sometimes you might want to have more control over the exact structure of the output JSON. This is where our `custom_json` type comes in handy. When you are using the `custom_json` format, you need to specify the structure of the output via the `<output>` element of a [RAIL specification](https://shreyar.github.io/guardrails/rail/output/). **Note, you only need to include the output element, as we will take care of the rest of the formatting.**
+
+For example, to extract information from a doctors note:
+
+```python copy
+prompt = """Given the following doctor's notes about a patient, please extract a JSON dictionary that contains the patient's information. Only output the JSON. Do not output XML.
+
+49 y/o Male with chronic macular rash to face & hair, worse in beard, eyebrows & nares.
+Itchy, flaky, slightly scaly. Moderate response to OTC steroid cream"""
+
+rail_ex = """<output>
+    <object name="patient_info">
+        <string name="gender" description="Patient's gender" />
+        <integer name="age" format="valid-range: 0 100" />
+        <list
+            name="symptoms"
+            description="Symptoms that the patient is currently experiencing. Each symptom should be classified into a separate item in the list.">
+            <object>
+                <string name="symptom" description="Symptom that a patient is experiencing"/>
+                <string
+                    name="affected area"
+                    description="What part of the body the symptom is affecting"
+                    format="valid-choices: {['head', 'neck', 'chest']}"
+                    on-fail-valid-choices="reask"
+                />
+            </object>
+        </list>
+        <list name="current_meds" description="Medications the patient is currently taking and their response">
+            <object>
+                <string name="medication" description="Name of the medication the patient is taking" />
+                <string
+                    name="response"
+                    description="How the patient is responding to the medication"
+                />
+            </object>
+        </list>
+    </object>
+</output>"""
+
+result = pg.Completion.create(
+    model="OpenAI-text-davinci-003",
+    prompt=prompt,
+    output={
+        "type": "custom_json",
+        "rail": rail_ex
+    },
+    max_tokens=1024
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in the following categorical output: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "output": {
+                "patient_info": {
+                    "age": 49,
+                    "current_meds": [
+                        {
+                            "medication": "OTC steroid cream",
+                            "response": "Moderate response"
+                        }
+                    ],
+                    "gender": "Male",
+                    "symptoms": [
+                        {
+                            "affected area": "head",
+                            "symptom": "macular rash"
+                        },
+                        {
+                            "affected area": "neck",
+                            "symptom": "itchy, flaky, slightly scaly"
+                        }
+                    ]
+                }
+            },
+            "status": "success",
+            "text": "{\"patient_info\": {\"gender\": \"Male\", \"age\": 49, \"symptoms\": [{\"symptom\": \"macular rash\", \"affected area\": \"head\"}, {\"symptom\": \"itchy, flaky, slightly scaly\", \"affected area\": \"neck\"}], \"current_meds\": [{\"medication\": \"OTC steroid cream\", \"response\": \"Moderate response\"}]}}"
+        }
+    ],
+    "created": 1686857261,
+    "id": "cmpl-qRnRLOElljsIH3w3IXZmR32oRT3mc",
+    "model": "OpenAI-text-davinci-003",
+    "object": "text_completion"
+}
 ```
