@@ -15,17 +15,27 @@ These LLMs are hosted by Prediction Guard with custom inference code that allows
 
 **Note - We only integrate models that are licensed permissively for commercial use.**
 
+### Text Generation
+
 |          Model Name          | Model Card                                                                        | Parameters | Context Length |
 |----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
 | Camel-5B                     | [link](https://huggingface.co/Writer/camel-5b-hf)                                 | 5B         | 2048           |
 | Dolly-3B                     | [link](https://huggingface.co/databricks/dolly-v2-3b)                             | 3B         | 2048           |
 | Dolly-7B                     | [link](https://huggingface.co/databricks/dolly-v2-7b)                             | 7B         | 2048           |
 | Falcon-7B-Instruct           | [link](https://huggingface.co/tiiuae/falcon-7b-instruct)                          | 7B         | 2048           |
+| Falcon-7B-Instruct           | [link](https://huggingface.co/tiiuae/falcon-7b-instruct)                          | 7B         | 2048           |
+| Falcon-40B-Instruct          | [link](https://huggingface.co/tiiuae/falcon-40b-instruct)                         | 40B        | 2048           |
 | h2oGPT-6_9B                  | [link](https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6_9b)                   | 6.9B       | 2048           |
 | MPT-7B-Instruct              | [link](https://huggingface.co/mosaicml/mpt-7b-instruct)                           | 7B         | 4096           |
 | Pythia-6_9-Deduped           | [link](https://huggingface.co/EleutherAI/pythia-6.9b-deduped)                     | 6.9B       | 2048           |
 | RedPajama-INCITE-Instruct-7B | [link](https://huggingface.co/togethercomputer/RedPajama-INCITE-Instruct-7B-v0.1) | 7B         | 2048           |
 
+### Code Generation/ Technical Assistant
+
+|          Model Name          | Model Card                                                                        | Parameters | Context Length |
+|----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
+| WizardCoder                     | [link](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0)                 | 15.5B      | 8192           |
+| StarCoder                       | [link](https://huggingface.co/bigcode/starcoder)                             | 15.5B      | 8192           |
 
 <Callout type="info" emoji="ℹ️">
   Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
