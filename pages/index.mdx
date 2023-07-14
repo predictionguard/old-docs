@@ -18,26 +18,15 @@ At Prediction Guard, we think that you should get consistent, structured output 
 
 Sounds pretty great right? Follow the steps below to starting controlling SOTA LLMs:
 
-## 1. Create your account
+## 1. Get access to Prediction Guard Enterprise
 
 import { Callout } from 'nextra-theme-docs'
  
-We host the latest LLMs for you, so you can focus on your prompts. To access the hosted LLMs (and our guarded interfaces to closed LLMs like OpenAI), sign up for a Prediction Guard account [here](https://predictionguard.com/auth/signup). If you signed up via email/password you will need to verify your email. Check your email for the verification link.
+We host and control the latest LLMs for you in our enterprise platform, so you can focus on your prompts and chains. To access the hosted LLMs (and our guarded interfaces to closed LLMs like OpenAI), contact us about enterprise [here](https://www.predictionguard.com/getting-started). 
 
-After verifying your email, you will need to [pick a subscription level](https://predictionguard.com/#pricing) 
-that makes sense for you. However, you can get started for free with our Basic plan.
+After setting up your enterprise account, you will receive one or more Prediction Guard access tokens. You will need this access token to continue.
 
-<Callout type="info" emoji="ℹ️">
-  If you need a higher rate limit and are scaling up, contact us at **contact@predictionguard.com**. 
-</Callout>
-
-## 2. Grab an access token
-
-Once you are signed up (and signed in), head over to the [access tokens page](https://predictionguard.com/app). Click
-on the "Add Token" button to add and name a new access token. Click on the eye icon to reveal the newly created access
-token. You will need this in the next step.
-
-## 3. (Optional) Install the Python client
+## 2. (Optional) Install the Python client
 
 You can configure and use Prediction Guard using our Python client or via REST API directly. If you are wanting to use the Python client, you can install it as follows:
 
@@ -45,7 +34,7 @@ You can configure and use Prediction Guard using our Python client or via REST A
 $ pip install predictionguard
 ```
 
-## 4. Start using controlled LLMs!
+## 3. Start using controlled LLMs!
 
 Suppose you want to prompt an LLM to perform zero-shot text classification with the following prompt:
 
@@ -245,7 +234,7 @@ The `choices[0].text` field contains the raw LLM output. The `choices[0].output`
   Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
 </Callout>
 
-## 5. Explore other output types, models, and guides
+## 4. Explore other output types, models, and guides
 
 This is only the beginning of what your can do with Prediction Guard (not to mention what is on our roadmap). Now that you have a working example, consider exploring:
 

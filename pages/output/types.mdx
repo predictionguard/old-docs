@@ -251,10 +251,13 @@ Although the above JSON type might give you valid JSON, sometimes you might want
 For example, to extract information from a doctors note:
 
 ```python copy
-prompt = """Given the following doctor's notes about a patient, please extract a JSON dictionary that contains the patient's information. Only output the JSON. Do not output XML.
+prompt = """### Instruction: 
+Please extract a JSON dictionary that contains the patient information from the following document. Only output the JSON. Do not output XML.
 
-49 y/o Male with chronic macular rash to face & hair, worse in beard, eyebrows & nares.
-Itchy, flaky, slightly scaly. Moderate response to OTC steroid cream"""
+Document: "49 y/o Male with chronic macular rash to face & hair, worse in beard, eyebrows & nares.
+Itchy, flaky, slightly scaly. Moderate response to OTC steroid cream"
+
+### Response:"""
 
 rail_ex = """<output>
     <object name="patient_info">
@@ -262,8 +265,8 @@ rail_ex = """<output>
         <integer name="age" format="valid-range: 0 100" />
         <list
             name="symptoms"
-            description="Symptoms that the patient is currently experiencing. Each symptom should be classified into a separate item in the list.">
-            <object>
+            description="A list of JSON blobs giving symptoms that the patient is currently experiencing. Each symptom should be classified into a separate item in the list.">
+            <object description="One of the items in the list of symptoms.">
                 <string name="symptom" description="Symptom that a patient is experiencing"/>
                 <string
                     name="affected area"
@@ -273,26 +276,17 @@ rail_ex = """<output>
                 />
             </object>
         </list>
-        <list name="current_meds" description="Medications the patient is currently taking and their response">
-            <object>
-                <string name="medication" description="Name of the medication the patient is taking" />
-                <string
-                    name="response"
-                    description="How the patient is responding to the medication"
-                />
-            </object>
-        </list>
     </object>
 </output>"""
 
 result = pg.Completion.create(
-    model="OpenAI-text-davinci-003",
+    model="WizardCoder",
     prompt=prompt,
     output={
         "type": "custom_json",
         "rail": rail_ex
     },
-    max_tokens=1024
+    max_tokens=500
 )
 
 print(json.dumps(
@@ -313,32 +307,50 @@ This results in the following categorical output:
             "output": {
                 "patient_info": {
                     "age": 49,
-                    "current_meds": [
-                        {
-                            "medication": "OTC steroid cream",
-                            "response": "Moderate response"
-                        }
-                    ],
                     "gender": "Male",
                     "symptoms": [
                         {
+                            "affected area": "chest",
+                            "symptom": "Chronic macular rash"
+                        },
+                        {
                             "affected area": "head",
-                            "symptom": "macular rash"
+                            "symptom": "Worse in beard"
+                        },
+                        {
+                            "affected area": "head",
+                            "symptom": "Itchy, flaky, slightly scaly skin"
+                        },
+                        {
+                            "affected area": "head",
+                            "symptom": "Moderate response to OTC steroid cream"
+                        },
+                        {
+                            "affected area": "head",
+                            "symptom": "Eyesight reduced"
+                        },
+                        {
+                            "affected area": "head",
+                            "symptom": "Worsening of macular degeneration"
                         },
                         {
                             "affected area": "neck",
-                            "symptom": "itchy, flaky, slightly scaly"
+                            "symptom": "Worsening of redness in eyebrows"
+                        },
+                        {
+                            "affected area": null,
+                            "symptom": "Nares thinning and tender"
                         }
                     ]
                 }
             },
             "status": "success",
-            "text": "{\"patient_info\": {\"gender\": \"Male\", \"age\": 49, \"symptoms\": [{\"symptom\": \"macular rash\", \"affected area\": \"head\"}, {\"symptom\": \"itchy, flaky, slightly scaly\", \"affected area\": \"neck\"}], \"current_meds\": [{\"medication\": \"OTC steroid cream\", \"response\": \"Moderate response\"}]}}"
+            "text": "{\"patient_info\": {\"gender\": \"Male\", \"age\": 49, \"symptoms\": [{\"symptom\": \"Chronic macular rash\", \"affected area\": \"chest\"}, {\"symptom\": \"Worse in beard\", \"affected area\": \"head\"}, {\"symptom\": \"Itchy, flaky, slightly scaly skin\", \"affected area\": \"head\"}, {\"symptom\": \"Moderate response to OTC steroid cream\", \"affected area\": \"head\"}, {\"symptom\": \"Eyesight reduced\", \"affected area\": \"head\"}, {\"symptom\": \"Worsening of macular degeneration\", \"affected area\": \"head\"}, {\"symptom\": \"Worsening of redness in eyebrows\", \"affected area\": \"neck\"}, {\"symptom\": \"Nares thinning and tender\", \"affected area\": null}]}}"
         }
     ],
-    "created": 1686857261,
-    "id": "cmpl-qRnRLOElljsIH3w3IXZmR32oRT3mc",
-    "model": "OpenAI-text-davinci-003",
+    "created": 1687268240,
+    "id": "cmpl-8IeOS4we9NKuAJ12APvJ2V4hMR2wG",
+    "model": "WizardCoder",
     "object": "text_completion"
 }
 ```
