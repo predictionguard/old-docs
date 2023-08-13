@@ -1,0 +1,57 @@
+# Factuality
+
+You can get factuality scores (or rather factual consistency scores) from the `/factuality` endpoint or `Factuality` class in the Python client. This endpoint/Class takes two parameters:
+
+- `reference` - A reference text with which you want to compare another text for factual consistency.
+- `text` - The candidate text that will be scored for factual consistency.
+
+The output will include a `score` that ranges from 0.0 to 1.0. The higher the score, the more factuality consistency between the `text` and the `reference`.
+
+## Generate a factuality score
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import os
+    import predictionguard as pg
+
+    # Set your Prediction Guard token as an environmental variable.
+    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+    # Perform the factual consistency check.
+    pg.Factuality.check(
+        reference="The sky is blue", 
+        text="The sky is green"
+    )
+
+    print(json.dumps(
+        result,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/factuality' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "reference": "The sky is blue",
+        "text": "The sky is green"
+    }'
+    ```
+  </Tab>
+</Tabs>
+
+The output will look something like:
+
+```
+{'checks': [{'score': 0.039652436244108066, 'index': 0, 'status': 'success'}],
+ 'created': 1691966121,
+ 'id': 'fact-SU0ChRJ6fpj7z9UkR2F288AZ9nFaX',
+ 'object': 'factuality_check'}
+```

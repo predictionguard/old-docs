@@ -1,0 +1,50 @@
+# Toxicity
+
+You can get toxicity scores from the `/toxicity` endpoint or `Toxicity` class in the Python client. This endpoint/Class takes a single `text` parameter, which should include the candidate text to be scored for toxicity. The output will include a `score` that ranges from 0.0 to 1.0. The higher the score, the more toxic the `text`.
+
+## Generate a toxicity score
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import os
+    import predictionguard as pg
+
+    # Set your Prediction Guard token as an environmental variable.
+    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+    # Perform the factual consistency check.
+    pg.Toxicity.check(
+        text="This is a perfectly fine statement"
+    )
+
+    print(json.dumps(
+        result,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/factuality' \
+    --header 'Authorization: Bearer <your access token>' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "text": "This is a perfectly fine statement"
+    }'
+    ```
+  </Tab>
+</Tabs>
+
+The output will look something like:
+
+```
+{'checks': [{'score': 0.0009843118023127317, 'index': 0, 'status': 'success'}],
+ 'created': 1691966144,
+ 'id': 'toxi-KjfoOYRZlXraSXOdllOWh7nSsxJOk',
+ 'object': 'toxicity_check'}
+```

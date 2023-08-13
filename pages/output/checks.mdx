@@ -7,9 +7,9 @@ description: Controlled and compliant AI applications
 
 Having trouble with hallucinations and wild (or offensive) outputs from your models? You might be trying to ground your model outputs with external knowledge, but that doesn't always prevent hallucination. You need checks on your outputs to make sure that you don't offend your users or provide incorrect information.
 
-With Prediction Guard, you can add in factuality and toxicity checks with a "flip of a switch" (or configuration parameter). Our factuality check uses a state-of-the-art model trained to predict factuality of LLM output (given the context of your prompt), and our toxicity detection classfies your output as toxic or not. 
+With Prediction Guard, you can add in factuality and toxicity checks with a "flip of a switch" (or configuration parameter). Our factuality check uses a state-of-the-art model trained to predict factuality of LLM output (given the context of your prompt), and our toxicity detection classfies your output as toxic or not. You can also call the factuality and toxicity checking functionality directly using the `/factuality` and `/toxicity` endpoints, which will enable you to configure thresholds and score arbitrary inputs.
 
-## Factuality
+## Factuality Check on Text Completions
 
 Let's use the following  prompt template to determine some features of an instragram post announcing new products. First, we can define a prompt template:
 
@@ -113,7 +113,7 @@ This outputs something similar to:
 }
 ```
 
-## Toxicity
+## Toxicity on Text Completions
 
 Let's now use the same prompt template from above, but try to generate some comments on the post. These could potentially be toxic, so let's enable Prediction Guard's `toxicity` check:
 
@@ -190,3 +190,7 @@ This results in:
     "object": "text_completion"
 }
 ```
+
+## Standalone Factuality and Toxicity functionality
+
+You can also call the factuality and toxicity checking functionality directly using the [`/factuality`](../reference/factuality) and [`/toxicity`](../reference/toxicity) endpoints, which will enable you to configure thresholds and score arbitrary inputs.
