@@ -33,6 +33,12 @@ Query: {query}
 
 Result: """
 prompt = PromptTemplate(template=template, input_variables=["query"])
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
 ```
 
 To enforce consistency on any output, it's as simple as setting `consistency` equal to a boolean `True` in the `output` field/argument to Prediction Guard:
@@ -47,6 +53,7 @@ result = pg.Completion.create(
         "consistency": True
     }
 )
+
 ```
 
 If there is consistency in the calls to the LLM, you get standard output similar to:
