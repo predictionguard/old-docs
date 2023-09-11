@@ -33,6 +33,7 @@ Query: {query}
 
 Result: """
 prompt = PromptTemplate(template=template, input_variables=["query"])
+
 print(json.dumps(
     result,
     sort_keys=True,
