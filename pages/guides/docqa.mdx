@@ -110,7 +110,7 @@ chain = load_qa_chain(PredictionGuard(model="Falcon-7B-Instruct", output={
     "type": "categorical",
     "categories": ["NEU", "POS", "NEG"]
 }), chain_type="stuff")
-query = "Is is the sentiment of views on Russia and the Ukraine?"
+query = "Is the sentiment of views on Russia and the Ukraine?"
 docs = docsearch.get_relevant_documents(query)
 chain.run(input_documents=docs, question=query)
 ```
