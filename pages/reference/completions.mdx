@@ -11,6 +11,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ```python filename="main.py" copy
     import os
     import json
+
     import predictionguard as pg
 
     # Set your Prediction Guard token as an environmental variable.
@@ -29,7 +30,7 @@ Category: """
         prompt=prompt,
         output={
             "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", and "societal_event"]
+            "categories": ["politician", "actor", "infrastructure", "societal_event"]
         }
     )
 

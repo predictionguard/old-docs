@@ -16,15 +16,16 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ```python filename="main.py" copy
     import os
     import json
+
     import predictionguard as pg
 
     # Set your Prediction Guard token as an environmental variable.
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
     # Perform the factual consistency check.
-    pg.Factuality.check(
-        reference="The sky is blue", 
-        text="The sky is green"
+    result = pg.Factuality.check(
+        		reference="The sky is blue", 
+        		text="The sky is green"
     )
 
     print(json.dumps(

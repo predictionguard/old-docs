@@ -44,7 +44,7 @@ print(json.dumps(
 
 To enforce consistency on any output, it's as simple as setting `consistency` equal to a boolean `True` in the `output` field/argument to Prediction Guard:
 
-```
+```python copy
 result = pg.Completion.create(
     model="Falcon-7B-Instruct",
     prompt=prompt.format(query="What kind of post is this?"),
