@@ -18,8 +18,8 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
     # Perform the factual consistency check.
-    pg.Toxicity.check(
-        text="This is a perfectly fine statement"
+    result = pg.Toxicity.check(
+        		text="This is a perfectly fine statement"
     )
 
     print(json.dumps(

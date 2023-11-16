@@ -23,9 +23,9 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
     # Perform the factual consistency check.
-    pg.Factuality.check(
-        reference="The sky is blue", 
-        text="The sky is green"
+    result = pg.Factuality.check(
+        		reference="The sky is blue", 
+        		text="The sky is green"
     )
 
     print(json.dumps(
