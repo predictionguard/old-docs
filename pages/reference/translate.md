@@ -1,5 +1,5 @@
 ---
-title: Translate app Documentation
+title: Translation
 ---
 
 # Translation/ multi-lingual LLM app 
@@ -11,7 +11,7 @@ The translation functionality in our API allows users to seamlessly translate te
 
 Our translation API supports a wide range of languages, including but not limited to English,Hindi, French, Spanish, German, and more. Refer to the language codes to identify specific languages.
 
-![List of supported langauges !!!](languages.png)
+![List of supported langauges !!!](./languages.png)
 
 # Code Overview
 
