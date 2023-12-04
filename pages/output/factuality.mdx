@@ -1,0 +1,113 @@
+---
+title: Factuality
+description: Controlled and compliant AI applications
+---
+
+# Factuality checks
+Navigating the llm landscape can be tricky, especially with hallucinations or inaccurate answers. Whether you're integrating llms into customer-facing products or using them for internal data processing, ensuring the accuracy of the information provided is essential. Prediction Guard used SOTA models for factuality check to evaluate the outputs of LLMs against the context of the prompts. You can either add factuality=True or use /factuality endpoint to directly access this functionality. 
+
+Let's use the following  prompt template to determine some features of an instragram post announcing new products. First, we can define a prompt template:
+
+```python copy
+import os
+import json
+
+import predictionguard as pg
+from langchain.prompts import PromptTemplate
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+template = """Respond to the following query based on the context.
+
+Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
+Exclusive Candle Box - $80
+Monthly Candle Box - $45 (NEW!)
+Scent of The Month Box - $28 (NEW!)
+Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
+
+Query: {query}
+
+Result: """
+prompt = PromptTemplate(template=template, input_variables=["query"])
+```
+
+Then we can inject a query and add in both a type and a `factuality` check to the `output` configuration. When we add `"factuality": True`, Prediction Guard will check the output for factuality. If the response is suspect, Prediction Guard will return an error status.
+
+```python copy
+result = pg.Completion.create(
+ model="Camel-5B",
+ prompt=prompt.format(query="According to the context, what is the price of monthly candle box?"),
+ output={
+ "factuality": True
+ }
+)
+
+print(json.dumps(
+ result,
+ sort_keys=True,
+ indent=4,
+ separators=(',', ': ')
+))
+```
+
+This outputs something similar to:
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "Camel-5B",
+            "status": "success",
+            "text": "\nThe monthly candle box is $45."
+        }
+    ],
+    "created": 1701719932,
+    "id": "cmpl-NAx72SrdMlxk10CHjclTYDY2rMXzF",
+    "object": "text_completion"
+}
+```
+
+Now, we could try to make the model hallucinate. However, the hallucination is caught and Prediction Guard returns an error status:
+
+```python copy
+result = pg.Completion.create(
+ model="Camel-5B",
+ prompt=prompt.format(query="According to the context, what is the discount on light bulbs"),
+ output={
+ "factuality": True
+ }
+)
+
+print(json.dumps(
+ result,
+ sort_keys=True,
+ indent=4,
+ separators=(',', ': ')
+))
+
+```
+
+This outputs something similar to:
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "",
+            "status": "error: failed a factuality check",
+            "text": ""
+        }
+    ],
+    "created": 1701719746,
+    "id": "cmpl-ehQHJwejrOg52rG1q77jrIYUF3mG5",
+    "object": "text_completion"
+}
+```
+
+
+
+## Standalone Factuality functionality
+
+You can also call the factuality checking functionality directly using the [`/factuality`](../reference/factuality) endpoint, which will enable you to configure thresholds and score arbitrary inputs.
