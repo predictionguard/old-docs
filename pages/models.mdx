@@ -5,54 +5,63 @@ description: Reliable, future proof AI predictions
 
 # Available Models
 
-Using Prediction Guard gives you quick and easy access to state-of-the-art open and closed access LLMs, without you needing to spend days and weeks figuring out all of the implementation details, managing a bunch of different API specs, and setting up the infrastructure for model deployments. 
+Using Prediction Guard gives you quick and easy access to state-of-the-art LLMs, without you needing to spend weeks figuring out all of the implementation details, managing a bunch of different API specs, and setting up a secure infrastructure for model deployments. 
 
-## Open Access LLMs
+LLMs are hosted by Prediction Guard in a secure, privacy conserving environment built in partnership with Intel's Liftoff program for startups. 
 
-These LLMs are hosted by Prediction Guard with custom inference code that allows you to control the type/structure of and validate outputs. Check here for updates, as we are adding new models every week!
-
-**Note - These models are hosted by Prediction Guard in a private and compliant manner. Prediction Guard does NOT save or share any data sent to these models. Further, customers needing HIPAA compliance can use these models with out enterprise deploy. [Contact support](support) with any questions.**
+**Note - Prediction Guard does NOT save or share any data sent to these models (or responses from the models). Further, we are able to sign a BAA for customers needing HIPAA compliance. [Contact support](support) with any questions.**
 
 **Note - We only integrate models that are licensed permissively for commercial use.**
 
-### Text Generation
+## Open Access LLMs (what most of our customers use) 🚀
+
+Open access models are amazing these days! Each of these models was trained by a talented team and released publicly under a permissive license. The data used to train each model and the prompt formatting for each model varies. We've tried to give you some of the relevant details here, but shoot us a message [in Slack](support) with any questions.
+
+### The best models (start here)
+
+|          Model Name          |      Type           |       Use Case                                          | Family       | Context Length | More Info             |
+|------------------------------|---------------------|---------------------------------------------------------|--------------|----------------|-----------------------|
+| Nous-Hermes-Llama2-13B       | Text Generation     | Generating output in response to arbitrary instructions | Llama 2      | 4096           | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-13b) |
+| Neural-Chat-7B               | Chat                | Instruction following or chat-like applications         | Mistral      | 8000           | [link](https://huggingface.co/Intel/neural-chat-7b-v3-1)
+| Notus-7B                     | Chat                | General purpose assistant, compare to GPT3.5            | Mistral      | 8000           | [link](https://huggingface.co/argilla/notus-7b-v1) |
+| Zephyr-7B-Beta               | Chat                | Creating a helpful assistant for chat-like applications | Mistral      | 8000           | [link](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) |
+| Yi-34B                       | Text Generation     | Instruction following in English or Chinese             | Yi           | 4096           | [link](https://huggingface.co/01-ai/Yi-34B) |
+| WizardCoder                  | Code Generation     | Generating computer code or answering tech questions    | StarCoder    | 8192           | [link](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0) |
+
+### Other models available
+
+The models below are available in our API. However, these models scale to zero (i.e., they might not be ready for you to interact with). These models are less frequently accessed by our users, so we suggest you start with the models above. If your company requires one of these models to be up-and-running 24/7. [Reach out to us](support), and we will help make that happen!
+
 
 |          Model Name          | Model Card                                                                        | Parameters | Context Length |
 |----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
-| Llama-2-70B                  | [link](https://huggingface.co/meta-llama/Llama-2-70b-hf)                          | 70B        | 4096           | 
 | Llama-2-13B                  | [link](https://huggingface.co/meta-llama/Llama-2-13b-hf)                          | 13B        | 4096           | 
 | Llama-2-7B                   | [link](https://huggingface.co/meta-llama/Llama-2-7b-hf)                           | 7B         | 4096           | 
 | Nous-Hermes-Llama2-7B        | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-7b)                 | 7B         | 4096           | 
-| Nous-Hermes-Llama2-13B       | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-13b)                | 13B        | 4096           | 
 | Camel-5B                     | [link](https://huggingface.co/Writer/camel-5b-hf)                                 | 5B         | 2048           |
 | Dolly-3B                     | [link](https://huggingface.co/databricks/dolly-v2-3b)                             | 3B         | 2048           |
 | Dolly-7B                     | [link](https://huggingface.co/databricks/dolly-v2-7b)                             | 7B         | 2048           |
 | Falcon-7B-Instruct           | [link](https://huggingface.co/tiiuae/falcon-7b-instruct)                          | 7B         | 2048           |
-| Falcon-40B-Instruct          | [link](https://huggingface.co/tiiuae/falcon-40b-instruct)                         | 40B        | 2048           |
 | h2oGPT-6_9B                  | [link](https://huggingface.co/h2oai/h2ogpt-oig-oasst1-512-6_9b)                   | 6.9B       | 2048           |
 | MPT-7B-Instruct              | [link](https://huggingface.co/mosaicml/mpt-7b-instruct)                           | 7B         | 4096           |
 | Pythia-6_9-Deduped           | [link](https://huggingface.co/EleutherAI/pythia-6.9b-deduped)                     | 6.9B       | 2048           |
 | RedPajama-INCITE-Instruct-7B | [link](https://huggingface.co/togethercomputer/RedPajama-INCITE-Instruct-7B-v0.1) | 7B         | 2048           |
-
-### Code Generation/ Technical Assistant
-
-|          Model Name          | Model Card                                                                        | Parameters | Context Length |
-|----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
-| WizardCoder                     | [link](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0)                 | 15.5B      | 8192           |
-| StarCoder                       | [link](https://huggingface.co/bigcode/starcoder)                             | 15.5B      | 8192           |
+| WizardCoder                  | [link](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0)                      | 15.5B      | 8192           |
+| StarCoder                    | [link](https://huggingface.co/bigcode/starcoder)                                  | 15.5B      | 8192           |
 
 <Callout type="info" emoji="ℹ️">
-  Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
+  Note if you aren't actively using these models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
 </Callout>
 
-## Closed LLMs
+## Closed LLMs (if you t̶r̶u̶s̶t̶ need them)
 
-These LLMs are integrated with Prediction Guard with custom inference code that allows you to control the type/structure of and validate outputs. However, these are not hosted by Prediction Guard in the same manner as the models above.
+These models are integrated into our API, but they are not hosted by Prediction Guard in the same manner as the models above.
 
 **Note - You will need your own OpenAI API key to use the models below. Customers worried about data privacy, IP/PII leakage, HIPAA compliance, etc. should look into the above "Open Access LLMs" and/or our enterprise deploy. [Contact support](support) with any questions.**
 
 |        Model Name       | Generation | Context Length |
 |-----------------------|------------|----------------|
+| OpenAI-gpt-3.5-turbo-instruct | GPT-3.5  | 4097       |
 | OpenAI-text-davinci-003 | GPT-3.5    | 4097           |
 | OpenAI-text-davinci-002 | GPT-3.5    | 4097           |
 | OpenAI-text-curie-001   | GPT-3      | 2049           |
