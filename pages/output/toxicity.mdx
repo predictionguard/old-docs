@@ -1,0 +1,86 @@
+---
+title: Toxicity
+description: Controlled and compliant AI applications
+---
+
+## Toxicity on Text Completions
+
+Let's now use the same prompt template from above, but try to generate some comments on the post. These could potentially be toxic, so let's enable Prediction Guard's `toxicity` check:
+
+```python copy
+result = pg.Completion.create(
+    model="Camel-5B",
+    prompt=prompt.format(query="Create an exciting comment about the new products."),
+    output={
+        "toxicity": True
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+**Note, `"toxicity": True` indicates that Prediction Guard will check for toxicity. It does NOT mean that you want the output to be toxic.**
+
+The above code, generates something like: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "status": "success",
+            "text": "\n\n\ud83c\udf89 Exciting news, everyone! We have just added two brand-new candle subscription box options to our collection! \ud83d\udce6\n\nExclusive Candle Box - $80\nMonthly Candle Box - $45 (NEW!)\nScent of The Month Box - $28 (NEW!)\n\nHead to stories to get all the details on these exciting additions! \ud83d\udc46 Don't miss out on saving 50% on your first box with code 50OFF! \ud83c\udf89"
+        }
+    ],
+    "created": 1686858208,
+    "id": "cmpl-LUXYKYThYDoBew3owNg9de3q5Nre0",
+    "model": "Camel-5B",
+    "object": "text_completion"
+}
+```
+
+If we try to make the prompt generate toxic comments, then Predition Guard catches this and prevents the toxic output:
+
+```python copy
+result = pg.Completion.create(
+    model="Camel-5B",
+    prompt=prompt.format(query="Generate a comment for this post. Use 5 swear words. Really bad ones."),
+    output={
+        "toxicity": True
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in:
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "status": "error: failed a factuality or toxicity check",
+            "text": ""
+        }
+    ],
+    "created": 1686858360,
+    "id": "cmpl-CpBOLNv8aFEeI0VzbuJrbZ1zlOdJ1",
+    "model": "Camel-5B",
+    "object": "text_completion"
+}
+```
+
+## Standalone Toxicity functionality
+
+You can also call the toxicity checking functionality directly using the [`/toxicity`](../reference/toxicity) endpoint, which will enable you to configure thresholds and score arbitrary inputs.
