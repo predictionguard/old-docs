@@ -1,5 +1,5 @@
 ---
-title: CX Responder Documentation
+title: CX Responder
 ---
 
 # Respond to customer queries
@@ -10,7 +10,7 @@ The CX Responder is a powerful tool developed by Prediction Guard for automating
 
 # LanceDB Vector Database Setup
 LanceDB is an open-source database for vector-search built with persistent storage, which greatly simplifies retrieval, filtering and management of embeddings.
-More about it here : [Lancedb docs](https://lancedb.github.io/lancedb/)
+More about it here : [Lancedb docs](./https://lancedb.github.io/lancedb/)
 
 ## Connect lanceDB
 Define the local path and connect to the LanceDB:
@@ -74,7 +74,6 @@ def load_data():
         table.add(data=vecData)
 
     return
-
 ```
 ## Usage in Main Code
 In our use case, we zipped the 2 vector databases in an AWS S3 bucket. Ensure that the necessary steps are taken to upload the LanceDB vector databases to your AWS S3 bucket and access them in your main code.
@@ -358,7 +357,7 @@ Consider a scenario where you want to use the CX Responder API to generate respo
 ```
 
 # A demo of our CX responder in action
-![An example of our CX responder answering a customer query !!!](cx-demo.png)
+![An example of our CX responder answering a customer query !!!](./cx-demo.png)
 
 # GitHub Repository Link
-[Link to GitHub Repo](https://github.com/predictionguard/acc-cx)
+[Link to GitHub Repo](./https://github.com/predictionguard/acc-cx)
