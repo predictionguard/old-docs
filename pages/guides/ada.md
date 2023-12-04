@@ -1,9 +1,13 @@
+---
+title: Code Generator
+---
+
 # Using LLMs for Data Analysis and Query Generation
 
 Large language models (LLMs) like Nous-Hermer-Llama2, WizardCoder have shown impressive capabilities for understanding and generating natural language. We can leverage these skills for data analysis tasks like extracting insights from tables, automatically generating SQL queries, and more. 
 
-PredictionGuard provides access to such state-of-the-art models that maintain strong capabilities while including safety measures to mitigate potential harms. We'll walk through an example of using this LLM for data analysis on sample Tesla data from Kaggle.[
-[Link to dataset](https://www.kaggle.com/datasets/aravindrajpalepu/tesla-used-cars)]
+PredictionGuard provides access to such state-of-the-art models that maintain strong capabilities while including safety measures to mitigate potential harms. We'll walk through an example of using this LLM for data analysis on sample Tesla data from Kaggle.
+[Link to dataset](./https://www.kaggle.com/datasets/aravindrajpalepu/tesla-used-cars)
 
 ## Understanding Table Data
 
@@ -103,5 +107,5 @@ except duckdb.Error as e:
 conn.close()
 ```
 # A demo of our PG query generator in action
-![An example of our model generating a SQL to extract data answering to the user query!!!](tesla-demo.png)
+![An example of our model generating a SQL to extract data answering to the user query!!!](./tesla-demo.png)
 The steps could be adapted to any dataset and expanded with visualization of result data frames using libraries like Matplotlib.
