@@ -1,0 +1,234 @@
+---
+title: Basic Prompting
+description: Prediction Guard in action
+---
+
+# Basic Prompting
+
+(Run this example in Google Colab [here](https://drive.google.com/file/d/1KVcpd3pcy_8TLq44Q5rRIQJrV1U5yIji/view?usp=sharing))
+
+**Prompt and AI Engineering** is the emerging developer task of designing and optimizing prompts (and associated workflows/ infra) for AI models to achieve specific goals or outcomes. It involves creating high-quality inputs that can elicit accurate and relevant responses from AI models. The next several examples will help get you up to speed on common prompt engineering strategies.
+
+## Dependencies and imports
+
+Similar to the last notebook, you will need to install Prediction Guard and add your token.
+
+```bash copy
+$ pip install predictionguard
+```
+
+```python copy
+import os
+
+import predictionguard as pg
+from getpass import getpass
+
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+```
+
+## Autocomplete
+
+Because LLMs are configured/ trained to perform the task of text completion, the most basic kind of prompt that you might provide is an autocomplete prompt. Regardless of prompt structure, the model function will compute the probabilities of words, tokens, or characters that might follow in the sequence of words, tokens, or characters that you provided in the prompt.
+
+Depending on the desired outcome, the prompt may be a single sentence, a paragraph, or even an partial story. Additionally, the prompt may be open-ended, providing only a general topic or theme, or it may be more specific, outlining a particular scenario or plot.
+
+```python copy
+result = pg.Completion.create(
+    model="Notus-7B",
+    prompt="Daniel Whitenack, a long forgotten wizard from the Lord of the Rings, entered into Mordor to"
+)
+
+print(result['choices'][0]['text'])
+```
+
+This prompt should result in an output similar to:
+
+```
+ destroy the One Ring. He was a skilled wizard, but he was not as powerful as Gandalf or Saruman. He was a member of the Istari, but he was not as well known as the other two.
+
+Daniel Whitenack was born in the land of Gondor, in the city of Minas Tirith. He was a descendant of the great wizard Saruman, but he was not as powerful as his ancestor. He was a
+```
+
+Other examples include the following (note that we can also complete things like SQL statements):
+
+```python copy
+result = pg.Completion.create(
+    model="Neural-Chat-7B",
+    prompt="Today I inspected the engine mounting equipment. I found a problem in one of the brackets so"
+)
+
+print(result['choices'][0]['text'])
+
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt="""CREATE TABLE llm_queries(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+INSERT INTO llm_queries('Daniel Whitenack', 'autocomplete')
+SELECT"""
+)
+
+print(result['choices'][0]['text'])
+```
+
+## Zero-shot prompts
+
+Autocomplete is a great place to start, but it is only that: a place to start. Throughout this workshop we will be putting on our prompt engineering hats to do some impressive things with generative AI. As we continue along that path, there is a general prompt structure that will pop up over and over again:
+
+```
+ Prompt:
++------------------------------------------------------------+
+|                                                            |
+|  +-------------------------------------------------------+ |
+|  | ----------------------------------------------------- | | Task Descrip./
+|  | ---------------------------------------               | | Instructions
+|  +-------------------------------------------------------+ |
+|                                                            |
+|  +-------------------------------------------------------+ | Current Input/
+|  | -------------                                         | | Context
+|  +-------------------------------------------------------+ |
+|                                                            |
+|  +----------------------------------------+                | Output
+|  | --------------------------             |                | Indicator
+|  +----------------------------------------+                |
+|                                                            |
++------------------------------------------------------------+
+```
+
+One of the easiest ways to leverage the above prompt structure is to describe a task (e.g., sentiment analysis), provide a single piece of data as context, and then provide a single output indicator. This is called a **zero shot prompt**. Here is a zero-shot prompt for performing sentiment analysis:
+
+```python copy
+pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt="""### Instruction:
+Respond with a sentiment label for the text included in the below user input. Use the label NEU for neutral sentiment, NEG for negative sentiment, and POS for positive sentiment. Respond only with one of these labels and no other text.
+
+### Input:
+This tutorial is spectacular. I love it! So wonderful.
+
+### Response:
+"""
+)['choices'][0]['text'].strip().split(' ')[0]
+```
+
+Which should output `POS`.
+
+**Note** - We are doing some post-processing on the text output (stripping out extra whitespace and only getting the first word/label), because the model will just continue generating text in certain cases. We will return to this later on in the tutorials.
+
+**Note** - We are using a very specific prompt format (with the `### Instruction:` etc. markers). This is the alpaca prompt format that is preferred by the `Nous-Hermes-Llama2-13B` model. Each model might have a different preferred prompt format, and you can find out more about that [here](../models).
+
+Another example of zero-shot prompting is the following for question and answer:
+
+```python copy
+pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt
+)['choices'][0]['text'].split('.')[0].strip()
+```
+
+## Few shot prompts
+
+When your task is slightly more complicated or requires a few more leaps in reasoning to generate an appropriate response, you can turn to few shot prompting (aka in context learning). In few shot prompting, a small number of gold standard demonstrations are integrated into the prompt. These demonstrations serve as example (context, output) pairs for the model, which serve to tune the probable output on-the-fly to what we ideally want in the output.
+
+Although not always necessary (as seen above), few shot prompting generally produces better results than single shot prompting in terms of consistency and similarity to your ideal outputs. 
+
+Let's reformat our sentiment prompt to include demonstrations:
+
+```python copy
+prompt = """Classify the sentiment of the text. Use the label NEU for neutral sentiment, NEG for negative sentiment, and POS for positive sentiment.
+
+Text: That pilot is adorable.
+Sentiment: POS
+
+Text: This was an awful seat.
+Sentiment: NEG
+
+Text: This pilot was brilliant.
+Sentiment: POS
+
+Text: I saw the aircraft.
+Sentiment: NEU
+
+Text: That food was exceptional.
+Sentiment: POS
+
+Text: That was a private aircraft.
+Sentiment: NEU
+
+Text: This is an unhappy pilot.
+Sentiment: NEG
+
+Text: The staff is rough.
+Sentiment: NEG
+
+Text: This staff is Australian.
+Sentiment: NEU
+
+Text: The flight is boring.
+Sentiment: """
+
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt
+)
+
+print(result['choices'][0]['text'].split('\n')[0].strip())
+```
+
+This should output `NEG`.
+
+Another common example of few shot prompting is chat conversations. Although Prediction Guard has specific functionality to support chat memory and threads. You can actually use any non-chat-specific model to generate a chat response. For example:
+
+```python copy
+prompt = """The following is a conversation with an AI assistant in Hinglish. The assistant is helpful, creative, clever, and very friendly. The AI assistant responds in Hinglish.
+
+Human: Hello
+AI: Hello!
+
+Human: Movie ke baare mein tumhara initial opinion kya hai? Zyada depth mein gaye bina? Tumne like kiya ki nahin?
+AI: Overall, mujhe movie achchi lagi.  Usme kuh high-profile actors hain,  Tum kya kahte ho?
+
+Human: Tumhe lagta hai ki ek achche movie mein high-profile actors hone chahiye? Ya phir, ek movie ko achcha kahne ke liye high-profile actors hone chahiye?
+AI: Zaroori nahin, par help zaroor milta hai.  Ek actor jab tak apna kaam theek se nahin karta, tab tak high-profile nahin ban sakta. Tumhe kya lagta hai?
+
+Human: muje lgta hai ki yeh kewal personal pasand ke bare mai hai meri pasandida american comedy films Will Ferrol or Seth Rogan ke sath kuch bhi samil slapstick films hai muje yakin hai ki ek film thi jisme Lindsay Lohan ko bhot bada bna diya tha bhale hi usne apne surati saalo mai movies mai acting ki thi
+AI: """
+
+output = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt
+)['choices'][0]['text'].split('\n')[0]
+
+print(output)
+```
+
+This will output the Hinglish response similar to:
+
+```
+ Wow, tumne mujhe bahut si baatein batayi hai.  Mujhe laga tumhe yeh movie achchi lagi ho.  Tumne kaha ki Lindsay Lohan bhot hi achchi acting ki hai.  Tumne kaha ki tumhe yeh movie achchi lagi hai.  Tumne kaha ki tumhe yeh movie achchi lagi hai. 
+```
+
+If you don't speak Hinglish, you can check out the translation using another prompt:
+
+```python copy
+prompt = """### Instruction:
+Respond with a English translation of the following input Hinglish text.
+
+### Input:
+{hinglish}
+
+### Respond:
+""".format(hinglish=output)
+
+pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt
+)['choices'][0]['text'].split('import')[0].strip()
+```
+
+Which will output similar to:
+
+```
+Wow, you've told me a lot of things. I thought you'd like this movie. You said Lindsay Lohan did a great job acting. You said you thought this movie was good. You said you thought this movie was good.
+```
+
+

@@ -1,7 +1,8 @@
 {
   "index": "Getting Started",
   "models": "Available Models",
-  "output": "Controlling LLM Output",
+  "usingllms": "Using LLMs",
+  "output": "Validating LLM Output",
   "compliance": "Compliance",
   "guides": "Guides",
   "reference": "Reference",
