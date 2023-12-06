@@ -92,15 +92,11 @@ DuckDB provides an embedded SQL database with support for rapid analytics direct
 
 ### Some key capabilities:
 
-**SQL Interface**
-
 DuckDB allows executing standard ANSI SQL queries on loaded data, whether from CSVs or enterprise SQL databases. We can leverage LLMs to auto-generate optimized SQL for analyzing datasets from an organization's existing database infrastructure.
 
 For demonstration purposes, we load reference data into a DuckDB instance as a proxy for a real production database. However, in a live enterprise environment, DuckDB would integrate directly with systems like Postgres, Redshift, or Snowflake to enable natural language queries across the company's data.
 
 The underlying architecture supports both standalone CSV analysis as well as live connected databases through DuckDB. By generating ANSI SQL queries, the system can surface insights over existing data warehouses without disruption. This makes adopting natural language conversational analytics seamless for any organization.
-
-**Dataframe Integration** 
 
 Results from SQL queries on DuckDB can be directly loaded into Pandas dataframes for further analysis and visualization.
 
@@ -141,7 +137,7 @@ while True:
 
 print("Thanks for using Prediction Guard!")
 ```
-# A demo of our PG query generator in action
+## A demo of our PG query generator in action
 ![An example of our model generating a SQL to extract data answering to the user query!!!](./ada-demo.png)
-The steps could be adapted to any dataset and expanded with visualization of result data frames using libraries like Matplotlib.
+These steps could be adapted to any dataset and expanded with visualization of result data frames using libraries like Matplotlib.
 
