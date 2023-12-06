@@ -23,19 +23,23 @@ Prediction Guard provides access to such state-of-the-art models that maintain s
 This dataset contains information on various used Tesla cars available for purchase on the Tesla website in the United States. The data was collected through web scraping and provides detailed specifications and prices for different Tesla models.
 
 A closer look at the data :
-![A snapshot of the dataset](./ada-data-head.png)
 
-Column names
+|index|model|year|odometer|price|location|driveTrain|DAS|accident\_history|paintJob|wheels|emi|zipCode|interior|state|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|0|Model S|2018\.0|36438\.0|53300\.0|Colma, CA|100D Long Range All-Wheel Drive|Autopilot|Previously Repaired|Red Multi-Coat Paint|19" Silver Slipstream Wheels|$824 /mo|85209|Cream Premium Interior|CA|
+|1|Model S|2018\.0|30180\.0|59200\.0|Colma, CA|100D Long Range All-Wheel Drive|Previously Repaired|30-Day Premium Connectivity Trial|Midnight Silver Metallic Paint|21" Sonic Carbon Twin Turbine Wheels|$930 /mo|85209|Black Premium Interior|CA|
+|2|Model S|2018\.0|95696\.0|36100\.0|Scottsdale, AZ|100D Long Range All-Wheel Drive|Enhanced Autopilot|No Reported Accidents/Damage|Midnight Silver Metallic Paint|19" Sonic Carbon Slipstream Wheels|$514 /mo|85209|Black Premium Interior|AZ|
+|3|Model S|2018\.0|36438\.0|53300\.0|Colma, CA|100D Long Range All-Wheel Drive|Autopilot|Previously Repaired|Red Multi-Coat Paint|19" Silver Slipstream Wheels|$824 /mo|85251|Cream Premium Interior|CA|
+|4|Model S|2018\.0|30180\.0|59200\.0|Colma, CA|100D Long Range All-Wheel Drive|Previously Repaired|30-Day Premium Connectivity Trial|Midnight Silver Metallic Paint|21" Sonic Carbon Twin Turbine Wheels|$930 /mo|85251|Black Premium Interior|CA|
 
-First we load a sample Tesla dataset with Pandas:
+Next we load this sample Tesla used cars dataset with Pandas:
 
 ```python
 import pandas as pd
 
 used_cars = pd.read_csv("tesla-data.csv") 
-used_cars.to_markdown(index=False)
 ```
-Next step is to have a solid data dictionary ready which mentions the table name, column name and description and a snapshot of the table to have the model better understand your data.
+Next step is to have a solid data dictionary ready which mentions the table name, column name, column description and a snapshot of the table to have the model better understand your data.
 
 ```python
 table_info={
