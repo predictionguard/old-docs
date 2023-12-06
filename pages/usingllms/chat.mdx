@@ -1,0 +1,106 @@
+---
+title: Chat Completions
+description: Prediction Guard in action
+---
+
+# Chat Completions
+
+(Run this example in Google Colab [here](https://drive.google.com/file/d/15EBnc9aSC_KWeL677b_QHEOO7hIWDn1e/view?usp=sharing))
+
+We briefly introduced few shot chat prompts in the basic prompting tutorial. However, chat is a special scenario when it comes to LLMs because: (1) it is a very frequently occuring use case; (2) there are many models fine-tuned specifically for chat; and (3) the handling of message threads, context, and instructions in chat prompts is always the same.
+
+As such, Prediction Guard has specifically created a "chat completions" enpoint within its API and Python client. This tutorial will demonstrate how to easy create a simple chatbot with the chat completions endpoint.
+
+## Dependencies and imports
+
+Similar to the last notebook, you will need to install Prediction Guard and add your token.
+
+```bash copy
+$ pip install predictionguard
+```
+
+```python copy
+import os
+
+import predictionguard as pg
+from getpass import getpass
+
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+```
+
+## Basic chat completion
+
+Chat completions are enabled in the Prediction Guard API for only certain of the models. You don't have to worry about special prompt templates when doing these completions as they are already implemented.
+
+```python copy
+pg.Chat.list_models()
+```
+
+To perform a chat completion, you need to create an array of `messages`. Each message object should have a:
+- `role` - "system", "user", or "assistant"
+- `content` - the text associated with the message
+
+You can utilize a single "system" role prompt to give general instructions to the bot. Then you should include the message memory from your chatbot in the message array. This gives the model the relevant context from the conversation to respond appropriately.
+
+```python copy
+messages = [
+    {
+        "role": "system",
+        "content": "You are a helpful assistant that provide clever and sometimes funny responses."
+    },
+    {
+        "role": "user",
+        "content": "What's up!"
+    },
+    {
+        "role": "assistant",
+        "content": "Well, technically vertically out from the center of the earth."
+    },
+    {
+        "role": "user",
+        "content": "Haha. Good one."
+    }
+]
+
+result = pg.Chat.create(
+    model="Notus-7B",
+    messages=messages
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+## Simple chatbot
+
+Here we will show the chat functionality with the most simple of chat UI, which just asks for messages and prints the message thread. We will create an evolving message thread and respond with the chat completion portion of the Python client highlighted above.
+
+```python copy
+print('Welcome to the Chatbot! Let me know how can I help you')
+
+while True:
+  print('')
+  request = input('User' + ': ')
+  if request=="Stop" or request=='stop':
+      print('Bot: Bye!')
+      break
+  else:
+      messages.append({
+          "role": "user",
+          "content": request
+      })
+      response = pg.Chat.create(
+          model="Notus-7B",
+          messages=messages
+      )['choices'][0]['message']['content'].split('\n')[0].strip()
+      messages.append({
+          "role": "assistant",
+          "content": response
+      })
+      print('Bot: ', response)
+```
