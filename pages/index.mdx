@@ -22,9 +22,7 @@ Sounds pretty great right? Follow the steps below to starting leveraging trustwo
 
 import { Callout } from 'nextra-theme-docs'
  
-We host and control the latest LLMs for you in our enterprise platform, so you can focus on your prompts and chains. To access the hosted LLMs (and our guarded interfaces to closed LLMs like OpenAI), contact us about enterprise [here](https://www.predictionguard.com/getting-started). 
-
-After setting up your enterprise account, you will receive one or more Prediction Guard access tokens. You will need this access token to continue.
+We host and control the latest LLMs for you in our secure and privacy-conserving enterprise platform, so you can focus on your prompts and chains. To access the hosted LLMs, contact us [here](https://www.predictionguard.com/getting-started) to get an enterprise access token. You will need this access token to continue.
 
 ## 2. (Optional) Install the Python client
 
@@ -34,19 +32,24 @@ You can configure and use Prediction Guard using our Python client or via REST A
 $ pip install predictionguard
 ```
 
-## 3. Start using controlled LLMs!
+## 3. Start using one of our LLMs!
 
-Suppose you want to prompt an LLM to perform zero-shot text classification with the following prompt:
+Suppose you want to prompt an LLM to answer a user query from a chat application. You can setup a message thread, which includes a system prompt (that instructs the LLM how to behave in responding) as follows: 
 
 ```
-Does the following input text refer to a politician, actor, infrastructure, or a societal event?
-
-Input Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.
-
-Category: 
+[
+    {
+        "role": "system",
+        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+    },
+    {
+        "role": "user",
+        "content": "Where can I access the LLMs in a safe and secure environment?"
+    }
+]
 ```
 
-You can use our Python client or REST API to prompt one of many open or closed LLMs (MPT-7B, Camel-5B, OpenAI text-davinci-003, etc.). Our API is very similar to the OpenAI API for text completion, but we've added an `output` argument/field that let's you control, constrain, and perform checks on the output of LLMs. For this example, let's contrain the `output` of the LLM to one of the following classes: `politician`, `actor`, `infrastructure`, and `societal_event` (i.e., we are enforcing a categorical type):
+You can then use our Python client or REST API to prompt one of our LLMs!
 
 import { Tab, Tabs } from 'nextra-theme-docs'
 
@@ -62,20 +65,20 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
     # Define our prompt.
-    prompt = """Does the following input text refer to a politician, actor, infrastructure, or a societal event?
-
-Input Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.
-
-Category: """
-    
-    # Use the MPT-7B-Instruct LLM to perform the controlled text classification.
-    result = pg.Completion.create(
-        model="MPT-7B-Instruct",
-        prompt=prompt,
-        output={
-            "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", "societal_event"]
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+        },
+        {
+            "role": "user",
+            "content": "Where can I access the LLMs in a safe and secure environment?"
         }
+    ]
+    
+    result = pg.Chat.create(
+        model="Notus-7B",
+        messages=messages
     )
 
     print(json.dumps(
@@ -99,27 +102,33 @@ Category: """
 
     func main() {
 
-      url := "https://api.predictionguard.com/completions"
+      url := "https://api.predictionguard.com/chat"
       method := "POST"
 
       payload := strings.NewReader(`{
-        "model": "MPT-7B-Instruct",
-        "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
-        "output": {
-            "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", "societal_event"]
-        }
+        "model": "Notus-7B",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+            },
+            {
+                "role": "user",
+                "content": "Where can I access the LLMs in a safe and secure environment?"
+            }
+        ]
     }`)
 
-      client := &http.Client{}
+      client := &http.Client {
+      }
       req, err := http.NewRequest(method, url, payload)
 
       if err != nil {
         fmt.Println(err)
         return
       }
-      req.Header.Add("Authorization", "Bearer <your access token>")
       req.Header.Add("Content-Type", "application/json")
+      req.Header.Add("x-api-key", "<your access token>")
 
       res, err := client.Do(req)
       if err != nil {
@@ -139,107 +148,92 @@ Category: """
   </Tab>
   <Tab>
     ```js copy
-    var axios = require('axios');
-    var data = JSON.stringify({
-      "model": "MPT-7B-Instruct",
-      "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
-      "output": {
-        "type": "categorical",
-        "categories": [
-          "politician",
-          "actor",
-          "infrastructure",
-          "societal_event"
-        ]
-      }
+    vconst axios = require('axios');
+    let data = JSON.stringify({
+      "model": "Notus-7B",
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+        },
+        {
+          "role": "user",
+          "content": "Where can I access the LLMs in a safe and secure environment?"
+        }
+      ]
     });
 
-    var config = {
+    let config = {
       method: 'post',
-      url: 'https://api.predictionguard.com/completions',
+      maxBodyLength: Infinity,
+      url: 'https://api.predictionguard.com/chat',
       headers: { 
-        'Authorization': 'Bearer <your access key>', 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json', 
+        'x-api-key': '<your access token>'
       },
       data : data
     };
 
-    axios(config)
-    .then(function (response) {
+    axios.request(config)
+    .then((response) => {
       console.log(JSON.stringify(response.data));
     })
-    .catch(function (error) {
+    .catch((error) => {
       console.log(error);
     });
     ```
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/completions' \
-    --header 'Authorization: Bearer <your access token>' \
+    $ curl --location 'https://api.predictionguard.com/chat' \
     --header 'Content-Type: application/json' \
-    --data-raw '{
-        "model": "MPT-7B-Instruct",
-        "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
-        "output": {
-            "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", "societal_event"]
-        }
+    --header 'x-api-key: <your access token>' \
+    --data '{
+        "model": "Notus-7B",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+            },
+            {
+                "role": "user",
+                "content": "Where can I access the LLMs in a safe and secure environment?"
+            }
+        ]
     }'
     ```
   </Tab>
 </Tabs>
 
 <Callout type="info" emoji="ℹ️">
-  Note, you will need to replace `<your access token>` in the above examples with your actual access token retrieved
-  from [your user dashboard](https://predictionguard.com/app).
+  Note, you will need to replace `<your access token>` in the above examples with your actual access token.
 </Callout>
 
-Prediction Guard modifies the inference code around the model contraining the possible output to one of the provided categorical values in the optional `output` field/argument. Thus, this should result in the following output:
+This should result in something similar to the following output. The `choices[0].message.content` field contains the raw LLM output. 
 
 ```json
 {
+    "id": "chat-mLf2CfeudF7UHkaF4tmzGteM2liac",
+    "object": "chat_completion",
+    "created": 1701881134,
+    "model": "Notus-7B",
     "choices": [
         {
             "index": 0,
-            "output": "politician",
-            "status": "success",
-            "text": "politician"
+            "message": {
+                "role": "assistant",
+                "content": "As a helpful assistant, I can guide you to access the LLMs (Language Language Models) in a safe and secure environment through Prediction Guard's AI platform. Prediction Guard is a leading AI company that provides a secure and compliant platform for hosting and deploying AI models, including LLMs. Here are the steps to access the LLMs on Prediction Guard's platform:\n\n1. Sign up for a Prediction Guard account: Visit the Prediction Guard website and",
+                "output": null
+            }
         }
-    ],
-    "created": 1685445446,
-    "id": "cmpl-pmwldq6Zl2xNvCgjFU0FUrMdynwm4",
-    "model": "MPT-7B-Instruct",
-    "object": "text_completion"
+    ]
 }
 ```
 
-The `choices[0].text` field contains the raw LLM output. The `choices[0].output` field contains any typed output from Prediction Guard (relevant for integer, float, and boolean outputs). Without Prediction Guard's `output` argument/field to guide the LLM, the output looks like the following text vomit 🤮: 
-
-```json
-{
-    "choices": [
-        {
-            "index": 0,
-            "status": "success",
-            "text": "\nThe text refers to a politician#Bill Clinton#president of the United States#actor#Bill Clinton#politician---\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n\nA bill Clinton is a politician, actor, infrastructure, or a societal event?\n"
-        }
-    ],
-    "created": 1685445589,
-    "id": "cmpl-P5LYYYJfVWnIxRFfTiCe4QSjUwtm4",
-    "model": "MPT-7B-Instruct",
-    "object": "text_completion"
-}
-```
-
-<Callout type="info" emoji="ℹ️">
-  Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
-</Callout>
-
-## 4. Explore other output types, models, and guides
+## 4. Explore other models, and guides
 
 This is only the beginning of what your can do with Prediction Guard (not to mention what is on our roadmap). Now that you have a working example, consider exploring:
 
-- [Other output types and checks](output) to further control and validate LLM outputs
+- Basic prompting strategies, prompt engineering, RAG workflows and more under [Using LLMs](usingllms)
 - The [variety of models available](models) via Prediction Guard's easy-to-use API
-- One of our [guides](guides) (which walk you through example applications)
+- One of our [guides](guides) for particular use cases
