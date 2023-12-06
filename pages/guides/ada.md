@@ -20,6 +20,12 @@ Prediction Guard provides access to such state-of-the-art models that maintain s
 [Link to dataset](https://www.kaggle.com/datasets/aravindrajpalepu/tesla-used-cars)
 
 ## Understanding Table Data
+This dataset contains information on various used Tesla cars available for purchase on the Tesla website in the United States. The data was collected through web scraping and provides detailed specifications and prices for different Tesla models.
+
+A closer look at the data :
+![A snapshot of the dataset](./ada-data-head.png)
+
+Column names
 
 First we load a sample Tesla dataset with Pandas:
 
@@ -27,46 +33,46 @@ First we load a sample Tesla dataset with Pandas:
 import pandas as pd
 
 df = pd.read_csv("tesla-data.csv") 
+df.to_markdown(index=False)
 ```
 We can format this table data and provide an analytical question for the LLM to answer:
-## Query Generation with LLMs  
-We'll use the LangChain library to simplify prompting our LLM. Define a prompt template that asks to generate a SQL query answering our question based on the table data:
+
+## Query Generation with LLMs
+
+We'll use the LangChain library to simplify prompting our LLM. Define a prompt template that instructs the LLM to generate a SQL query answering our question based on the table schema:
 
 ```python
 from langchain import PromptTemplate
 
-template = """Instruction: Generate a full SQL query that answers the question "{question}" using the below input "df" table. Always start your query with a SELECT statement and end with a semicolon.
+template = """### Instruction: 
+Generate a full SQL query that answers the question in the below input using the following schema information about available database tables named "df". Always start your query with a SELECT statement and end with a semicolon.
 
-Input:
-{table}
+{table_info}
 
-Response:
+### Input:
+{question}
+
+### Response:
 """
 prompt = PromptTemplate(
     template=template, 
-    input_variables=["question", "table"],
+    input_variables=["question", "table_info"],
 )
 ```
-
-We provide just a small sample of rows from our full dataset. Sampling real rows gives an exemplar template of our structure, allowing higher quality query generation adapted to our dataset.
-
-Additionally, only showing a subset of rows keeps our input well within the context size LLMs can effectively process. 
 
 ```python
 table=df.head(2)
 ```
 
-We can specify the desired models and modify parameters based on the complexity of the queries needed.
-Higher token limits allow generating longer, more complex queries. Adjusting the temperature modifies the randomness - lower values produce more focused SQL with fewer extraneous elements.
-
 The function "generate_and_process_query" makes use of the "Nous-Hermes-Llama2-13B" language model. It constructs a prompt string by formatting the input question and a DataFrame's value counts into the prompt. The model generates a completion for the prompt, and the resulting text is processed to extract an SQL query using a regular expression. The extracted query is then returned. 
+
 ```python
 def generate_and_preprocess_query(question):
   result = pg.Completion.create(
       model="Nous-Hermes-Llama2-13B",
       prompt=prompt.format(
           question=question,
-          table=df.value_counts()
+          table_info=df.value_counts()
       ),
       max_tokens=1000,
       temperature=0.1
