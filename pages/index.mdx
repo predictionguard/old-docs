@@ -22,9 +22,7 @@ Sounds pretty great right? Follow the steps below to starting leveraging trustwo
 
 import { Callout } from 'nextra-theme-docs'
  
-We host and control the latest LLMs for you in our enterprise platform, so you can focus on your prompts and chains. To access the hosted LLMs (and our interfaces to closed LLMs like OpenAI), contact us about enterprise [here](https://www.predictionguard.com/getting-started). 
-
-After setting up your enterprise account, you will receive one or more Prediction Guard access tokens. You will need this access token to continue.
+We host and control the latest LLMs for you in our secure and privacy-conserving enterprise platform, so you can focus on your prompts and chains. To access the hosted LLMs, contact us [here](https://www.predictionguard.com/getting-started) to get an enterprise access token. You will need this access token to continue.
 
 ## 2. (Optional) Install the Python client
 
@@ -34,9 +32,9 @@ You can configure and use Prediction Guard using our Python client or via REST A
 $ pip install predictionguard
 ```
 
-## 3. Start using one of our several LLMs!
+## 3. Start using one of our LLMs!
 
-Suppose you want to prompt an LLM to answer a user query based on the role that is assigned to it:
+Suppose you want to prompt an LLM to answer a user query from a chat application. You can setup a message thread, which includes a system prompt (that instructs the LLM how to behave in responding) as follows: 
 
 ```
 [
@@ -51,7 +49,7 @@ Suppose you want to prompt an LLM to answer a user query based on the role that 
 ]
 ```
 
-You can use our Python client or REST API to prompt one of many open or closed LLMs. Our API is very similar to the OpenAI API for text completion, but we've added an `output` argument/field that let's you perform checks on the output of LLMs. 
+You can then use our Python client or REST API to prompt one of our LLMs!
 
 import { Tab, Tabs } from 'nextra-theme-docs'
 
@@ -67,33 +65,28 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
     # Define our prompt.
-    prompt = """[
-    {
-        "role": "system",
-        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company. You will only answer the questions and not provide any additional information"
-    },
-    {
-        "role": "user",
-        "content": "Where can I access the LLMs in a safe and secure environment?"
-    }
-]"""
-
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+        },
+        {
+            "role": "user",
+            "content": "Where can I access the LLMs in a safe and secure environment?"
+        }
+    ]
     
-result = pg.Completion.create(
-    model="Notus-7B",
-    prompt=prompt, 
-    output={
-        "consistency": True
-    }
+    result = pg.Chat.create(
+        model="Notus-7B",
+        messages=messages
+    )
 
-)
-
-print(json.dumps(
-    result,
-    sort_keys=True,
-    indent=4,
-    separators=(',', ': ')
-))
+    print(json.dumps(
+        result,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
     ```
   </Tab>
   <Tab>
@@ -109,35 +102,33 @@ print(json.dumps(
 
     func main() {
 
-      url := "https://api.predictionguard.com/completions"
+      url := "https://api.predictionguard.com/chat"
       method := "POST"
 
       payload := strings.NewReader(`{
         "model": "Notus-7B",
-        "prompt": """[
-    {
-        "role": "system",
-        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
-    },
-    {
-        "role": "user",
-        "content": "Where can I access the LLMs in a safe and secure environment?"
-    }
-]""",
-        "output": {
-            "consistency": true
-        }
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+            },
+            {
+                "role": "user",
+                "content": "Where can I access the LLMs in a safe and secure environment?"
+            }
+        ]
     }`)
 
-      client := &http.Client{}
+      client := &http.Client {
+      }
       req, err := http.NewRequest(method, url, payload)
 
       if err != nil {
         fmt.Println(err)
         return
       }
-      req.Header.Add("Authorization", "Bearer <your access token>")
       req.Header.Add("Content-Type", "application/json")
+      req.Header.Add("x-api-key", "<your access token>")
 
       res, err := client.Do(req)
       if err != nil {
@@ -157,101 +148,92 @@ print(json.dumps(
   </Tab>
   <Tab>
     ```js copy
-    var axios = require('axios');
-    var data = JSON.stringify({
+    vconst axios = require('axios');
+    let data = JSON.stringify({
       "model": "Notus-7B",
-      "prompt": "[
-    {
-        "role": "system",
-        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company. You will only answer the questions and not provide any additional information"
-    },
-    {
-        "role": "user",
-        "content": "Where can I access the LLMs in a safe and secure environment?"
-    }
-] ",
-      "output": {
-        "consistency": True
-      }
+      "messages": [
+        {
+          "role": "system",
+          "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+        },
+        {
+          "role": "user",
+          "content": "Where can I access the LLMs in a safe and secure environment?"
+        }
+      ]
     });
 
-    var config = {
+    let config = {
       method: 'post',
-      url: 'https://api.predictionguard.com/completions',
+      maxBodyLength: Infinity,
+      url: 'https://api.predictionguard.com/chat',
       headers: { 
-        'Authorization': 'Bearer <your access key>', 
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json', 
+        'x-api-key': '<your access token>'
       },
       data : data
     };
 
-    axios(config)
-    .then(function (response) {
+    axios.request(config)
+    .then((response) => {
       console.log(JSON.stringify(response.data));
     })
-    .catch(function (error) {
+    .catch((error) => {
       console.log(error);
     });
     ```
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/completions' \
-    --header 'x-api-key: <your access token>' \
+    $ curl --location 'https://api.predictionguard.com/chat' \
     --header 'Content-Type: application/json' \
-    --data-raw '{
+    --header 'x-api-key: <your access token>' \
+    --data '{
         "model": "Notus-7B",
-        "prompt": "[
-    {
-        "role": "system",
-        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company. You will only answer the questions and not provide any additional information"
-    },
-    {
-        "role": "user",
-        "content": "Where can I access the LLMs in a safe and secure environment?"
-    }
-]",
-        "output": {
-            "consistency": "True"
-        }
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
+            },
+            {
+                "role": "user",
+                "content": "Where can I access the LLMs in a safe and secure environment?"
+            }
+        ]
     }'
     ```
   </Tab>
 </Tabs>
 
 <Callout type="info" emoji="ℹ️">
-  Note, you will need to replace `<your access token>` in the above examples with your actual access token retrieved
-  from [your user dashboard](https://predictionguard.com/app).
+  Note, you will need to replace `<your access token>` in the above examples with your actual access token.
 </Callout>
 
-Thus, this should result in the following output. The `choices[0].text` field contains the raw LLM output. It also contains the ["consistency"](https://docs.predictionguard.com/output/consistency) check to ensure that the model ouput is consistent. 
+This should result in something similar to the following output. The `choices[0].message.content` field contains the raw LLM output. 
 
 ```json
 {
+    "id": "chat-mLf2CfeudF7UHkaF4tmzGteM2liac",
+    "object": "chat_completion",
+    "created": 1701881134,
+    "model": "Notus-7B",
     "choices": [
         {
             "index": 0,
-            "model": "Notus-7B",
-            "status": "success",
-            "text": "\n\n# Define the response\nresponse = \"You can access the LLMs in a safe and secure environment by using Prediction Guard's AI Marketplace. Our platform provides a trusted environment for deploying and managing AI models, including LLMs, with features such as model versioning, access control, and monitoring. Additionally, our platform provides a range of tools and services to help you train, fine-tune, and customize your LLMs to meet your specific needs.\"\n\n"
+            "message": {
+                "role": "assistant",
+                "content": "As a helpful assistant, I can guide you to access the LLMs (Language Language Models) in a safe and secure environment through Prediction Guard's AI platform. Prediction Guard is a leading AI company that provides a secure and compliant platform for hosting and deploying AI models, including LLMs. Here are the steps to access the LLMs on Prediction Guard's platform:\n\n1. Sign up for a Prediction Guard account: Visit the Prediction Guard website and",
+                "output": null
+            }
         }
-    ],
-    "created": 1701875516,
-    "id": "cmpl-5RYj7aYsAWkzTutDYWC4JmdZyMWi6",
-    "object": "text_completion"
+    ]
 }
 ```
-
-
-
-<Callout type="info" emoji="ℹ️">
-  Note, Prediction Guard's models run on serverless infrastructure. If you aren't actively using models, they are scaled down. As such, your first call to a model might need to "wake up" that model inference server. You will get a message "Waking up model. Try again in a few minutes." in such cases. Typically it takes around 5-15 minutes to wake up the model server depending on the size of the model. We are actively working on reducing these cold start times. 
-</Callout>
 
 ## 4. Explore other models, and guides
 
 This is only the beginning of what your can do with Prediction Guard (not to mention what is on our roadmap). Now that you have a working example, consider exploring:
 
-- [Other output types and checks](output) to further control and validate LLM outputs
+- Basic prompting strategies, prompt engineering, RAG workflows and more under [Using LLMs](usingllms)
 - The [variety of models available](models) via Prediction Guard's easy-to-use API
-- One of our [guides](guides) (which walk you through example applications)
+- One of our [guides](guides) for particular use cases
