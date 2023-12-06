@@ -1,8 +1,8 @@
 {
     "accessing": "Accessing LLMs",
     "prompting": "Basic Prompting",
-    "chat": "Chat Completions",
     "engineering": "Prompt Engineering",
+    "chat": "Chat Completions",
     "augmentation": "Chaining and Retrieval",
     "agents": "Agents"
   }
