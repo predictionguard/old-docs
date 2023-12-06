@@ -32,10 +32,29 @@ First we load a sample Tesla dataset with Pandas:
 ```python
 import pandas as pd
 
-df = pd.read_csv("tesla-data.csv") 
-df.to_markdown(index=False)
+used_cars = pd.read_csv("tesla-data.csv") 
+used_cars.to_markdown(index=False)
 ```
-We can format this table data and provide an analytical question for the LLM to answer:
+Next step is to have a solid data dictionary ready which mentions the table name, column name and description and a snapshot of the table to have the model better understand your data.
+
+```python
+table_info={
+    "table_name":"used_cars",
+    "columns":
+      {'model': 'Car model',
+      'year': 'Manufacturing year of the car',
+      'odometer': 'Mileage of the car in miles',
+      'price': 'Price of the car in dollars',
+      'location': 'Location where the car is located',
+      'driveTrain': 'Type of drive train (e.g., All-Wheel Drive)',
+      'DAS': 'Driver Assistance System details',
+      'accident_history': 'History of accidents (e.g., Previously Repaired)',
+      'paintJob': 'Color and type of paint job',
+      'wheels': 'Type and size of the car wheels',
+      },
+    "snapshot":used_cars.value_counts()
+}
+```
 
 ## Query Generation with LLMs
 
@@ -45,7 +64,7 @@ We'll use the LangChain library to simplify prompting our LLM. Define a prompt t
 from langchain import PromptTemplate
 
 template = """### Instruction: 
-Generate a full SQL query that answers the question in the below input using the following schema information about available database tables named "df". Always start your query with a SELECT statement and end with a semicolon.
+Generate a full SQL query that answers the question in the below input using the following schema information about available database tables. Always start your query with a SELECT statement and end with a semicolon.
 
 {table_info}
 
@@ -59,11 +78,6 @@ prompt = PromptTemplate(
     input_variables=["question", "table_info"],
 )
 ```
-
-```python
-table=df.head(2)
-```
-
 The function "generate_and_process_query" makes use of the "Nous-Hermes-Llama2-13B" language model. It constructs a prompt string by formatting the input question and a DataFrame's value counts into the prompt. The model generates a completion for the prompt, and the resulting text is processed to extract an SQL query using a regular expression. The extracted query is then returned. 
 
 ```python
@@ -72,7 +86,7 @@ def generate_and_preprocess_query(question):
       model="Nous-Hermes-Llama2-13B",
       prompt=prompt.format(
           question=question,
-          table_info=df.value_counts()
+          table_info=table_info
       ),
       max_tokens=1000,
       temperature=0.1
@@ -100,7 +114,7 @@ For demonstration purposes, we load reference data into a DuckDB instance as a p
 
 The underlying architecture supports both standalone CSV analysis as well as live connected databases through DuckDB. By generating ANSI SQL queries, the system can surface insights over existing data warehouses without disruption. This makes adopting natural language conversational analytics seamless for any organization.
 
-## Extracting and Executing the Query
+## Query
 The below code provides an interactive command line interface that allows users to ask analytical questions in plain English. It then handles the complexity of converting those natural language questions into structured SQL queries that can extract insights from data.
 
 When a user provides a question through text input, the key mechanism that drives the conversion to SQL is the generate_and_preprocess_query() function. This handles the natural language processing required to analyze the question and construct an appropriate database query.
