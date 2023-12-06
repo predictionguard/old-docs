@@ -32,14 +32,14 @@ A closer look at the data :
 |3|Model S|2018\.0|36438\.0|53300\.0|Colma, CA|100D Long Range All-Wheel Drive|Autopilot|Previously Repaired|Red Multi-Coat Paint|19" Silver Slipstream Wheels|$824 /mo|85251|Cream Premium Interior|CA|
 |4|Model S|2018\.0|30180\.0|59200\.0|Colma, CA|100D Long Range All-Wheel Drive|Previously Repaired|30-Day Premium Connectivity Trial|Midnight Silver Metallic Paint|21" Sonic Carbon Twin Turbine Wheels|$930 /mo|85251|Black Premium Interior|CA|
 
-Next we load this sample Tesla used cars dataset with Pandas:
+We load this sample Tesla used cars dataset with Pandas:
 
 ```python
 import pandas as pd
 
 used_cars = pd.read_csv("tesla-data.csv") 
 ```
-Next step is to have a solid data dictionary ready which mentions the table name, column name, column description and a snapshot of the table to have the model better understand your data.
+Next step is to have a solid data dictionary ready which mentions the table name, column name, column description and a snapshot of the table to have the model better understand the data.
 
 ```python
 table_info={
@@ -84,6 +84,8 @@ prompt = PromptTemplate(
 ```
 The function "generate_and_process_query" makes use of the "Nous-Hermes-Llama2-13B" language model. It constructs a prompt string by formatting the input question and a DataFrame's value counts into the prompt. The model generates a completion for the prompt, and the resulting text is processed to extract an SQL query using a regular expression. The extracted query is then returned. 
 
+We can also go for models like "WizardCoder" to get similar outputs.
+
 ```python
 def generate_and_preprocess_query(question):
   result = pg.Completion.create(
@@ -118,7 +120,7 @@ For demonstration purposes, we load reference data into a DuckDB instance as a p
 
 The underlying architecture supports both standalone CSV analysis as well as live connected databases through DuckDB. By generating ANSI SQL queries, the system can surface insights over existing data warehouses without disruption. This makes adopting natural language conversational analytics seamless for any organization.
 
-## Query
+## Query Execution
 The below code provides an interactive command line interface that allows users to ask analytical questions in plain English. It then handles the complexity of converting those natural language questions into structured SQL queries that can extract insights from data.
 
 When a user provides a question through text input, the key mechanism that drives the conversion to SQL is the generate_and_preprocess_query() function. This handles the natural language processing required to analyze the question and construct an appropriate database query.
@@ -155,7 +157,7 @@ while True:
 
 print("Thanks for using Prediction Guard!")
 ```
-## A demo of our PG query generator in action
+## Natural Language Query Response: Analyzing data with LLMs
 ![An example of our model generating a SQL to extract data answering to the user query!!!](./ada-demo.png)
 These steps could be adapted to any dataset and expanded with visualization of result data frames using libraries like Matplotlib.
 
