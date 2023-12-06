@@ -4,7 +4,7 @@ title: Data analytics with LLMs + DuckDB
 
 # Using LLMs for Data Analysis and SQL Query Generation
 
-(Run this example in Google Colab [here](./https://colab.research.google.com/drive/1zx1wlKFDYDUCXuHPmSR0yn61HjvaclfE#scrollTo=ZLEq99jt0Wvj))
+(Run this example in Google Colab [here](https://colab.research.google.com/drive/1zx1wlKFDYDUCXuHPmSR0yn61HjvaclfE#scrollTo=ZLEq99jt0Wvj))
 
 Large language models (LLMs) like Nous-Hermes-Llama2-13B and WizardCoder have demonstrated impressive capabilities for understanding natural language and generating SQL. We can leverage these skills for data analysis by having them automatically generate SQL queries against known database structures.
 
@@ -17,7 +17,7 @@ Unlike code generation interfaces that attempt to produce executable code from s
 By combining language model understanding of questions with a defined database schema, the system can translate simple natural language queries into precise SQL for fast and reliable data analysis. This makes surfacing insights more accessible compared to manual SQL writing or hopelessly broad code generation.
 
 Prediction Guard provides access to such state-of-the-art models that maintain strong capabilities while including safety measures to mitigate potential harms. We'll walk through an example of using these LLMs for data analysis on sample Tesla data from Kaggle.  
-[Link to dataset](./https://www.kaggle.com/datasets/aravindrajpalepu/tesla-used-cars)
+[Link to dataset](https://www.kaggle.com/datasets/aravindrajpalepu/tesla-used-cars)
 
 ## Understanding Table Data
 
@@ -88,17 +88,11 @@ def generate_and_preprocess_query(question):
 
 For this example we use [DuckDB](https://duckdb.org/) to execute the SQL queries produced by the LLM on our Pandas dataframe data. 
 
-DuckDB provides an embedded SQL database with support for rapid analytics directly on data loaded from Pandas, Parquet, CSVs, and more. 
-
-### Some key capabilities:
-
 DuckDB allows executing standard ANSI SQL queries on loaded data, whether from CSVs or enterprise SQL databases. We can leverage LLMs to auto-generate optimized SQL for analyzing datasets from an organization's existing database infrastructure.
 
 For demonstration purposes, we load reference data into a DuckDB instance as a proxy for a real production database. However, in a live enterprise environment, DuckDB would integrate directly with systems like Postgres, Redshift, or Snowflake to enable natural language queries across the company's data.
 
 The underlying architecture supports both standalone CSV analysis as well as live connected databases through DuckDB. By generating ANSI SQL queries, the system can surface insights over existing data warehouses without disruption. This makes adopting natural language conversational analytics seamless for any organization.
-
-Results from SQL queries on DuckDB can be directly loaded into Pandas dataframes for further analysis and visualization.
 
 ## Extracting and Executing the Query
 The below code provides an interactive command line interface that allows users to ask analytical questions in plain English. It then handles the complexity of converting those natural language questions into structured SQL queries that can extract insights from data.
