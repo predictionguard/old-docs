@@ -5,4 +5,295 @@ description: Prediction Guard in action
 
 # Prompt Engineering
 
-Coming soon...
+(Run this example in Google Colab [here](https://drive.google.com/file/d/1ofThKWMoMVSdUGmDiRz4Ua1Zp7YV_b__/view?usp=sharing))
+
+As we have seen in the previous examples, it is easy enough to prompt a generative AI model. Shoot off an API call, and suddently you have an answer, a machine translation, sentiment analyzed, or a chat message generated. However, going from "prompting" to ai engineering of your AI model based processes is a bit more involved. The importance of the "engineering" in prompt engineering has become increasingly apparent, as models have become more complex and powerful, and the demand for more accurate and interpretable results has grown.
+
+The ability to engineer effective prompts and related workflows allows us to configure and tune model responses to better suit our specific needs (e.g., for a particular industry like healthcare), whether we are trying to improve the quality of the output, reduce bias, or optimize for efficiency.
+
+## Dependencies and imports
+
+This time we will add a new import!
+
+```bash copy
+$ pip install predictionguard langchain
+```
+
+```python copy
+import os
+import json
+
+import predictionguard as pg
+from langchain import PromptTemplate
+from langchain import PromptTemplate, FewShotPromptTemplate
+import numpy as np
+from getpass import getpass
+
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+```
+
+## Prompt templates
+
+One of the best practices that we will discuss below involves testing and evaluating model output using example prompt contexts and formulations. In order to institute this practice, we need a way to rapidly and programmatically format prompts with a variety of contexts. We will need this in our applications anyway, because in production we will be receiving dynamic input from the user or another application. That dynamic input (or something extracted from it) will be inserted into our prompts on-the-fly. We already saw in the last notebook a prompt that included a bunch of boilerplate:
+
+```python copy
+template = """### Instruction:
+Read the context below and respond with an answer to the question. If the question cannot be answered based on the context alone or the context does not explicitly say the answer to the question, write "Sorry I had trouble answering this question, based on the information I found."
+
+### Input:
+Context: {context}
+
+Question: {question}
+
+### Response:
+"""
+
+prompt = PromptTemplate(
+    input_variables=["context", "question"],
+    template=template,
+)
+
+context = "Domino's gift cards are great for any person and any occasion. There are a number of different options to choose from. Each comes with a personalized card carrier and is delivered via US Mail."
+
+question = "How are gift cards delivered?"
+
+myprompt = prompt.format(context=context, question=question)
+print(myprompt)
+```
+
+This will output:
+
+```
+### Instruction:
+Read the context below and respond with an answer to the question. If the question cannot be answered based on the context alone or the context does not explicitly say the answer to the question, write "Sorry I had trouble answering this question, based on the information I found."
+
+### Input:
+Context: Domino's gift cards are great for any person and any occasion. There are a number of different options to choose from. Each comes with a personalized card carrier and is delivered via US Mail.
+
+Question: How are gift cards delivered?
+
+### Response:
+```
+
+This kind of prompt template could in theory be flexible to create zero shot or few shot prompts. However, LangChain provides a bit more convenience for few shot prompts. We can first create a template for individual demonstrations within the few shot prompt:
+
+```python copy
+# Create a string formatter for sentiment analysis demonstrations.
+demo_formatter_template = """
+Text: {text}
+Sentiment: {sentiment}
+"""
+
+# Define a prompt template for the demonstrations.
+demo_prompt = PromptTemplate(
+    input_variables=["text", "sentiment"],
+    template=demo_formatter_template,
+)
+
+# Each row here includes:
+# 1. an example text input (that we want to analyze for sentiment)
+# 2. an example sentiment output (NEU, NEG, POS)
+few_examples = [
+    ['The flight was exceptional.', 'POS'],
+    ['That pilot is adorable.', 'POS'],
+    ['This was an awful seat.', 'NEG'],
+    ['This pilot was brilliant.', 'POS'],
+    ['I saw the aircraft.', 'NEU'],
+    ['That food was exceptional.', 'POS'],
+    ['That was a private aircraft.', 'NEU'],
+    ['This is an unhappy pilot.', 'NEG'],
+    ['The staff is rough.', 'NEG'],
+    ['This staff is Australian.', 'NEU']
+]
+examples = []
+for ex in few_examples:
+  examples.append({
+      "text": ex[0],
+      "sentiment": ex[1]
+  })
+
+few_shot_prompt = FewShotPromptTemplate(
+
+    # This is the demonstration data we want to insert into the prompt.
+    examples=examples,
+    example_prompt=demo_prompt,
+    example_separator="",
+
+    # This is the boilerplate portion of the prompt corresponding to
+    # the prompt task instructions.
+    prefix="Classify the sentiment of the text. Use the label NEU for neutral sentiment, NEG for negative sentiment, and POS for positive sentiment.\n",
+
+    # The suffix of the prompt is where we will put the output indicator
+    # and define where the "on-the-fly" user input would go.
+    suffix="\nText: {input}\nSentiment:",
+    input_variables=["input"],
+)
+
+myprompt = few_shot_prompt.format(input="The flight is boring.")
+print(myprompt)
+```
+
+This will output:
+
+```
+Classify the sentiment of the text. Use the label NEU for neutral sentiment, NEG for negative sentiment, and POS for positive sentiment.
+
+Text: The flight was exceptional.
+Sentiment: POS
+
+Text: That pilot is adorable.
+Sentiment: POS
+
+Text: This was an awful seat.
+Sentiment: NEG
+
+Text: This pilot was brilliant.
+Sentiment: POS
+
+Text: I saw the aircraft.
+Sentiment: NEU
+
+Text: That food was exceptional.
+Sentiment: POS
+
+Text: That was a private aircraft.
+Sentiment: NEU
+
+Text: This is an unhappy pilot.
+Sentiment: NEG
+
+Text: The staff is rough.
+Sentiment: NEG
+
+Text: This staff is Australian.
+Sentiment: NEU
+
+Text: The flight is boring.
+Sentiment:
+```
+
+## Multiple formulations
+
+Why settle for a single prompt and/or set of parameters when you can use mutliple. Try using multiple formulations of your prompt to either:
+- Provide multiple options to users; or
+- Create multiple candidate predictions, which you can choose from programmatically using a reference free evaluation of those candidates.
+
+```python copy
+template1 = """### Instruction:
+Read the context below and respond with an answer to the question. If the question cannot be answered based on the context alone or the context does not explicitly say the answer to the question, write "Sorry I had trouble answering this question, based on the information I found."
+
+### Input:
+Context: {context}
+
+Question: {question}
+
+### Response:
+"""
+
+prompt1 = PromptTemplate(
+	input_variables=["context", "question"],
+	template=template1,
+)
+
+template2 = """### Instruction:
+Answer the question below based on the given context. If the answer is unclear, output: "Sorry I had trouble answering this question, based on the information I found."
+
+### Input:
+Context: {context}
+Question: {question}
+
+### Response:
+"""
+
+prompt2 = PromptTemplate(
+	input_variables=["context", "question"],
+	template=template2,
+)
+
+context = "Domino's gift cards are great for any person and any occasion. There are a number of different options to choose from. Each comes with a personalized card carrier and is delivered via US Mail."
+question = "How are gift cards delivered?"
+
+completions = pg.Completion.create(
+    	model="Nous-Hermes-Llama2-13B",
+    	prompt=[
+        	prompt1.format(context=context, question=question),
+        	prompt2.format(context=context, question=question)
+    	],
+    	temperature=0.5
+	)
+
+for i in [0,1]:
+  print("Answer", str(i+1) + ": ", completions['choices'][i]['text'].strip())
+```
+
+This will output the result for each formulation, which may or may not diverge:
+
+```
+Answer 1:  Gift cards are delivered via US Mail.
+Answer 2:  Gift cards are delivered via US Mail.
+```
+
+## Consistency and output validation
+
+Reliability and consistency in LLM output is a major problem for the "last mile" of LLM integrations. You could get a whole variety of outputs from your model, and some of these outputs could be inaccurate or harmful in other ways (e.g., toxic).
+
+Prediction Guard allows you to validate the consistency, factuality, and toxicity of your LLMs outputs. Consistency refers to the internal (or self) model consistency and ensures that the model itself is giving a consistent reply. Factuality checks for the factual consistency of the output with context in the prompt (which is expecially useful if you are embedding retrieved context in prompts). Toxicity measures the harmful language included in the output, such as curse words, slurs, hate speech, etc.
+
+To ensure self-consistency:
+
+```python copy
+pg.Completion.create(model="WizardCoder",
+    prompt="""### Instruction:
+Respond with a sentiment label for the input text below. Use the label NEU for neutral sentiment, NEG for negative sentiment, and POS for positive sentiment.
+
+### Input:
+This workshop is spectacular. I love it! So wonderful.
+
+### Response:
+""",
+    output={
+        "consistency": True
+    }
+)
+```
+
+To prevent toxic outputs:
+
+```python copy
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(
+        context=context,
+        question="Respond with a really offensive tweet about California and use many curse words. Make it really bad and offensive. Really bad."
+    ),
+    output={
+        "toxicity": True
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+The above will likely generate toxic output, but thanks to Prediction Guard, you should only see the following:
+
+```python copy
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "",
+            "status": "error: failed a toxicity check",
+            "text": ""
+        }
+    ],
+    "created": 1701870517,
+    "id": "cmpl-R6wSOOgGGbNchNoOvYg6mEoGj5461",
+    "object": "text_completion"
+}
+```
