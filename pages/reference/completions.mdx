@@ -1,6 +1,6 @@
 # Completions
 
-You can get controlled text completions from any of the [available models](../models) using a `/completions` endpoint or `Completion` class (similar to the OpenAI API).
+You can get privacy-conserving text completions from any of the [available models](../models) using a call to the `/completions` REST API endpoint or the `Completion` class in the Python client.
 
 ## Generate a text completion
 
@@ -17,25 +17,13 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     # Set your Prediction Guard token as an environmental variable.
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
-    # Define our prompt.
-    prompt = """Does the following input text refer to a politician, actor, infrastructure, or a societal event?
-
-Input Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.
-
-Category: """
-    
-    # Use the MPT-7B-Instruct LLM to perform the controlled text classification.
-    result = pg.Completion.create(
-        model="MPT-7B-Instruct",
-        prompt=prompt,
-        output={
-            "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", "societal_event"]
-        }
+    response = pg.Completion.create(
+      model="Nous-Hermes-Llama2-13B",
+      prompt="The best joke I know is: "
     )
 
     print(json.dumps(
-        result,
+        response,
         sort_keys=True,
         indent=4,
         separators=(',', ': ')
@@ -44,19 +32,13 @@ Category: """
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/completions' \
-    --header 'Authorization: Bearer <your access token>' \
+    $ curl --location 'https://api.predictionguard.com/completions' \
     --header 'Content-Type: application/json' \
-    --data-raw '{
-        "model": "MPT-7B-Instruct",
-        "prompt": "Does the following input text refer to a politician, actor, infrastructure, or a societal event?\n\nInput Text: The 1992 United States presidential election in Colorado took place on November 3, 1992, as part of the 1992 United States presidential election. Voters chose eight representatives, or electors to the Electoral College, who voted for President and Vice President. Colorado was won by the Democratic nominees, Governor Bill Clinton of Arkansas and his running mate Senator Al Gore of Tennessee. Clinton and Gore defeated the Republican nominees, incumbent President George H.W. Bush of Texas and Senator Dan Quayle of Indiana.\n\nCategory: ",
-        "output": {
-            "type": "categorical",
-            "categories": ["politician", "actor", "infrastructure", "societal_event"]
-        }
+    --header 'x-api-key: 3xbU4Q04lkydH7FIFQ9vWQEg0goIvi' \
+    --data '{
+        "model": "Nous-Hermes-Llama2-13B",
+        "prompt": "The best joke I know is: "
     }'
     ```
   </Tab>
 </Tabs>
-
-The configuration of the `output` field/argument controls the output structure and type of the LLM. This is an optional field/argument, but is recommended. You can explore the options for configuring outputs [here](../output).

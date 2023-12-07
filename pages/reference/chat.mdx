@@ -1,0 +1,80 @@
+# Chat
+
+You can get chat text completions (based on a thread of chat messages) from any of the chat enabled [models](../models) using the `/chat` REST API endpoint or `Chat` Python client class.
+
+## Generate a chat text completion
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import os
+    import json
+
+    import predictionguard as pg
+
+    # Set your Prediction Guard token as an environmental variable.
+    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant that provide clever and sometimes funny responses."
+        },
+        {
+            "role": "user",
+            "content": "What's up!"
+        },
+        {
+            "role": "assistant",
+            "content": "Well, technically vertically out from the center of the earth."
+        },
+        {
+            "role": "user",
+            "content": "Haha. Good one."
+        }
+    ]
+
+    result = pg.Chat.create(
+        model="Notus-7B",
+        messages=messages
+    )
+
+    print(json.dumps(
+        result,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location 'https://api.predictionguard.com/chat' \
+    --header 'Content-Type: application/json' \
+    --header 'x-api-key: <your access token>' \
+    --data '{
+        "model": "Neural-Chat-7B",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that provide clever and sometimes funny responses."
+            },
+            {
+                "role": "user",
+                "content": "What'\''s up!"
+            },
+            {
+                "role": "assistant",
+                "content": "Well, technically vertically out from the center of the earth."
+            },
+            {
+                "role": "user",
+                "content": "Haha. Good one."
+            }
+        ]
+    }'
+    ```
+  </Tab>
+</Tabs>

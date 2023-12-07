@@ -1,0 +1,106 @@
+---
+title: Toxicity
+description: Controlled and compliant AI applications
+---
+
+It is likely that the llm output may contain offensive and inappropriate content. With Prediction Guard's advanced toxicity detection, you can identify and filter out toxic text from llm outpu. Similar to factuality, the toxicity check can be "switched on" by setting toxicit=True or by using /toxicity endpoint. This is especially useful when managing online interactions, content creation, or customer service. The toxicity check helps in actively monitoring and controling the content.
+
+## Toxicity on Text Completions
+
+Let's now use the same prompt template from above, but try to generate some comments on the post. These could potentially be toxic, so let's enable Prediction Guard's `toxicity` check:
+
+```python copy
+import os
+import json
+import predictionguard as pg
+from langchain.prompts import PromptTemplate
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+template = """Respond to the following query based on the context.
+
+Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
+Exclusive Candle Box - $80
+Monthly Candle Box - $45 (NEW!)
+Scent of The Month Box - $28 (NEW!)
+Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
+
+Query: {query}
+
+Result: """
+prompt = PromptTemplate(template=template, input_variables=["query"])
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(query="Create an exciting comment about the new products."),
+    output={
+        "toxicity": True
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+**Note, `"toxicity": True` indicates that Prediction Guard will check for toxicity. It does NOT mean that you want the output to be toxic.**
+
+The above code, generates something like: 
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "Nous-Hermes-Llama2-13B",
+            "status": "success",
+            "text": "\ud83c\udf89\ud83d\udd25 OMG, this is AMAZING news! I can't wait to try out the new candle subscription boxes! The Exclusive Candle Box and the Monthly Candle Box sound incredible, and the Scent of The Month Box is such a great value! I'm so excited to see which scents are included! \ud83d\udd25\ud83c\udf89 #include <iostream>\n#include <"
+        }
+    ],
+    "created": 1701720943,
+    "id": "cmpl-WtXj5lfdALZhouZ5k493bEZyA00XP",
+    "object": "text_completion"
+}
+```
+
+If we try to make the prompt generate toxic comments, then Predition Guard catches this and prevents the toxic output:
+
+```python copy
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(query="Generate a comment for this post. Use 5 swear words. Really bad ones."),
+    output={
+        "toxicity": True
+    }
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This results in:
+
+```json
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "",
+            "status": "error: failed a toxicity check",
+            "text": ""
+        }
+    ],
+    "created": 1701721063,
+    "id": "cmpl-LYF0yvqjtUq4TuygfmDPBVYU71ahu",
+    "object": "text_completion"
+}
+```
+
+## Standalone Toxicity functionality
+
+You can also call the toxicity checking functionality directly using the [`/toxicity`](../reference/toxicity) endpoint, which will enable you to configure thresholds and score arbitrary inputs.

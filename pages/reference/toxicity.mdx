@@ -11,13 +11,12 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ```python filename="main.py" copy
     import os
     import json
-
     import predictionguard as pg
 
     # Set your Prediction Guard token as an environmental variable.
     os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
-    # Perform the factual consistency check.
+    # Perform the toxicity check.
     result = pg.Toxicity.check(
         		text="This is a perfectly fine statement"
     )
@@ -32,8 +31,8 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/factuality' \
-    --header 'Authorization: Bearer <your access token>' \
+    $  curl --location --request POST 'https://api.predictionguard.com/toxicity' \
+    --header 'x-api-key: <your access token>' \
     --header 'Content-Type: application/json' \
     --data-raw '{
         "text": "This is a perfectly fine statement"
@@ -45,8 +44,16 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 The output will look something like:
 
 ```
-{'checks': [{'score': 0.0009843118023127317, 'index': 0, 'status': 'success'}],
- 'created': 1691966144,
- 'id': 'toxi-KjfoOYRZlXraSXOdllOWh7nSsxJOk',
- 'object': 'toxicity_check'}
+{
+    "checks": [
+        {
+            "index": 0,
+            "score": 0.00036882987478747964,
+            "status": "success"
+        }
+    ],
+    "created": 1701721860,
+    "id": "toxi-REU4ZqFADGAiU6xJmN9PgtlgBO6x9",
+    "object": "toxicity_check"
+}
 ```

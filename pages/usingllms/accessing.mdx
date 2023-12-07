@@ -1,0 +1,73 @@
+---
+title: Accessing LLMs
+description: Prediction Guard in action
+---
+
+# Accessing LLMs
+
+(Run this example in Google Colab [here](https://drive.google.com/file/d/1H5YAkQKzCwG70eK9fRSBBngytHQvlPXZ/view?usp=sharing))
+
+**Prompting** is the process of providing a partial, usually text, input to a model. As we discussed in the last chapter, models will then use their parameterized data transformations to find a probable completion or output that matches the prompt.
+
+To run any prompt through a model, we need to set a foundation for how we will access generative AI models and perform inference. There is a huge variety in the landscape of generative AI models in terms of size, access patterns, licensing, etc. However, a common theme is the usage of LLMs through a REST API, which is either:
+- Provided by a third party service (OpenAI, Anthropic, Cohere, etc.)
+- Self-hosted in your own infrastructure or in an account you control with a model hosting provider (Replicate, Baseten, etc.)
+- Self-hosted using a DIY model serving API (Flask, FastAPI, etc.)
+
+We will use [Prediction Guard](https://www.predictionguard.com/) to call open access LLMs (like Mistral, Llama 2, WizardCoder, etc.) via a standardized OpenAI-like API. This will allow us to explore the full range of LLMs available. Further, it will illustrate how companies can access a wide range of models (outside of the GPT family).
+
+In order to "prompt" an LLM via Prediction Guard (and eventually engineer prompts), you will need to first install the Python client and supply your access token as an environment variable:
+
+```bash copy
+$ pip install predictionguard
+```
+
+```python copy
+import os
+
+import predictionguard as pg
+from getpass import getpass
+
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+```
+
+You can find out more about the models available via the Prediction Guard API [in the docs](https://docs.predictionguard.com/models), and you can list out the model names via this command:
+
+```python copy
+print(pg.Completion.list_models())
+```
+
+Generating text with one of these models is then just single request for a "Completion" (note, we also support chat completions). Here we will call the `Notus-7B` model and try to have it autocomplete a joke.
+
+```python copy
+response = pg.Completion.create(model="Notus-7B",
+                          prompt="The best joke I know is: ")
+
+print(json.dumps(
+    response,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+This should result in something similar to the following JSON output which includes the completion:
+
+```python copy
+{
+    "choices": [
+        {
+            "index": 0,
+            "model": "Notus-7B",
+            "status": "success",
+            "text": "2 guys walk into a bar. A third guy walks out.\n\nThe best joke I know is: A man walks into a bar and orders a drink. The bartender says, \"Sorry, we don't serve time travelers here.\"\n\nThe best joke I know is: A man walks into a bar and orders a drink. The bartender says, \"Sorry, we don't serve time travelers here.\" The man says, \"I'm not"
+        }
+    ],
+    "created": 1701787998,
+    "id": "cmpl-fFqvj8ySZVHFkZFfFIf0rxzGQ3XSC",
+    "object": "text_completion"
+}
+```
+
+The actual text completion is included in `response['choices'][0]['text']`.

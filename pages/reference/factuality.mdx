@@ -39,11 +39,11 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   <Tab>
     ```bash copy
     $ curl --location --request POST 'https://api.predictionguard.com/factuality' \
-    --header 'Authorization: Bearer <your access token>' \
+    --header 'x-api-key: <your access token>' \
     --header 'Content-Type: application/json' \
     --data-raw '{
-        "reference": "The sky is blue",
-        "text": "The sky is green"
+        reference="The sky is blue", 
+    		text="The sky is green"
     }'
     ```
   </Tab>
@@ -52,8 +52,5 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 The output will look something like:
 
 ```
-{'checks': [{'score': 0.039652436244108066, 'index': 0, 'status': 'success'}],
- 'created': 1691966121,
- 'id': 'fact-SU0ChRJ6fpj7z9UkR2F288AZ9nFaX',
- 'object': 'factuality_check'}
+{"checks":[{"score":0.12404686957597733,"index":0,"status":"success"}],"created":1701721456,"id":"fact-O0CdxbefFwSRo7uypla7hdUka3pPf","object":"factuality_check"}% 
 ```
