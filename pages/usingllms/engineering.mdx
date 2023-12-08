@@ -258,6 +258,76 @@ This workshop is spectacular. I love it! So wonderful.
 )
 ```
 
+You can get a score for factual consistency (0 to 1, which higher numbers being more confidently factually consistent) using the `pg.Factuality.check()` method and providing a reference text against which to check. This is very relevant to RAG (e.g., chat over your docs) sort of use cases where you have some external context, and you want to ensure that the output is consistent with that context.
+
+```python copy
+template = """### Instruction:
+Read the context below and respond with an answer to the question.
+
+### Input:
+Context: {context}
+
+Question: {question}
+
+### Response:
+"""
+
+prompt = PromptTemplate(
+	input_variables=["context", "question"],
+	template=template,
+)
+
+template = """### Instruction:
+Read the context below and respond with an answer to the question.
+
+### Input:
+Context: {context}
+
+Question: {question}
+
+### Response:
+"""
+
+prompt = PromptTemplate(
+	input_variables=["context", "question"],
+	template=template,
+)
+```
+
+This will output something like:
+
+```
+COMPLETION: California is a state located in the western region of the United States. It is the most populous state in the country, with over 38.9 million residents, and the third-largest state by area, covering approximately 163,696 square miles (423,970 km2). California shares its borders with Oregon to the north, Nevada and Arizona to the east, and the Mexican state of Baja California to the south. It also
+FACT SCORE: 0.8541514873504639
+```
+
+Whereas, if we try to adversarially produce factual inconsistencies:
+
+```python copy
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(
+        context=context,
+        question="Make up something completely fictitious about California. Contradict a fact in the given context."
+    )
+)
+
+fact_score = pg.Factuality.check(
+    reference=context,
+    text=result['choices'][0]['text']
+)
+
+print("COMPLETION:", result['choices'][0]['text'])
+print("FACT SCORE:", fact_score['checks'][0]['score'])
+```
+
+We might get this kind of output:
+
+```
+COMPLETION: California is the smallest state in the United States. 
+FACT SCORE: 0.12891793251037598
+```
+
 To prevent toxic outputs:
 
 ```python copy
