@@ -523,6 +523,11 @@ def rag_answer(message):
   )
 
   return result['choices'][0]['text']
+
+response = rag_answer("How many problems should be solved in a single patch?")
+
+print('')
+print("RESPONSE:", response)
 ```
 
 This will return something similar to:
