@@ -1,38 +1,4 @@
-########################GETTING STARTED####################################### 
-
-import os
-import json
-
-import predictionguard as pg
-
-# Set your Prediction Guard token as an environmental variable.
-os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
-
-# Define our prompt.
-messages = [
-    {
-        "role": "system",
-        "content": "You are a helpful assistant. Your model is hosted by Prediction Guard, a leading AI company."
-    },
-    {
-        "role": "user",
-        "content": "Where can I access the LLMs in a safe and secure environment?"
-    }
-]
-
-result = pg.Chat.create(
-    model="Notus-7B",
-    messages=messages
-)
-
-print(json.dumps(
-    result,
-    sort_keys=True,
-    indent=4,
-    separators=(',', ': ')
-))
-
-
+import pdb
 ########################ACCESSING LLMS####################################### 
 import os
 
@@ -58,7 +24,6 @@ print(json.dumps(
 ################## Code extracted from index.mdx
 import os
 import json
-
 import predictionguard as pg
 
 # Set your Prediction Guard token as an environmental variable.
@@ -88,18 +53,13 @@ print(json.dumps(
     separators=(',', ': ')
 ))
 ################## Code extracted from langchainllm.mdx
+
 from langchain.llms import PredictionGuard
-
-
 pgllm = PredictionGuard(model="Nous-Hermes-Llama2-13B")
 pgllm = PredictionGuard(model="Nous-Hermes-Llama2-13B", token="<your access token>")
-
-################## Code extracted from langchainllm.mdx
 pgllm = PredictionGuard(model="Nous-Hermes-Llama2-13B", output={"toxicity": True})
 
-################## Code extracted from langchainllm.mdx
 import os
-
 import predictionguard as pg
 from langchain.llms import PredictionGuard
 from langchain import PromptTemplate, LLMChain
@@ -128,9 +88,7 @@ prompt = PromptTemplate(template=template, input_variables=["query"])
 pgllm = PredictionGuard(model="Nous-Hermes-Llama2-13B")
 pgllm(prompt.format(query="What kind of post is this?"))
 
-################## Code extracted from langchainllm.mdx
 import os
-
 from langchain import PromptTemplate, LLMChain
 from langchain.llms import PredictionGuard
 
@@ -221,7 +179,6 @@ Query: {query}
 Result: """
 prompt = PromptTemplate(template=template, input_variables=["query"])
 
-################## Code extracted from factuality.mdx
 result = pg.Completion.create(
  model="Camel-5B",
  prompt=prompt.format(query="According to the context, what is the price of monthly candle box?"),
@@ -237,7 +194,7 @@ print(json.dumps(
  separators=(',', ': ')
 ))
 
-################## Code extracted from factuality.mdx
+
 result = pg.Completion.create(
  model="Camel-5B",
  prompt=prompt.format(query="According to the context, what is the discount on light bulbs"),
@@ -276,9 +233,6 @@ Query: {query}
 Result: """
 prompt = PromptTemplate(template=template, input_variables=["query"])
 
-
-
-################## Code extracted from consistency.mdx
 result = pg.Completion.create(
     model="Falcon-7B-Instruct",
     prompt=prompt.format(query="What kind of post is this?"),
@@ -296,79 +250,47 @@ print(json.dumps(
 
 
 ################## Code extracted from toxicity.mdx
-    import os
-    import json
-    import predictionguard as pg
+import os
+import json
+import predictionguard as pg
 
-    # Set your Prediction Guard token as an environmental variable.
-    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+# Set your Prediction Guard token as an environmental variable.
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
-    # Perform the toxicity check.
-    result = pg.Toxicity.check(
-        		text="This is a perfectly fine statement"
-    )
+# Perform the toxicity check.
+result = pg.Toxicity.check(
+            text="This is a perfectly fine statement"
+)
 
-    print(json.dumps(
-        result,
-        sort_keys=True,
-        indent=4,
-        separators=(',', ': ')
-    ))
-    ```
-  </Tab>
-  <Tab>
-    ```bash copy
-    $  curl --location --request POST 'https://api.predictionguard.com/toxicity' \
-    --header 'x-api-key: <your access token>' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-        "text": "This is a perfectly fine statement"
-    }'
-    ```
-  </Tab>
-</Tabs>
-
-The output will look something like:
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
 
 
 ################## Code extracted from factuality.mdx
-    import os
-    import json
+import os
+import json
 
-    import predictionguard as pg
+import predictionguard as pg
 
-    # Set your Prediction Guard token as an environmental variable.
-    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+# Set your Prediction Guard token as an environmental variable.
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 
-    # Perform the factual consistency check.
-    result = pg.Factuality.check(
-        		reference="The sky is blue", 
-        		text="The sky is green"
-    )
+# Perform the factual consistency check.
+result = pg.Factuality.check(
+            reference="The sky is blue", 
+            text="The sky is green"
+)
 
-    print(json.dumps(
-        result,
-        sort_keys=True,
-        indent=4,
-        separators=(',', ': ')
-    ))
-    ```
-  </Tab>
-  <Tab>
-    ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/factuality' \
-    --header 'x-api-key: <your access token>' \
-    --header 'Content-Type: application/json' \
-    --data-raw '{
-        reference="The sky is blue", 
-    		text="The sky is green"
-    }'
-    ```
-  </Tab>
-</Tabs>
-
-The output will look something like:
-
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
 
 ################## Code extracted from agents.mdx
 from langchain.agents import load_tools
@@ -384,7 +306,6 @@ os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
 serpapi_key = getpass('Enter your serpapi api key: ')
 os.environ['SERPAPI_API_KEY'] = serpapi_key
 
-################## Code extracted from agents.mdx
 # In LangChain, "tools" are like resources that are available to your agent to
 # execute certain actions (like a Google Search) while trying to complete a
 # set of tasks. An "agent" is the object that you "run" to try and get a "Final Answer."
@@ -402,8 +323,6 @@ from getpass import getpass
 
 pg_access_token = getpass('Enter your Prediction Guard access token: ')
 os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
-
-################## Code extracted from accessing.mdx
 print(pg.Completion.list_models())
 
 ################## Code extracted from accessing.mdx
