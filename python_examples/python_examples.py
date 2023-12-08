@@ -158,97 +158,66 @@ print(json.dumps(
 ))
 
 ################## Code extracted from factuality.mdx
+
+
 import os
 import json
-
+ 
 import predictionguard as pg
 from langchain.prompts import PromptTemplate
+ 
+os.environ["PREDICTIONGUARD_TOKEN"] = <YOU PREDICTION GUARD TOKEN>
 
-os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+template = """### Instruction:
+Read the context below and respond with an answer to the question.
 
-template = """Respond to the following query based on the context.
+### Input:
+Context: {context}
 
-Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
-Exclusive Candle Box - $80
-Monthly Candle Box - $45 (NEW!)
-Scent of The Month Box - $28 (NEW!)
-Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
+Question: {question}
 
-Query: {query}
+### Response:
+"""
 
-Result: """
-prompt = PromptTemplate(template=template, input_variables=["query"])
-
-result = pg.Completion.create(
- model="Camel-5B",
- prompt=prompt.format(query="According to the context, what is the price of monthly candle box?"),
- output={
- "factuality": True
- }
+prompt = PromptTemplate(
+	input_variables=["context", "question"],
+	template=template,
 )
 
-print(json.dumps(
- result,
- sort_keys=True,
- indent=4,
- separators=(',', ': ')
-))
-
+context = "California is a state in the Western United States. With over 38.9 million residents across a total area of approximately 163,696 square miles (423,970 km2), it is the most populous U.S. state, the third-largest U.S. state by area, and the most populated subnational entity in North America. California borders Oregon to the north, Nevada and Arizona to the east, and the Mexican state of Baja California to the south; it has a coastline along the Pacific Ocean to the west. "
 
 result = pg.Completion.create(
- model="Camel-5B",
- prompt=prompt.format(query="According to the context, what is the discount on light bulbs"),
- output={
- "factuality": True
- }
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(
+        context=context,
+        question="What is California?"
+    )
 )
 
-print(json.dumps(
- result,
- sort_keys=True,
- indent=4,
- separators=(',', ': ')
-))
 
+fact_score = pg.Factuality.check(
+    reference=context,
+    text=result['choices'][0]['text']
+)
 
-################## Code extracted from consistency.mdx
-import os
-import json
-
-import predictionguard as pg
-from langchain.prompts import PromptTemplate
-
-os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
-
-template = """Respond to the following query based on the context.
-
-Context: EVERY comment, DM + email suggestion has led us to this EXCITING announcement! 🎉 We have officially added TWO new candle subscription box options! 📦
-Exclusive Candle Box - $80 
-Monthly Candle Box - $45 (NEW!)
-Scent of The Month Box - $28 (NEW!)
-Head to stories to get ALLL the deets on each box! 👆 BONUS: Save 50% on your first box with code 50OFF! 🎉
-
-Query: {query}
-
-Result: """
-prompt = PromptTemplate(template=template, input_variables=["query"])
+print("COMPLETION:", result['choices'][0]['text'])
+print("FACT SCORE:", fact_score['checks'][0]['score'])
 
 result = pg.Completion.create(
-    model="Falcon-7B-Instruct",
-    prompt=prompt.format(query="What kind of post is this?"),
-    output={
-        "consistency": True
-    }
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(
+        context=context,
+        question="Make up something completely fictitious about California. Contradict a fact in the given context."
+    )
 )
-
-print(json.dumps(
-    result,
-    sort_keys=True,
-    indent=4,
-    separators=(',', ': ')
-))
-
-
+ 
+fact_score = pg.Factuality.check(
+    reference=context,
+    text=result['choices'][0]['text']
+)
+ 
+print("COMPLETION:", result['choices'][0]['text'])
+print("FACT SCORE:", fact_score['checks'][0]['score'])
 ################## Code extracted from toxicity.mdx
 import os
 import json
