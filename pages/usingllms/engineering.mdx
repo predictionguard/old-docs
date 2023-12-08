@@ -277,21 +277,23 @@ prompt = PromptTemplate(
 	template=template,
 )
 
-template = """### Instruction:
-Read the context below and respond with an answer to the question.
+context = "California is a state in the Western United States. With over 38.9 million residents across a total area of approximately 163,696 square miles (423,970 km2), it is the most populous U.S. state, the third-largest U.S. state by area, and the most populated subnational entity in North America. California borders Oregon to the north, Nevada and Arizona to the east, and the Mexican state of Baja California to the south; it has a coastline along the Pacific Ocean to the west. "
 
-### Input:
-Context: {context}
-
-Question: {question}
-
-### Response:
-"""
-
-prompt = PromptTemplate(
-	input_variables=["context", "question"],
-	template=template,
+result = pg.Completion.create(
+    model="Nous-Hermes-Llama2-13B",
+    prompt=prompt.format(
+        context=context,
+        question="What is California?"
+    )
 )
+
+fact_score = pg.Factuality.check(
+    reference=context,
+    text=result['choices'][0]['text']
+)
+
+print("COMPLETION:", result['choices'][0]['text'])
+print("FACT SCORE:", fact_score['checks'][0]['score'])
 ```
 
 This will output something like:
