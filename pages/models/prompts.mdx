@@ -1,0 +1,76 @@
+---
+title: Prompt Formats
+description: Reliable, future proof AI predictions
+---
+
+# Prompt Formats
+
+You might be used to entering simple text prompts into systems like ChatGPT. However, when you utilize certain open access LLMs directly, you might want to follow a specific prompt format. These models are fine-tuned using prompt data, and if you match your prompt formats to that training data format then you can see boosts in performance. 
+
+Check out the [model details page](details) to learn which prompt formats match certain LLMs. We've included some of the most important prompt formats below.
+
+import { Callout } from 'nextra-theme-docs'
+
+
+<Callout type="info" emoji="ℹ️">
+  **Note on Chat model prompts** - For your convenience, we automatically apply the right prompt formats when you supply a `messages` object to our `/chat` endpoint or via the `pg.Chat.create()` method in the Python client. You don't have to add in special tokens or apply the below prompt formats as this will duplicate the formatting. However, if you want to use chat-tuned models in the `/completions` endpoint or via the `pg.Completions.create()` method, you should apply the appropriate one of the below prompt formats.
+</Callout>
+
+## Alpaca
+
+This format has two options. First, for prompts that are single instructions, without relevant context (e.g., retrieved context):
+
+```
+### Instruction:
+<prompt>
+
+### Response:
+<leave a newline blank for model to respond>
+```
+
+For prompts where context is injected:
+
+```
+### Instruction:
+<prompt>
+
+### Input:
+<additional context>
+
+### Response:
+<leave a newline blank for model to respond>
+```
+
+(Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
+
+## Yi
+
+(Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
+
+```
+Human: <prompt> Assistant:
+```
+
+## Neural Chat
+
+(Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
+
+```
+### System:
+<prompt>
+### User:
+<context or user message>
+### Assistant:
+```
+
+## Zephyr
+
+(Replace the portions of the prompt below in curly braces `{...}` with the appropriate information, and do not keep the curly braces)
+
+```
+<|system|>
+{prompt}</s>
+<|user|>
+{context or user message}</s>
+<|assistant|>
+```
