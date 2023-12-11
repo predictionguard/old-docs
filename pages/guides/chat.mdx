@@ -24,31 +24,22 @@ result = pg.Chat.create(
                         "role": "user",
                         "content": content
                     }
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-                output = {
-                    "consistency": consistency,
-                    "factuality": factuality,
-                    "toxicity": toxicity
-                }
+                ]
             )
 ```
-- This function takes in the model settings along with the message, sends it to the API, and allows for the chat message to be processed by the LLMs.
+- This function sends the model settings and the user's message to the Prediction Guard API, which then processes the chat message using the LLMs.
 
 ## Running the Chatbot
 
 - To run the chatbot, first define the `PREDICTIONGUARD_TOKEN` environment variable, then run `streamlit run chat.py`.
 - The chatbot will automatically open in your browser, but if it does not, the terminal will output the URL for the app.
-- Any errors that the chatbot has will print out in both the app and the terminal, so you can monitor an issues more easily.
+- Any errors that the chatbot has will print out in both the app and the terminal, so you can monitor any issues more easily.
 
 ## Using the Chatbot
 
-- The chatbot allows for you to make calls to the Prediction Guard Chat endpoint, in a the visual format of a chatbot. 
-- In the sidebar, you can configure the settings of the chatbot, such as the model used and whether to have consistency, factuality, and toxicity checks.
-- You can also customize how you want the model to handle the message, such as modifying the length of the response by changing the amount of tokens, changing the temperature for more or less consistent responses, or the top_p and top_k to handle how the model chooses which tokens to use.
+- The chatbot allows for you to make calls to the Prediction Guard Chat endpoint, in the visual format of a chatbot. 
 
 ## Mandarin Chatbot
 - The Prediction Guard chatbot also has a Mandarin version, which utilizes the Yi-34B-Chat LLM. 
-- This model functions the same way as the English version, but is also able to process Mandarin.
+- This model has the same functionality as the English version, with the added capability to process Mandarin.
 - To run it, use the `chat-mandarin.py` program instead of `chat.py`
