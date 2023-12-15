@@ -1,5 +1,5 @@
 ---
-title: Data Extraction
+title: Data Extraction + Factuality Checks
 description: Data extract using PG with factuality checks
 ---
 
