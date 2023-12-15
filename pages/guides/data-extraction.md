@@ -150,4 +150,4 @@ df.to_csv("answers_with_fact_scores.csv", index=False)
 
 ### Standalone Factuality Functionality
 
-If needed, you can directly access the factuality checking functionality using the /factuality endpoint. This allows you to configure thresholds and score arbitrary inputs independently. Adding factuality=True or utilizing the /factuality endpoint provides an additional layer of control and customization for factuality checks.
+You can also call the factuality checking functionality directly using the [`/factuality`](../reference/factuality) endpoint, which will enable you to configure thresholds and score arbitrary inputs.
