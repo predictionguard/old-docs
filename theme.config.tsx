@@ -5,7 +5,7 @@ import Script from 'next/script'
 
 export default {
   logo: <span>♜ prediction<b>Guard</b></span>,
-  logoLink: 'https://docs.predictionguard.com',
+  logoLink: 'https://www.predictionguard.com/',
   primaryHue: 136,
   project: {
     link: 'https://github.com/predictionguard/docs',
