@@ -12,10 +12,8 @@ import os
 import json
 
 import predictionguard as pg
-from langchain.prompts import PromptTemplate
 
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
 
 result = pg.PII.check(
     prompt="hello my name is John Doe and my SSN is 768-89-6687",
@@ -42,9 +40,6 @@ This outputs the PII entity and indices of where the info was found:
 To maintain utility without compromising privacy, you have the option to replace PII with fake names and then forward the modified prompt to the LLM for further processing:
 
 ```python copy
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
-
 result = pg.PII.check(
     prompt="hello my name is John Doe and my SSN is 768-89-6687",
     replace=True,
