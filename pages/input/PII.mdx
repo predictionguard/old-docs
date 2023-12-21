@@ -5,7 +5,7 @@ description: Controlled and compliant AI applications
 
 # PII anonymization
 
-It is possible that some of your incoming prompts might contain personally identifiable information. Using Prediction Guard's PII anonymization feature you can detect PII including and not limited to Name, email, phone numbers, credit card, country specific id numbers like SSN, NHS, Passport numbers. Here is a demonstration of how this can be done:  
+Some of your incoming prompts may include personally identifiable information (PII). With Prediction Guard's PII anonymization feature, you can detect PII such as names, email addresses, phone numbers, credit card details, and country-specific ID numbers like SSNs, NHS numbers, and passport numbers. Here's a demonstration of how this works:
 
 ```python copy
 import os
@@ -19,8 +19,7 @@ os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
 
 result = pg.PII.check(
     prompt="hello my name is John Doe and my SSN is 768-89-6687",
-    replace=False,
-    replace_method="fake"
+    replace=False
 )
 
 print(json.dumps(
@@ -32,13 +31,15 @@ print(json.dumps(
 
 ```
 
+This outputs the PII entity and indices of where the info was found:
+
 ```
 {
     "PII type and the positions of PII": "[{\"start\": 17, \"end\": 25, \"type\": \"PERSON\"}, {\"start\": 40, \"end\": 51, \"type\": \"US_SSN\"}]"
 }
 ```
 
-In order to not lose any utility you can also choose to replace the PII with `fake` names and send the new prompt to the llm for further processing
+To maintain utility without compromising privacy, you have the option to replace PII with fake names and then forward the modified prompt to the LLM for further processing:
 
 ```python copy
 pg_access_token = getpass('Enter your Prediction Guard access token: ')
@@ -66,4 +67,4 @@ The processed prompt will then be:
 }
 ```
 
-Other options for the `replace_method` parameter include: `random` (to replace the detected PII with random character), `category` to mask the PII with the entity type and `mask` to simply replace with `*`
+Other options for the `replace_method` parameter include: `random` (to replace the detected PII with random character), `category` (to mask the PII with the entity type) and `mask` (simply replace with `*`).

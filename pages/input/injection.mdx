@@ -3,43 +3,11 @@ title: Prompt injection detection
 description: Controlled and compliant AI applications
 ---
 
-# Prompt Injection attack prevention
+# Prompt injection detection
 
 There are several types of prompt injection attacks, new attacks being discovered at a rapid speed. As you integrate LLMs to regular workflow is is always good to be prepared against these injection attacks.
 
-With prediction guard you have the ability to to check whether an incoming prompt is potentially an injection before it is sent to the LLM. Get a probability score and block it to protect yourself from potential attacks
-
-```python copy
-import os
-import json
-
-import predictionguard as pg
-from langchain.prompts import PromptTemplate
-
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
-
-result = pg.Injection.check(
-    prompt="hello my name is John Doe and I live in New York City, 4th Avenue 123.",
-    detect=True
-)
-
-print(json.dumps(
-    result,
-    sort_keys=True,
-    indent=4,
-    separators=(',', ': ')
-))
-
-```
-
-```
-{
-    "PII type and the positions of PII": "[{\"start\": 17, \"end\": 25, \"type\": \"PERSON\"}, {\"start\": 40, \"end\": 51, \"type\": \"US_SSN\"}]"
-}
-```
-
-In order to not lose any utility you can also choose to replace the PII with `fake` names and send the new prompt to the llm for further processing
+With Prediction Guard, you have the ability to assess whether an incoming prompt might be an injection attempt before it reaches the LLM. Get a probability score and the option to block it, safeguarding against potential attacks. Below, you can see the feature in action, demonstrated with a modified version of a known prompt injection:
 
 ```python copy
 result = pg.Injection.check(
@@ -64,11 +32,11 @@ We can now get an output with probability of injection
 }
 ```
 
-Let's try this again with inoccous prompt. 
+Let's try this again with an inoccuous prompt:
 
 ```python copy
 result = pg.Injection.check(
-    prompt="hello I had placed an order of running shoes. It was supposed to arrive yesterday. COuld you please let me know when I will recieve it",
+    prompt="hello I had placed an order of running shoes. It was supposed to arrive yesterday. Could you please let me know when I will recieve it",
     detect=True
 )
 
