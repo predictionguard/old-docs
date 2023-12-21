@@ -2,6 +2,7 @@
   "index": "Getting Started",
   "models": "Available Models",
   "usingllms": "Using LLMs",
+  "input": "Process LLM Input",
   "output": "Validating LLM Output",
   "compliance": "Compliance",
   "guides": "Guides",
