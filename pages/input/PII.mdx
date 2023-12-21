@@ -1,0 +1,69 @@
+---
+title: PII modification
+description: Controlled and compliant AI applications
+---
+
+# PII anonymization
+
+It is possible that some of your incoming prompts might contain personally identifiable information. Using Prediction Guard's PII anonymization feature you can detect PII including and not limited to Name, email, phone numbers, credit card, country specific id numbers like SSN, NHS, Passport numbers. Here is a demonstration of how this can be done:  
+
+```python copy
+import os
+import json
+
+import predictionguard as pg
+from langchain.prompts import PromptTemplate
+
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+
+result = pg.PII.check(
+    prompt="hello my name is John Doe and my SSN is 768-89-6687",
+    replace=False,
+    replace_method="fake"
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+
+```
+
+```
+{
+    "PII type and the positions of PII": "[{\"start\": 17, \"end\": 25, \"type\": \"PERSON\"}, {\"start\": 40, \"end\": 51, \"type\": \"US_SSN\"}]"
+}
+```
+
+In order to not lose any utility you can also choose to replace the PII with `fake` names and send the new prompt to the llm for further processing
+
+```python copy
+pg_access_token = getpass('Enter your Prediction Guard access token: ')
+os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+
+result = pg.PII.check(
+    prompt="hello my name is John Doe and my SSN is 768-89-6687",
+    replace=True,
+    replace_method="fake"
+)
+
+print(json.dumps(
+    result,
+    sort_keys=True,
+    indent=4,
+    separators=(',', ': ')
+))
+```
+
+The processed prompt will then be:
+
+```
+{
+    "New prompt": "hello my name is William and my SSN is 711-22-3308"
+}
+```
+
+Other options for the `replace_method` parameter include: `random` (to replace the detected PII with random character), `category` to mask the PII with the entity type and `mask` to simply replace with `*`
