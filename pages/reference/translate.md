@@ -20,10 +20,10 @@ Our translation API supports a wide range of languages, including but not limite
 
 ### `/translate`
 
-The /translate endpoint will return a JSON object with two fields:
+The /translate endpoint will return a JSON object response with two fields:
 
-- `translation` - The translated text.
-- `score` - A score from -1.0 to 1.0 representing the translation quality. Higher the score better the quality.
+- `Best translation` - The translated text.
+- `Score` - A score from -1.0 to 1.0 representing the translation quality. Higher the score better the quality.
 
 
 ## Generate a translation
