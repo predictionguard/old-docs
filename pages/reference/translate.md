@@ -10,7 +10,7 @@ You can get machine translation and translation quality scores from the `/transl
 - `source_lang` - The ISO 639 source language code (e.g. 'eng' for English).
 - `target_lang` - The ISO 639 target language code (e.g 'fra' for French).
 
-Under the hood, the `/translate` endpoint leverages state-of-the-art machine translation models including Nous-hermes-llama2-13b, OpenAI, DeepL, and Google Translate to perform translations. The translations from these different models are scored and ranked using Unbabel's advanced COMET scoring system. This allows us to select the highest quality machine translation for the given source and target languages.
+Under the hood, the `/translate` endpoint leverages state-of-the-art machine translation models including "Nous-hermes-llama2-13b", OpenAI, DeepL, and Google Translate to perform translations. The translations from these different models are scored and ranked using Unbabel's advanced COMET scoring system. This allows us to select the highest quality machine translation for the given source and target languages.
 
 ## Supported Languages
 
