@@ -23,10 +23,9 @@ $ pip install predictionguard
 import os
 
 import predictionguard as pg
-from getpass import getpass
 
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+
+os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
 ```
 
 ## Basic chat completion
