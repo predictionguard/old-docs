@@ -32,9 +32,18 @@ print(json.dumps(
 
 We can now get an output with probability of injection
 
-```
+```json
 {
-    "Probability of injection": 0.9
+  "checks": [
+    {
+      "probability": 0.9,
+      "index": 0,
+      "status": "success"
+    }
+  ],
+  "created": 1701721456,
+  "id": "injection-O0CdxbefFwSRo7uypla7hdUka3pPf",
+  "object": "injection_check"
 }
 ```
 
@@ -51,14 +60,22 @@ print(json.dumps(
     sort_keys=True,
     indent=4,
     separators=(',', ': ')
-    \
 ))
 ```
 
 which outputs:
 
-```
+```json
 {
-    "Probability of injection": 0.0
+  "checks": [
+    {
+      "probability": 0.0,
+      "index": 0,
+      "status": "success"
+    }
+  ],
+  "created": 1701721456,
+  "id": "injection-O0CdxbefFwSRo7uypla7hdUka3pPf",
+  "object": "injection_check"
 }
 ```

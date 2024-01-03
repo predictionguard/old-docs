@@ -26,14 +26,22 @@ print(json.dumps(
     indent=4,
     separators=(',', ': ')
 ))
-
 ```
 
 This outputs the PII entity and indices of where the info was found:
 
-```
+```json
 {
-    "PII type and the positions of PII": "[{\"start\": 17, \"end\": 25, \"type\": \"PERSON\"}, {\"start\": 40, \"end\": 51, \"type\": \"US_SSN\"}]"
+  "checks": [
+    {
+      "pii_types_and_positions": "[{\"start\": 17, \"end\": 25, \"type\": \"PERSON\"}, {\"start\": 40, \"end\": 51, \"type\": \"US_SSN\"}]",
+      "index": 0,
+      "status": "success"
+    }
+  ],
+  "created": 1701721456,
+  "id": "pii-O0CdxbefFwSRo7uypla7hdUka3pPf",
+  "object": "pii_check"
 }
 ```
 
@@ -56,9 +64,18 @@ print(json.dumps(
 
 The processed prompt will then be:
 
-```
+```json
 {
-    "New prompt": "hello my name is William and my SSN is 711-22-3308"
+  "checks": [
+    {
+      "new_prompt": "hello my name is William and my SSN is 711-22-3308",
+      "index": 0,
+      "status": "success"
+    }
+  ],
+  "created": 1701721456,
+  "id": "pii-O0CdxbefFwSRo7uypla7hdUka3pPf",
+  "object": "pii_check"
 }
 ```
 
