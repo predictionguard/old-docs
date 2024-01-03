@@ -1,0 +1,164 @@
+---
+title: Data Extraction + Factuality Checks
+description: Data extract using PG with factuality checks
+---
+
+# Data extraction example with factuality checks
+
+This guide demonstrates the extraction of patient information from simulated doctor-patient transcripts. The extracted information is validated using a the [factual consistency checks](../reference/factuality) from Prediction Guard. The example focuses on the first 5 rows of a Kaggle dataset containing example simulated doctor-patient transcripts.
+
+## Load the data 
+
+Download the data from this [json file](pages/usingllms/transcript_data/transcripts.json). You can then use the code below to load the necessary libraries and the dataset from the above mentioned JSON file. The code converts the data into a Pandas DataFrame and selects the first 5 rows for testing.
+
+```python copy
+import json
+import itertools
+
+import pandas as pd
+from langchain import PromptTemplate
+import predictionguard as pg
+
+# Load the JSON data into a dataframe
+data = []
+with open('transcripts.json') as f:
+    for line in itertools.islice(f, 5):
+        line = line.strip()
+        if not line: continue
+        data.append(json.loads(line))
+df = pd.DataFrame(data)
+
+# Transform rows to columns
+df = df.transpose()
+
+# Reset the index and assign an index column
+df = df.reset_index()
+df.columns = ['id', 'transcript']
+
+# Reset the index (optional)
+df.reset_index(drop=True, inplace=True)
+
+# Start with 5 rows of the dataframe
+df=df.head(5)
+```
+
+## Summarize the data
+
+When processing uniquely formatted, unstructured text with LLMs, it is sometimes useful to summarize the input text into a coherent and well-structured paragraph. The code below defines a prompt for summarization, creates a prompt template using LangChain, and uses the `Nous-Hermes-Llama2-13B` to generate summaries for each transcript. The generated summaries are added as a new column in the DataFrame, and we save them to a CSV file (in case we want them later).
+
+
+```python copy
+# Define the summarization prompt
+summarize_template = """### Instruction:
+Summarize the input transcript below.
+
+### Input:
+{transcript}
+
+### Response:
+"""
+
+summary_prompt = PromptTemplate(template=summarize_template,
+    input_variables=["context"],
+)
+
+# Loop over the rows summarizing the data
+summaries = []
+for i,row in df.iterrows():
+    result=pg.Completion.create(
+        model="Nous-Hermes-Llama2-13B",
+        prompt=summary_prompt.format(
+            transcript=row['transcript']
+        ),
+        max_tokens=200,
+        temperature=0.1
+    )
+    print(result['choices'][0]['text'])
+    summaries.append(result['choices'][0]['text'])
+
+# Print out some summaries to sanity check them
+df['summary']=summaries
+print(df.head(5))
+
+# Save the resulting data
+df.to_csv("summarized_transcripts.csv", index=False)
+```
+## Extract Information and Perform Factuality Checks
+
+We can now create a question answering prompt and prompt template to perform the information extraction. This prompt template can be re-used to answer relevant questions from the data - symptoms, Patient name, when the symptom started, level of pain the patient is experiencing, etc.
+
+```python copy
+# Define the questions we want answered
+questions=["What symptoms is the patient experiencing",
+           "What is the Patient's name?",
+           "When did the symptoms start?",
+           "On a scale of 1 to 10, what level of pain is the patient experiencing?"]
+
+# Define the question answering prompt
+question_answer_template = """### Instruction:
+Answer the following question {question} using the below doctor-patient transcript summary.
+
+### Input:
+{transcript_summary}
+
+### Response:
+"""
+
+q_and_a_prompt = PromptTemplate(template=question_answer_template,
+    input_variables=["question", "transcript_summary"],
+)
+```
+
+Factuality checks are crucial for evaluating the accuracy of information provided by the language model, especially when dealing with high risk data. Prediction Guard leverages state-of-the-art models for factual consistency checks, ensuring the reliability of outputs in reference to the context of the prompts. Thus, after we prompt the model with each question, we evaluate the responses against the corresponding transcript summaries. Factuality scores are generated to assess the accuracy of the answers.
+
+```python copy
+answers = {q: [] for q in questions}
+fact_scores = {q: [] for q in questions}
+
+# Loop over the rows of the dataframe processing each transcript
+for i, row in df.iterrows():
+    for q in questions:
+
+        # Extract the information
+        result = pg.Completion.create(
+            model="Nous-Hermes-Llama2-13B",
+            prompt=q_and_a_prompt.format(
+                question=q, transcript_summary=row["summary"]
+            ),
+            max_tokens=200,
+            temperature=0.1,
+
+        )
+
+        # Generate a factual consistency score
+        fact_score = pg.Factuality.check(
+            reference=row['summary'],
+            text=result['choices'][0]['text']
+        )
+
+        # Append the results
+        fact_scores[q].append(fact_score['checks'][0]['score'])
+        answers[q].append(result["choices"][0]["text"])
+
+# Add the answers and fact scores as new columns to the original DataFrame
+for q in questions:
+    df[f"{q}_answer"] = answers[q]
+    df[f"{q}_fact_score"] = fact_scores[q]
+
+# Show some results
+print(df.head(2))
+
+# Save the results
+df.to_csv("answers_with_fact_scores.csv", index=False)
+```
+
+|    | id   | transcript   | summary   | What symptoms is the patient experiencing_answer   | What symptoms is the patient experiencing_fact_score   | What is the Patient's name?_answer   | What is the Patient's name?_fact_score   | When did the symptoms start?_answer   | When did the symptoms start?_fact_score   | On a scale of 1 to 10, what level of pain is the patient experiencing?_answer   | On a scale of 1 to 10, what level of pain is the patient experiencing?_fact_score   |
+|---:|:-----|:-------------|:----------|:--------------------------------------------------|:------------------------------------------------------|:-------------------------------------|:-----------------------------------------|:-------------------------------------|:-----------------------------------------|:-----------------------------------------------------------------------------|:----------------------------------------------------------------------------------|
+|  0 | 2055 | During the... | During a... | The patient, Mr. Don Hicks, is experiencing sym... | 0.08922114223                                        | The patient's name is Mr. Don Hicks. | 0.451582998                                 | The symptoms started when Mr. Don ... | 0.1504420638                               | The transcript summary does not conta... | 0.5611280203                                                                   |
+|  1 | 291  | During the... | During a... | The patient, Tina Will, is experiencing sympt... | 0.3320894539                                        | The patient's name is Tina Will.     | 0.8268791437                               | The symptoms started when Tina pre... | 0.7537286878                               | I am sorry to hear that Tina is expe... | 0.2882582843                                                                   |  
+|  2 | 102  | "D: Good mo... | The patien... | The patient, Tommie, has been experiencing sy... | 0.1203972548                                        | I'm sorry, the question "What is t... | 0.6292911172                               | The symptoms started when?             | 0.7372002602                               | "I'm sorry to hear that Tommie has b... | 0.1583527327                                                                   |
+|  3 | 2966 | "D: Good mo... | The patien... | The patient, Chris, is experiencing symptoms... | 0.03648262098                                       | The patient's name is Chris.         | 0.8302355409                               | The symptoms started when Chris exp... | 0.8345838189                               | I'm sorry to hear that Chris is expe... | 0.7252672315                                                                   | 
+|  4 | 2438 | "D: Hi Erne... | Ernest visi... | The patient, Ernest, is experiencing bladder... | 0.149951458                                        | The patient's name is Ernest.        | 0.6766917109                               | The symptoms started when Ernest st... | 0.1891670823                               | Based on the information provided, i... | 0.6463367343                                                                   |
+
+
+You can also call the factual consistency checking functionality directly using the [`/factuality`](../reference/factuality) endpoint, which will enable you to configure thresholds and score arbitrary inputs.
