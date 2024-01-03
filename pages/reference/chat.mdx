@@ -51,7 +51,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location 'https://api.predictionguard.com/chat' \
+    $ curl --location --request POST 'https://api.predictionguard.com/chat' \
     --header 'Content-Type: application/json' \
     --header 'x-api-key: <your access token>' \
     --data '{
@@ -63,7 +63,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
             },
             {
                 "role": "user",
-                "content": "What'\''s up!"
+                "content": "What's up!"
             },
             {
                 "role": "assistant",
