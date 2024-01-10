@@ -90,6 +90,11 @@ The function "generate_and_process_query" makes use of the "Nous-Hermes-Llama2-1
 We could also utilize models like "WizardCoder" to get similar outputs.
 
 ```python copy
+import predictionguard as pg
+
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
 def generate_and_preprocess_query(question):
   result = pg.Completion.create(
       model="Nous-Hermes-Llama2-13B",

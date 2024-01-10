@@ -19,6 +19,9 @@ import pandas as pd
 from langchain import PromptTemplate
 import predictionguard as pg
 
+
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
 # Load the JSON data into a dataframe
 data = []
 with open('transcripts.json') as f:

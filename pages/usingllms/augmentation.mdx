@@ -31,13 +31,12 @@ from langchain import PromptTemplate, FewShotPromptTemplate
 from langchain.text_splitter import CharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 import numpy as np
-from getpass import getpass
 import lancedb
 from lancedb.embeddings import with_embeddings
 import pandas as pd
 
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+
+os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
 ```
 
 ## Chaining
