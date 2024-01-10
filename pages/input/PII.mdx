@@ -16,7 +16,7 @@ import predictionguard as pg
 os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
 
 result = pg.PII.check(
-    prompt="hello my name is John Doe and my SSN is 768-89-6687",
+    prompt="Hello, my name is John Doe and my SSN is 111-22-3333",
     replace=False
 )
 
@@ -49,7 +49,7 @@ To maintain utility without compromising privacy, you have the option to replace
 
 ```python copy
 result = pg.PII.check(
-    prompt="hello my name is John Doe and my SSN is 768-89-6687",
+    prompt="Hello, my name is John Doe and my SSN is 111-22-3333",
     replace=True,
     replace_method="fake"
 )
@@ -68,7 +68,7 @@ The processed prompt will then be:
 {
   "checks": [
     {
-      "new_prompt": "hello my name is William and my SSN is 711-22-3308",
+      "new_prompt": "Hello, my name is William and my SSN is 222-33-4444",
       "index": 0,
       "status": "success"
     }
