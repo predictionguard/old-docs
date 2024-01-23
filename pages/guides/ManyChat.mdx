@@ -17,6 +17,10 @@ Our goal in this example is to allow the customer to click a button if they need
 2. **Trigger Automation:** Select an appropriate context to trigger the automation.
 3. **Create a Telegram Menu:** Use a telegram send message block to build a menu. Include a “Question?” button to send user queries to Prediction Guard.
 4. **User Input Block:** Add a block for users to input their questions.
+
+![External Request Body](./manychatimages/manychat-saveuserinput.png)
+
+
 5. **Prompt and Save Response:** Prompt users to enter their question and save the response to a custom field (e.g., User_Question1).
 6. **External Request Action Block:** Set up this block for making HTTP Post requests to [https://api.predictionguard.com/chat](https://api.predictionguard.com/chat) with necessary headers and body.
 
@@ -36,6 +40,8 @@ The body should look something like this (make sure to add the user question fie
     ]
 }
 ```
+![External Request Body](./manychatimages/manychat-makeexternalrequest.png)
+
 
 7. **Clear User Field for Bot_Response1:** This should be above the External Request Action.
 8. **Test the Response:** Ensure that the system works as intended.
@@ -44,7 +50,7 @@ The body should look something like this (make sure to add the user question fie
 11. **Provide Additional Options:** Include options for users to ask new questions (this would route back to the external request block), speak to an agent, or close the conversation.
 
 After completing this example your flow should look like this:
-<INSERT IMAGE>
+![No context finished flow](./manychatimages/manychat-nocontext.png)
 
 ### Include Conversation Context Example
 Our goal in this example is to allow the customer to click a button if they need a question answered. However, notably this will include the context of the previous questions. This will send a request to your personal Lambda function url that processes the ManyChat input, makes an API request to PredictionGuard, and formats the response for ManyChat. The ManyChat response will send the message to the customer and also replace/create the text in your context fields in manychat you will create. They can then choose to continue that conversation, ask a new question (which will clear the context fields), speak to an agent, or close the conversation.
@@ -60,13 +66,13 @@ Our goal in this example is to allow the customer to click a button if they need
 1. **Follow Basic Example Steps:** Implement steps 1-6 from the no context example.
 2. **Use Dynamic Content:** Instead of making an External Request Action Block we are actually going to add a “Get Dynamic Content” block:
 
-<INSERT IMAGE HERE>
+![Dynamic Body Block](./manychatimages/manychat-context-dynamic.png)
 
 
 3. **Send Data to Lambda Function:** Configure the block to send "Full Contact Data" to your [Lambda function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html):
 
 
-<INSERT IMAGE HERE>
+![Dynamic Body Request](./manychatimages/manychat-context-dynamic_body.png)
 
 
 4. **Lambda Function Goals:**
@@ -240,4 +246,4 @@ Your response to ManyChat for Telegram should look something like this:
 
 After completing this your flow should look like this: 
 
-<INSERT IMAGE>
+![Final context flow](./manychatimages/manychat-context-finishedflow.png)
