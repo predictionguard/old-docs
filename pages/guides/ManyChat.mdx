@@ -19,10 +19,28 @@ Our goal in this example is to allow the customer to click a button if they need
 4. **User Input Block:** Add a block for users to input their questions.
 5. **Prompt and Save Response:** Prompt users to enter their question and save the response to a custom field (e.g., User_Question1).
 6. **External Request Action Block:** Set up this block for making HTTP Post requests to [https://api.predictionguard.com/chat](https://api.predictionguard.com/chat) with necessary headers and body.
+
+The body should look something like this (make sure to add the user question field to the request):
+```json
+{
+    "model": "Neural-Chat-7B",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful bot for a company called prediction guard."
+        },
+        {
+            "role": "user",
+            "content": "<YOUR USER QUESTION PLACEHOLDER>"
+        }
+    ]
+}
+```
+
 7. **Clear User Field for Bot_Response1:** This should be above the External Request Action.
 8. **Test the Response:** Ensure that the system works as intended.
 9. **Map Response to Custom Field:** Link the API response to the Bot_Response1 custom field. (The JSON path should be something like this : $.choices[0].message.content)
-10. **Create Response Message Block:** Set up a block in ManyChat to relay the response to the user.
+10. **Create Response Message Block:** Set up a block in ManyChat to relay the response to the user (this should output the Bot_Response1 field).
 11. **Provide Additional Options:** Include options for users to ask new questions (this would route back to the external request block), speak to an agent, or close the conversation.
 
 ### Include Conversation Context Example
