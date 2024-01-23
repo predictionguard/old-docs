@@ -43,6 +43,9 @@ The body should look something like this (make sure to add the user question fie
 10. **Create Response Message Block:** Set up a block in ManyChat to relay the response to the user (this should output the Bot_Response1 field).
 11. **Provide Additional Options:** Include options for users to ask new questions (this would route back to the external request block), speak to an agent, or close the conversation.
 
+After completing this example your flow should look like this:
+<INSERT IMAGE>
+
 ### Include Conversation Context Example
 Our goal in this example is to allow the customer to click a button if they need a question answered. However, notably this will include the context of the previous questions. This will send a request to your personal Lambda function url that processes the ManyChat input, makes an API request to PredictionGuard, and formats the response for ManyChat. The ManyChat response will send the message to the customer and also replace/create the text in your context fields in manychat you will create. They can then choose to continue that conversation, ask a new question (which will clear the context fields), speak to an agent, or close the conversation.
 
@@ -51,12 +54,21 @@ Our goal in this example is to allow the customer to click a button if they need
 - [Sign-up for Manychat](https://manychat.com/signup) (must be a premium account)
 - [Create two Manychat User Custom fields](https://support.manychat.com/support/solutions/articles/36000003046-user-input-and-custom-fields#:~:text=Custom%20Fields%20allow%20you%20to,to%20create%20and%20manage%20them.) (User_Text, Bot_Text)
 - [Create a telegram bot](https://support.manychat.com/support/solutions/articles/36000329373-getting-started-how-to-create-a-telegram-bot-in-manychat)
-- AWS Lambda Function that can be reached by the Internet
+- [AWS Lambda Function that can be reached by the Internet](https://docs.aws.amazon.com/lambda/)
 
 #### Steps
 1. **Follow Basic Example Steps:** Implement steps 1-6 from the no context example.
-2. **Use Dynamic Content:** Instead of making an External Request Action Block we are actually going to add a “Get Dynamic Content” block.
-3. **Send Data to Lambda Function:** Configure the block to send "Full Contact Data" to your Lambda function URL.
+2. **Use Dynamic Content:** Instead of making an External Request Action Block we are actually going to add a “Get Dynamic Content” block:
+
+<INSERT IMAGE HERE>
+
+
+3. **Send Data to Lambda Function:** Configure the block to send "Full Contact Data" to your [Lambda function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html):
+
+
+<INSERT IMAGE HERE>
+
+
 4. **Lambda Function Goals:**
 - Parse Incoming Request.
 - Extract Custom Fields.
@@ -64,7 +76,7 @@ Our goal in this example is to allow the customer to click a button if they need
 - Append the last customer input to the user messages array (User_Text)
 - Prepare Messages for API Request by formatting a request in the format required by the [Prediction Guard API](https://docs.predictionguard.com/reference/chat)
 - Make API Request to Prediction Guard and Process Response
-- Append the Prediction Guard response to the bot messages array (Bot_Text)
+- Append the Prediction Guard chat response to the bot messages array (Bot_Text)
 - Format ManyChat Response (it must be formatted as noted in this [doc](https://manychat.github.io/dynamic_block_docs/channels/), please make sure to note what platform you are using) This will respond to the user and also save over the new User_Text, Bot_Text with the new complete context.
 
 #### JavaScript Example for Lambda Function
@@ -221,10 +233,11 @@ Your response to ManyChat for Telegram should look something like this:
 }
 ```
 5. **Configure ManyChat Flow**
-   Your flow should now look like this:
-
 
    - The customer should be able to continue the conversation. This should just route back to the dynamic request without clearing the user fields.
    - The customer should also be able to ask a new question, which should clear the user fields. This action clears the context of the conversation.
    - Finally, it is best to provide a way for a person to reach a real human agent and close the ticket if they so desire.
 
+After completing this your flow should look like this: 
+
+<INSERT IMAGE>
