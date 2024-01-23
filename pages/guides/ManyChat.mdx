@@ -44,7 +44,7 @@ The body should look something like this (make sure to add the user question fie
 11. **Provide Additional Options:** Include options for users to ask new questions (this would route back to the external request block), speak to an agent, or close the conversation.
 
 ### Include Conversation Context Example
-Our goal in this example is to allow the customer to click a button if they need a question answered. However, notably this will include the context of the previous questions. This will send a request to your personal Lambda function url that processes the ManyChat input, makes an API request to PredictionGuard, and formats the response for ManyChat. The ManyChat response will send the message to the customer and also replace/create the context fields in manychat you have created. They can then choose to continue that conversation, ask a new question (which will clear the context fields), speak to an agent, or close the conversation.
+Our goal in this example is to allow the customer to click a button if they need a question answered. However, notably this will include the context of the previous questions. This will send a request to your personal Lambda function url that processes the ManyChat input, makes an API request to PredictionGuard, and formats the response for ManyChat. The ManyChat response will send the message to the customer and also replace/create the text in your context fields in manychat you will create. They can then choose to continue that conversation, ask a new question (which will clear the context fields), speak to an agent, or close the conversation.
 
 #### Prerequisites
 - Your Prediction Guard API Key
