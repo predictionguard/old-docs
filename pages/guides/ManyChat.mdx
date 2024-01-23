@@ -24,13 +24,12 @@ Our goal in this example is to allow the customer to click a button if they need
 2.  Select a context to trigger the automation
 3.  Create a Telegram Menu via a telegram send message block. This would normally be your general welcome message and a preselected couple of buttons. We are going to send the user's question to Prediction Guard when the user selects the “Question?” button.
 
-![](https://lh7-us.googleusercontent.com/E8tw0q0lraYd3f7BJB2yuClmU42JdPSB4WW2hxgLOwRVaninrg7KyqyTJKJP_B4cgxcBmYtrj0r-kSOUlgOzszVa2cpVG_xrHZKP8vy78w_1GkXKjRnF_sr8xZAlXfRNr9T48Yn8wwPl_46dQn2-WUA)
 
 4.  Add another telegram message block but this time select User Input. Link it to the “Question?” button.
 5.  Add a prompt for the user to input their question in the text box
 6.  Save response to a custom user field (for example User_Question1)
 
-![](https://lh7-us.googleusercontent.com/kWVPK2zxTRT2vtDZZlKcpFbNNiuv8NblaTcSXSkpS9Mqd4Cg2vL4Wg1unabO5AlPp7Gq6baUW_M7fL3MP8PRkzdsTopKgzgMkEuBG_vO0Nu1rHKkrp7eS-0PwwuUnFV2IqIUuNT_4NkXG77VJ2bCG-M)
+
 
 7.  Add a “Make External Request Action Block”
 8.  Add a Clear User Field for Bot_Response1 (this should be above the External Request Action)
@@ -43,7 +42,7 @@ Content-Type: application/json
 
 X-api-key: <YOUR PG API KEY HERE>
 
-![](https://lh7-us.googleusercontent.com/DMXpf2GfovXkVBSm0mUwvwNyNSJAQ8B-_MjSXgEKmlpodINf9j60T3lmIb1u0zSkrlM438iTU5iTHd0ctuzg7vzwGkZrJNDMb5AquMvoMJDrLrldYu_-DsOxcIXmPFj_sUM5F5R9zCsvjXUg8mI38C4)
+
 
 3.  Fill out the body of the request:
 
@@ -80,7 +79,7 @@ Your body should look like this (make sure to replace the field below by clickin
 
 11. Map the response JSONPath to the Bot_Response1 custom field you made before starting the guide. (The JSON path should be something like this : $.choices[0].message.content)
 
-![](https://lh7-us.googleusercontent.com/a-3Xt5hMVm3b742t84uOBbICn0i0XJ3_zU0zj5MF6qjjDDbbwS2VNQXX0CnxLD7mCc92VSegIUkdCMUKw7DkB2sVyK93cO0GU9YJTrdnZwmOHWhbaKogHiRvPTUwDvf88vBCyjk1c9J4yxkN0-_Tj-w)
+
 
 12. Create a new Telegram Message Block and link it as the next step from the Make External Request Action we just made.
 
@@ -90,11 +89,11 @@ Your body should look like this (make sure to replace the field below by clickin
 
 If you followed these steps your automation should look something like this at the end:
 
-![](https://lh7-us.googleusercontent.com/bN5waN2ziC-hpAwYQ1n-X1J0UyYyFyFTIh65GuBxHXy6xaW6GGa4KRLGNg7cEkluOjYv9-jsVUfHAouvrRJHShc1v5QuWRnBnZOXKBN_Od81mKxtGPIsVlFYtin5qt1QFH59VrOPS_5ftYY5W473n38)
+
 
 Your telegram chat should look like this after a question is answered:
 
-![](https://lh7-us.googleusercontent.com/k2C2dCG0jTBzMeKy223N8tGwNDnuE58t25Gd-gKSWA7PN6z8qkswWch9n8BhOOTqd0zjaWgmvnfO5X1VoQYGq3H0kXbTtOEpD4STZP16j5OJP7WG_B4tP0jLIhvusCguMbus4_sb9ovrBEMYuZFsIf4)
+
 
 ## Include Conversation Context Example:
 
@@ -115,11 +114,11 @@ Our goal in this example is to allow the customer to click a button if they need
 1.  Follow steps 1-6 in the basic example.
 2.  Instead of making an External Request Action Block we are actually going to add a “Get Dynamic Content”.
 
-![](https://lh7-us.googleusercontent.com/2je-k2eH8njCuiYlQRhMHz2FSX8Bc13iKstHT9LO57hxGw-8XtsG5DqmjPr_QMzSURDcrrNaUdFhAXVfN7yNgPdu9Is2pLg23qYHJ0JCvlY1EPjUlDPRZ-fj1aaKWxgZuz-kJG-chnzUAhbGmwHjeF8)
+
 
 3.  In this dynamic block we are going to send our Users Full Contact Data to our [Lambda function url](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html).
 
-![](https://lh7-us.googleusercontent.com/8wHjaKgw7m3LB4_AlvAJtEh0YA1o-dUV4l0bXPATf2O1ZELf0LPO2YWh_Uw_BiPbzFAXTorXcWWkRkRJkNxjjxUut-AjHpnk75q6oaRRCgkfotn557VBup2yI7D-894LTbx9z2BYfgBHfcYQymo-68k)
+
 
 4.  Build your Lambda function. We have these goals:
 
@@ -263,7 +262,7 @@ Here is a Javascript example you can use:
         }
     };
 
-````
+```
 Your response to Manychat for telegram should look something like this:
 ```bash
     {"version":"v2","content":{"type":"telegram","messages":[{"type":"text","text":"I'm still doing great, and I'm ready to help you find the perfect toy for your little one. Let me know if you need any recommendations or have any questions. We have a lot of fun toys to explore together!"}],"actions":[{"action":"set_field_value","field_name":"User_Text","value":"[\"How is your day?\",\"How is your day?\"]"},{"action":"set_field_value","field_name":"Bot_Text","value":"[\"Hello there! I'm doing great, as I'm always excited to talk about toys. How about you? Are you looking for any specific toys or just browsing? We have a wide variety of options for you to choose from.\",\"I'm still doing great, and I'm ready to help you find the perfect toy for your little one. Let me know if you need any recommendations or have any questions. We have a lot of fun toys to explore together!\"]"}],"quick_replies":[]}}
@@ -271,9 +270,9 @@ Your response to Manychat for telegram should look something like this:
 
 5. Your flow should now look like this:
 
-**![](https://lh7-us.googleusercontent.com/zky1wD1oLcdbLF5J_5c_uVgikXRhvtfwMRSaSlLVkFqvzmgP7TOzqGFxKvMZZ1Brkv6eQr0gZi4qoaRlOYOcTac5clcpYyceljZQzmEq2OgfJMhvi8k_UdRr8Pa_gAHHdAeUaarZG2VD7etrZcltIhI)**
+
 
 - The customer should be able to continue the conversation. This should just route back to the dynamic request without clearing the user fields.
 - The customer should also be able to ask a new question which should clear the user fields. This will clear the context of the conversation.
 - Finally it is best to provide a way for a person to reach a real human agent and close the ticket if they so desire
-````
+```
