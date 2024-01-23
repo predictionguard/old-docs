@@ -3,14 +3,15 @@
 ## Overview
 ManyChat, a popular chat automation tool, is used extensively for customer service. This guide covers two methods to integrate LLM responses using the Prediction Guard API. The first method is straightforward, involving a single question without context, and can be set up quickly without manual coding. The second method is more complex, requiring a lambda function (or similar) to process chat requests, interact with Prediction Guard, and respond via ManyChat's [dynamic block](https://manychat.github.io/dynamic_block_docs/channels/). While it's possible to manage context solely within ManyChat, it requires significant manual effort and you will possibly lose context after a certain amount of responses.
 
-## Prerequisites
+
+### No Context Example
+Our goal in this example is to allow the customer to click a button if they need a question answered. This will send a request to the Prediction Guard Chat API endpoint and the response from the API will be sent to the customer as a Telegram message. They can then choose to ask a new question, speak to an agent, or close the conversation.
+
+#### Prerequisites
 - Prediction Guard API Key
 - [Sign up for ManyChat](https://manychat.com/signup) (Premium account required)
 - [Create two ManyChat User Custom fields](https://support.manychat.com/support/solutions/articles/36000003046-user-input-and-custom-fields) (User_Question1, Bot_Response1)
 - [Create a Telegram bot](https://support.manychat.com/support/solutions/articles/36000329373-getting-started-how-to-create-a-telegram-bot-in-manychat)
-
-### No Context Example
-Our goal in this example is to allow the customer to click a button if they need a question answered. This will send a request to the Prediction Guard Chat API endpoint and the response from the API will be sent to the customer as a Telegram message. They can then choose to ask a new question, speak to an agent, or close the conversation.
 
 #### Steps
 1. **Create a New Automation:** Begin by setting up a new automation.
@@ -209,7 +210,7 @@ Our goal in this example is to allow the customer to click a button if they need
 ```
 
 #### Response Format for ManyChat (Telegram)
-Your response to ManyChat for Telegram should look something like this:
+Your response to ManyChat for Telegram should look something like [this](https://manychat.github.io/dynamic_block_docs/channels/):
 
 ```json
 {
@@ -238,7 +239,7 @@ Your response to ManyChat for Telegram should look something like this:
     }
 }
 ```
-5. **Configure ManyChat Flow**
+5. **Configure the rest of the flow**
 
    - The customer should be able to continue the conversation. This should just route back to the dynamic request without clearing the user fields.
    - The customer should also be able to ask a new question, which should clear the user fields. This action clears the context of the conversation.
@@ -247,3 +248,9 @@ Your response to ManyChat for Telegram should look something like this:
 After completing this your flow should look like this: 
 
 ![Final context flow](./manychatimages/manychat-context-finishedflow.png)
+
+If you followed this example your Telegram bot should be able to respond with the context of the entire conversation! 
+
+Happy chatting!
+
+
