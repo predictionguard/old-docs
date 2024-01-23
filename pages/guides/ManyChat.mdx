@@ -195,4 +195,11 @@ Your response to ManyChat for Telegram should look something like this:
     }
 }
 ```
+5. **Configure ManyChat Flow**
+   Your flow should now look like this:
+
+
+   - The customer should be able to continue the conversation. This should just route back to the dynamic request without clearing the user fields.
+   - The customer should also be able to ask a new question, which should clear the user fields. This action clears the context of the conversation.
+   - Finally, it is best to provide a way for a person to reach a real human agent and close the ticket if they so desire.
 
