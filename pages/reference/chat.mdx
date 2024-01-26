@@ -1,6 +1,6 @@
 # Chat
 
-You can get chat text completions (based on a thread of chat messages) from any of the chat enabled [models](../models) using the `/chat` REST API endpoint or `Chat` Python client class.
+You can get chat text completions (based on a thread of chat messages) from any of the chat enabled [models](../models) using the `/chat/completions` REST API endpoint or `Chat` Python client class.
 
 ## Generate a chat text completion
 
@@ -37,8 +37,9 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ]
 
     result = pg.Chat.create(
-        model="Notus-7B",
-        messages=messages
+        model="Neural-Chat-7B",
+        messages=messages,
+        max_tokens=500
     )
 
     print(json.dumps(
@@ -51,7 +52,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location --request POST 'https://api.predictionguard.com/chat' \
+    $ curl --location --request POST 'https://api.predictionguard.com/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'x-api-key: <your access token>' \
     --data '{
@@ -73,7 +74,9 @@ import { Tab, Tabs } from 'nextra-theme-docs'
                 "role": "user",
                 "content": "Haha. Good one."
             }
-        ]
+        ],
+        "max_tokens": 500,
+        "temperature": 0.1
     }'
     ```
   </Tab>

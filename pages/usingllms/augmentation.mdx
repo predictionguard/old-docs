@@ -194,7 +194,7 @@ def response_chain(message, convo_context, info_context):
 
   # Determine what kind of message this is.
   result = pg.Completion.create(
-      model="WizardCoder",
+      model="deepseek-coder-6.7b-instruct",
       prompt=category_prompt.format(query=message)
   )
 
@@ -219,7 +219,7 @@ def response_chain(message, convo_context, info_context):
 
     # Handle the code generation request.
     result = pg.Completion.create(
-        model="WizardCoder",
+        model="deepseek-coder-6.7b-instruct",
         prompt=code_prompt.format(query=message),
         max_tokens=500
     )

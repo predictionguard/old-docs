@@ -41,7 +41,7 @@ To enforce consistency on any output, it's as simple as setting `consistency` eq
 
 ```python copy
 result = pg.Completion.create(
-    model="Falcon-7B-Instruct",
+    model="Nous-Hermes-Llama2-13B",
     prompt=prompt.format(query="What kind of post is this?"),
     output={
         "consistency": True
@@ -71,7 +71,7 @@ If there is consistency in the calls to the LLM, you get standard output similar
     ],
     "created": 1685539044,
     "id": "cmpl-4oFZt63m9EkydxJaDG1Fg2RwAebrK",
-    "model": "Falcon-7B-Instruct",
+    "model": "Nous-Hermes-Llama2-13B",
     "object": "text_completion"
 }
 ```
@@ -89,7 +89,7 @@ But if the LLM isn't consistent in the output (in this case the classification o
     ],
     "created": 1685538920,
     "id": "cmpl-dom2Lnj7vJZcqGzjHKTihBI7zNqr4",
-    "model": "Falcon-7B-Instruct",
+    "model": "Nous-Hermes-Llama2-13B",
     "object": "text_completion"
 }
 ```

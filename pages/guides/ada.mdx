@@ -87,7 +87,7 @@ prompt = PromptTemplate(
 
 The function "generate_and_process_query" makes use of the "Nous-Hermes-Llama2-13B" language model. It constructs a prompt string by formatting the input question and a DataFrame's value counts into the prompt. The model generates a completion for the prompt, and the resulting text is processed to extract an SQL query using a regular expression. The extracted query is then returned. 
 
-We could also utilize models like "WizardCoder" to get similar outputs.
+We could also utilize models like "deepseek-coder-6.7b-instruct" to get similar outputs.
 
 ```python copy
 import predictionguard as pg
