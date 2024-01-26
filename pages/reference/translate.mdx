@@ -10,11 +10,11 @@ You can get machine translation and translation quality scores from the `/transl
 - `source_lang` - The ISO 639 source language code (e.g. 'eng' for English).
 - `target_lang` - The ISO 639 target language code (e.g 'fra' for French).
 
-Under the hood, the `/translate` endpoint leverages state-of-the-art machine translation models including "Nous-Hermes-Llama2-13b", OpenAI, DeepL, and Google Translate to perform translations. The translations from these different models are scored and ranked using Unbabel's advanced COMET scoring system. This allows us to select the highest quality machine translation for the given source and target languages.
+Under the hood, the `/translate` endpoint simultaneously leverages multiple state-of-the-art LLM and machine translation models to perform translations. The translations from these models are scored and ranked using reference-free quality estimation models. This allows us to select the highest quality machine translation for the given source and target languages.
 
 ## Supported Languages
 
-Our translation API supports a wide range of languages, including but not limited to English,Hindi, French, Spanish, German, and more. Refer to the language codes to identify specific languages.
+Our translation API supports a wide range of languages, including but not limited to English, Hindi, French, Spanish, German, and more. Refer to the language codes to identify specific languages.
 
 ![List of supported langauges !!!](./languages.png)
 
@@ -73,5 +73,10 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 The output will look something like:
 
 ```
-{"response":{"Best translation":"Le ciel est bleu","Score":0.8694158792495728}}
+{
+  "response": {
+    "Best translation": "Le ciel est bleu",
+    "Score": 0.8694158792495728
+  }
+}
 ```
