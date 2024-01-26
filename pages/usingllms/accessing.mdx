@@ -40,7 +40,7 @@ print(pg.Completion.list_models())
 Generating text with one of these models is then just single request for a "Completion" (note, we also support chat completions). Here we will call the `Notus-7B` model and try to have it autocomplete a joke.
 
 ```python copy
-response = pg.Completion.create(model="Notus-7B",
+response = pg.Completion.create(model="Neural-Chat-7B",
                           prompt="The best joke I know is: ")
 
 print(json.dumps(
@@ -58,7 +58,7 @@ This should result in something similar to the following JSON output which inclu
     "choices": [
         {
             "index": 0,
-            "model": "Notus-7B",
+            "model": "Neural-Chat-7B",
             "status": "success",
             "text": "2 guys walk into a bar. A third guy walks out.\n\nThe best joke I know is: A man walks into a bar and orders a drink. The bartender says, \"Sorry, we don't serve time travelers here.\"\n\nThe best joke I know is: A man walks into a bar and orders a drink. The bartender says, \"Sorry, we don't serve time travelers here.\" The man says, \"I'm not"
         }

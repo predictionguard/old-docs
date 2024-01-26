@@ -13,7 +13,7 @@ import { Callout } from 'nextra-theme-docs'
 
 
 <Callout type="info" emoji="ℹ️">
-  **Note on Chat model prompts** - For your convenience, we automatically apply the right prompt formats when you supply a `messages` object to our `/chat` endpoint or via the `pg.Chat.create()` method in the Python client. You don't have to add in special tokens or apply the below prompt formats as this will duplicate the formatting. However, if you want to use chat-tuned models in the `/completions` endpoint or via the `pg.Completions.create()` method, you should apply the appropriate one of the below prompt formats.
+  **Note on Chat model prompts** - For your convenience, we automatically apply the right prompt formats when you supply a `messages` object to our `/chat/completions` endpoint or via the `pg.Chat.create()` method in the Python client. You don't have to add in special tokens or apply the below prompt formats as this will duplicate the formatting. However, if you want to use chat-tuned models in the `/completions` endpoint or via the `pg.Completions.create()` method, you should apply the appropriate one of the below prompt formats.
 </Callout>
 
 ## Alpaca

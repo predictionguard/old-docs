@@ -63,7 +63,7 @@ messages = [
 ]
 
 result = pg.Chat.create(
-    model="Notus-7B",
+    model="Neural-Chat-7B",
     messages=messages
 )
 
@@ -83,23 +83,25 @@ Here we will show the chat functionality with the most simple of chat UI, which 
 print('Welcome to the Chatbot! Let me know how can I help you')
 
 while True:
-  print('')
-  request = input('User' + ': ')
-  if request=="Stop" or request=='stop':
-      print('Bot: Bye!')
-      break
-  else:
-      messages.append({
-          "role": "user",
-          "content": request
-      })
-      response = pg.Chat.create(
-          model="Notus-7B",
-          messages=messages
-      )['choices'][0]['message']['content'].split('\n')[0].strip()
-      messages.append({
-          "role": "assistant",
-          "content": response
-      })
-      print('Bot: ', response)
+    print('')
+    request = input('User' + ': ')
+    if request=="Stop" or request=='stop':
+        print('Bot: Bye!')
+        break
+    else:
+        messages.append({
+            "role": "user",
+            "content": request
+        })
+        
+        response = pg.Chat.create(
+            model="Neural-Chat-7B",
+            messages=messages
+        )['choices'][0]['message']['content'].split('\n')[0].strip()
+        
+        messages.append({
+            "role": "assistant",
+            "content": response
+        })
+        print('Bot: ', response)
 ```

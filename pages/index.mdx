@@ -77,7 +77,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ]
     
     result = pg.Chat.create(
-        model="Notus-7B",
+        model="Neural-Chat-7B",
         messages=messages
     )
 
@@ -102,11 +102,11 @@ import { Tab, Tabs } from 'nextra-theme-docs'
 
     func main() {
 
-      url := "https://api.predictionguard.com/chat"
+      url := "https://api.predictionguard.com/chat/completions"
       method := "POST"
 
       payload := strings.NewReader(`{
-        "model": "Notus-7B",
+        "model": "Neural-Chat-7B",
         "messages": [
             {
                 "role": "system",
@@ -150,7 +150,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     ```js copy
     vconst axios = require('axios');
     let data = JSON.stringify({
-      "model": "Notus-7B",
+      "model": "Neural-Chat-7B",
       "messages": [
         {
           "role": "system",
@@ -166,7 +166,7 @@ import { Tab, Tabs } from 'nextra-theme-docs'
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'https://api.predictionguard.com/chat',
+      url: 'https://api.predictionguard.com/chat/completions',
       headers: { 
         'Content-Type': 'application/json', 
         'x-api-key': '<your access token>'
@@ -185,11 +185,11 @@ import { Tab, Tabs } from 'nextra-theme-docs'
   </Tab>
   <Tab>
     ```bash copy
-    $ curl --location 'https://api.predictionguard.com/chat' \
+    $ curl --location 'https://api.predictionguard.com/chat/completions' \
     --header 'Content-Type: application/json' \
     --header 'x-api-key: <your access token>' \
     --data '{
-        "model": "Notus-7B",
+        "model": "Neural-Chat-7B",
         "messages": [
             {
                 "role": "system",
@@ -216,7 +216,7 @@ This should result in something similar to the following output. The `choices[0]
     "id": "chat-mLf2CfeudF7UHkaF4tmzGteM2liac",
     "object": "chat_completion",
     "created": 1701881134,
-    "model": "Notus-7B",
+    "model": "Neural-Chat-7B",
     "choices": [
         {
             "index": 0,
