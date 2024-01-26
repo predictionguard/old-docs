@@ -19,14 +19,14 @@ Open access models are amazing these days! Each of these models was trained by a
 
 ### The best models (start here)
 
-|          Model Name          |      Type           |       Use Case                                          | Prompt Format                      | Context Length | More Info             |
-|------------------------------|---------------------|---------------------------------------------------------|------------------------------------|----------------|-----------------------|
-| Nous-Hermes-Llama2-13B       | Text Generation     | Generating output in response to arbitrary instructions | [Alpaca](prompts#alpaca)           | 4096           | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-13b) |
-| Neural-Chat-7B               | Chat                | Instruction following or chat-like applications         | [Neural Chat](prompts#neural-chat) | 8000           | [link](https://huggingface.co/Intel/neural-chat-7b-v3-1)
-| Notus-7B                     | Chat                | General purpose assistant, compare to GPT3.5            | [Zephyr](prompts#zephyr)           | 8000           | [link](https://huggingface.co/argilla/notus-7b-v1) |
-| Zephyr-7B-Beta               | Chat                | Creating a helpful assistant for chat-like applications | [Zephyr](prompts#zephyr)           | 8000           | [link](https://huggingface.co/HuggingFaceH4/zephyr-7b-beta) |
-| Yi-34B                       | Text Generation     | Instruction following in English or Chinese             | [Yi](prompts#yi)                   | 4096           | [link](https://huggingface.co/01-ai/Yi-34B) |
-| WizardCoder                  | Code Generation     | Generating computer code or answering tech questions    | [Alpaca](prompts#alpaca)           | 8192           | [link](https://huggingface.co/WizardLM/WizardCoder-15B-V1.0) |
+|          Model Name          |      Type           |       Use Case                                          | Prompt Format                      | Context Length | More Info                                                               |
+|------------------------------|---------------------|---------------------------------------------------------|------------------------------------|----------------|-------------------------------------------------------------------------|
+| Nous-Hermes-Llama2-13B       | Text Generation     | Generating output in response to arbitrary instructions | [Alpaca](prompts#alpaca)           | 4096           | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-13b)      |
+| Nous-Hermes-2-SOLAR-10.7B    | Chat                | Instruction following or chat-like applications         | [ChatML](prompts#chatml)           | 4096           | [link](https://huggingface.co/NousResearch/Nous-Hermes-2-SOLAR-10.7B)   |
+| Neural-Chat-7B               | Chat                | Instruction following or chat-like applications         | [Neural Chat](prompts#neural-chat) | 4096           | [link](https://huggingface.co/Intel/neural-chat-7b-v3-1)                |
+| Yi-34B-Chat                  | Chat                | Instruction following in English or Chinese             | [ChatML](prompts#chatml)           | 2048           | [link](https://huggingface.co/01-ai/Yi-34B-Chat)                        |
+| sqlcoder-34b-alpha           | Code Generation     | Generating SQL queries from natural language prompts    | [SQLCoder](prompts#sqlcoder)       | 4096           | [link](https://huggingface.co/defog/sqlcoder-34b-alpha)                 |
+| deepseek-coder-6.7b-instruct | Code Generation     | Generating computer code or answering tech questions    | [Deepseek](prompts#deepseek)       | 4096           | [link](https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct) |
 
 ### Other models available
 
@@ -34,7 +34,7 @@ The models below are available in our API. However, these models scale to zero (
 
 
 |          Model Name          | Model Card                                                                        | Parameters | Context Length |
-|----------------------------|-----------------------------------------------------------------------------------|------------|----------------|
+|------------------------------|-----------------------------------------------------------------------------------|------------|----------------|
 | Llama-2-13B                  | [link](https://huggingface.co/meta-llama/Llama-2-13b-hf)                          | 13B        | 4096           | 
 | Llama-2-7B                   | [link](https://huggingface.co/meta-llama/Llama-2-7b-hf)                           | 7B         | 4096           | 
 | Nous-Hermes-Llama2-7B        | [link](https://huggingface.co/NousResearch/Nous-Hermes-Llama2-7b)                 | 7B         | 4096           | 
@@ -61,11 +61,11 @@ These models are integrated into our API, but they are not hosted by Prediction 
 
 **Note - You will need your own OpenAI API key to use the models below. Customers worried about data privacy, IP/PII leakage, HIPAA compliance, etc. should look into the above "Open Access LLMs" and/or our enterprise deploy. [Contact support](support) with any questions.**
 
-|        Model Name       | Generation | Context Length |
-|-----------------------|------------|----------------|
-| OpenAI-gpt-3.5-turbo-instruct | GPT-3.5  | 4097       |
-| OpenAI-davinci-002 | GPT-3.5    | 4097           |
-| OpenAI-babbage-002 | GPT-3      | 2049           |
+|        Model Name             | Generation | Context Length |
+|-------------------------------|------------|----------------|
+| OpenAI-gpt-3.5-turbo-instruct | GPT-3.5    | 4097           |
+| OpenAI-davinci-002            | GPT-3.5    | 4097           |
+| OpenAI-babbage-002            | GPT-3      | 2049           |
 
 
 <Callout type="info" emoji="ℹ️">

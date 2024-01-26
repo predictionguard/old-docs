@@ -23,13 +23,10 @@ from langchain.agents import initialize_agent
 from langchain.agents import AgentType
 from langchain.llms import PredictionGuard
 import os
-from getpass import getpass
 
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
 
-serpapi_key = getpass('Enter your serpapi api key: ')
-os.environ['SERPAPI_API_KEY'] = serpapi_key
+os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
+os.environ['SERPAPI_API_KEY'] = "<your serpapi api key>"
 ```
 
 To setup an agent that will search the internet on-the-fly and use the LLM to generate a response:

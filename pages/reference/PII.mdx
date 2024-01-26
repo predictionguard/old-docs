@@ -1,0 +1,51 @@
+# PII
+
+You can check and replace Personal Identifiable Information (PII) from the `/PII` endpoint or `PII` class in the Python Client. This endpoint/Class takes three parameters:
+
+- `prompt` - The prompt that you want to check for PII.
+- `replace` - A boolean for replacing the PII if any is found.
+- `replace_method` - The method you would like to use to replace any found PII. The methods are `random`, `mask`, `category`, and `fake`.
+
+The output will include the replaced PII if any is present, or will tell you if any PII is in the prompt is `replace` is not chosen.
+
+## Check and Replace PII
+
+import { Tab, Tabs } from 'nextra-theme-docs'
+
+<Tabs items={['Python', 'cURL']}  defaultIndex="0">
+  <Tab>
+    ```python filename="main.py" copy
+    import os
+    import json
+
+    import predictionguard as pg
+
+    # Set your Prediction Guard token as an environmental variable.
+    os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
+
+    response = pg.PII.check(
+        prompt="Hello, my name is John Doe and my SSN is 111-22-3333.",
+        replace=False
+    )
+
+    print(json.dumps(
+        response,
+        sort_keys=True,
+        indent=4,
+        separators=(',', ': ')
+    ))
+    ```
+  </Tab>
+  <Tab>
+    ```bash copy
+    $ curl --location --request POST 'https://api.predictionguard.com/injection' \
+    --header 'Content-Type: application/json' \
+    --header 'x-api-key: <your access token>' \
+    --data '{
+        "prompt": "Hello, my name is John Doe and my SSN is 111-22-3333.",
+        "replace": true,
+        "replace_method": "random"
+    }'
+    ```
+  </Tab>
+</Tabs>

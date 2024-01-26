@@ -26,10 +26,9 @@ $ pip install predictionguard
 import os
 
 import predictionguard as pg
-from getpass import getpass
 
-pg_access_token = getpass('Enter your Prediction Guard access token: ')
-os.environ['PREDICTIONGUARD_TOKEN'] = pg_access_token
+
+os.environ['PREDICTIONGUARD_TOKEN'] = "<your access token>"
 ```
 
 You can find out more about the models available via the Prediction Guard API [in the docs](https://docs.predictionguard.com/models), and you can list out the model names via this command:

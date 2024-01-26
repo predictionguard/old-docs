@@ -43,14 +43,6 @@ For prompts where context is injected:
 
 (Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
 
-## Yi
-
-(Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
-
-```
-Human: <prompt> Assistant:
-```
-
 ## Neural Chat
 
 (Replace the portions of the prompt below in `<...>` with the appropriate information, and do not keep the `<` or `>` characters)
@@ -63,14 +55,45 @@ Human: <prompt> Assistant:
 ### Assistant:
 ```
 
-## Zephyr
+## ChatML
 
 (Replace the portions of the prompt below in curly braces `{...}` with the appropriate information, and do not keep the curly braces)
 
 ```
-<|system|>
-{prompt}</s>
-<|user|>
-{context or user message}</s>
-<|assistant|>
+<|im_start|>system
+{prompt}<|im_end|>
+<|im_start|>user
+{context or user message}<|im_end|>
+<|im_start|>assistant<|im_end|>
+```
+
+## SQLCoder
+
+(Replace the portions of the prompt below in curly braces `{...}` with the appropriate information, and do not keep the curly braces)
+
+```
+### Task
+Generate a SQL query to answer the following question:
+`{question}`
+
+### Database Schema
+This query will run on a database whose schema is represented in this string:
+
+{table_info}
+
+{special_instructions}
+
+### SQL
+Given the database schema, here is the SQL query that answers `{question}`:
+```
+
+## Deepseek
+
+(Replace the portions of the prompt below in curly braces `{...}` with the appropriate information, and do not keep the curly braces)
+
+```
+<|begin_of_sentence|>{prompt}
+### Instruction:
+{context or user message}
+### Response:
 ```
