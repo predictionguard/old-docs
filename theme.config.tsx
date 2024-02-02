@@ -17,7 +17,7 @@ export default {
   footer: {
     text: '♜ Prediction Guard docs',
   },
-
+  faviconGlyph: '♜',
   // Add in static head tags.
   // See https://nextjs.org/docs/api-reference/next/head
   head: (
