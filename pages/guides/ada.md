@@ -1,5 +1,5 @@
 ---
-title: Data analytics with LLMs + DuckDB
+title: Data Chat with LLMs
 ---
 
 # Using LLMs for Data Analysis and SQL Query Generation
@@ -17,6 +17,7 @@ Unlike code generation interfaces that attempt to produce executable code from s
 By combining language model understanding of questions with a defined database schema, the system can translate simple natural language queries into precise SQL for fast and reliable data analysis. This makes surfacing insights more accessible compared to manual SQL writing or hopelessly broad code generation.
 
 For this demo we have selecteed a public dataset from Kaggle - Jobs and Salaries in Data Science (Find the dataset [here](https://www.kaggle.com/datasets/hummaamqaasim/jobs-in-data?resource=download))
+
 
 # Streamlit Chat Application for Data Analysis
 
@@ -446,7 +447,14 @@ if prompt := st.chat_input("Ask a question"):
             add_to_cache(latest_message, full_response)
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
+
 ```
+
+## For Multiple Tables
+In this case we will be using a RAG based approach which will involve semantic comparison of user questions with the tables we have in our database. Once we have shortlisted the most relavent table having the data , we then process that table with the similar process as above to generate the answer.
+
+You can go through this code to replicate for your various use cases :
+(Run this example in Google Colab [here](https://colab.research.google.com/drive/1zj9sic1H-tAw3BRvPGZAwGdMg4l5Y2FU?usp=sharing))
 
 ## Conclusion
 
