@@ -450,6 +450,8 @@ if prompt := st.chat_input("Ask a question"):
 
 ```
 
+![Query to Response !!](./datachat-3.png)
+
 ## For Multiple Tables
 In this case we will be using a RAG based approach which will involve semantic comparison of user questions with the tables we have in our database. Once we have shortlisted the most relavent table having the data , we then process that table with the similar process as above to generate the answer.
 
@@ -458,7 +460,6 @@ You can go through this code to replicate for your various use cases :
 
 ## Conclusion
 
-![Query to Response !!](./datachat-3.png)
 ![A sneakpeek at our ChatBot in action !!](./datachat-2.png)
 
 This document outlines the structure of a Streamlit application designed for interactive data analysis through a chat interface. It leverages several advanced Python libraries and techniques, including caching responses with LanceDB, executing SQL queries on pandas dataframes, and generating dynamic responses using LangChain and PredictionGuard.
