@@ -8,6 +8,8 @@ title: ManyChat with LLMs
 ManyChat, a popular chat automation tool, is used extensively for customer service. This guide covers two methods to integrate LLM responses using the Prediction Guard API. The first method is straightforward, involving a single question without context, and can be set up quickly without manual coding. The second method is more complex, requiring a lambda function (or similar) to process chat requests, interact with Prediction Guard, and respond via ManyChat's [dynamic block](https://manychat.github.io/dynamic_block_docs/channels/). While it's possible to manage context solely within ManyChat, it requires significant manual effort and you will possibly lose context after a certain amount of responses.
 
 
+
+
 ### No Context Example
 Our goal in this example is to allow the customer to click a button if they need a question answered. This will send a request to the Prediction Guard Chat API endpoint and the response from the API will be sent to the customer as a Telegram message. They can then choose to ask a new question, speak to an agent, or close the conversation.
 
@@ -16,6 +18,17 @@ Our goal in this example is to allow the customer to click a button if they need
 - [Sign up for ManyChat](https://manychat.com/signup) (Premium account required)
 - [Create two ManyChat User Custom fields](https://support.manychat.com/support/solutions/articles/36000003046-user-input-and-custom-fields) (User_Question1, Bot_Response1)
 - [Create a Telegram bot](https://support.manychat.com/support/solutions/articles/36000329373-getting-started-how-to-create-a-telegram-bot-in-manychat)
+
+#### Video Tutorial:
+
+Here is a video tutorial for more detailed guidance:
+
+  <iframe
+    src="https://youtu.be/_DxsmP0Lb2I?si=MiRIqesDEsCLjVUz"
+    width="100%"
+    height="500px"
+    title="SWR-States"
+  />
 
 #### Steps
 1. **Create a New Automation:** Begin by setting up a new automation.
