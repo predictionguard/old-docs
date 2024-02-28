@@ -18,7 +18,7 @@ This example demonstrates how to integrate PredictionGuard with custom data stru
 
 ```python
 import os
-os.environ["PREDICTIONGUARD_TOKEN"] = "<YOUR-TOKEN-HERE>"
+os.environ["PREDICTIONGUARD_TOKEN"] = "<your access token>"
 ```
 
 2. **Import Necessary Libraries**: Import PredictionGuard, Pydantic for data validation, and LangChain for output parsing and prompt templating.
