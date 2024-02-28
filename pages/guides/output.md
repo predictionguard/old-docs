@@ -1,5 +1,5 @@
 ---
-title: Custom Output Structuring in LLMS
+title: Custom Output Structuring in LLMs
 ---
 
 # Alternative Output Structuring with PredictionGuard
