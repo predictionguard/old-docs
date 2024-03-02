@@ -1,0 +1,45 @@
+---
+title: Guarded Chatbot
+---
+
+# Guarded Chatbot
+
+Create a custom domain chatbot utilizing the latest open source LLMs through the Prediction Guard Chat API.
+
+The code for this example is located [here](https://github.com/predictionguard/guarded-chat).
+
+## Installation and Setup
+
+- Install the package requirements by running `pip install -r requirements.txt`
+- Get a Prediction Guard access token (as described [here](https://docs.predictionguard.com/)) and set it as the environment variable `PREDICTIONGUARD_TOKEN`.
+
+## How the Chatbot Works
+- The chatbot UI is created through [Streamlit](https://streamlit.io), which is used to create various UI elements in Python.
+- When a prompt is entered, it is sent to the Prediction Guard API through the Python client, using the Prediction Guard chat function. The code for the call is:
+```python
+result = pg.Chat.create(
+                model=model,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": content
+                    }
+                ]
+            )
+```
+- This function sends the model settings and the user's message to the Prediction Guard API, which then processes the chat message using the LLMs.
+
+## Running the Chatbot
+
+- To run the chatbot, first define the `PREDICTIONGUARD_TOKEN` environment variable, then run `streamlit run chat.py`.
+- The chatbot will automatically open in your browser, but if it does not, the terminal will output the URL for the app.
+- Any errors that the chatbot has will print out in both the app and the terminal, so you can monitor any issues more easily.
+
+## Using the Chatbot
+
+- The chatbot allows for you to make calls to the Prediction Guard Chat endpoint, in the visual format of a chatbot. 
+
+## Mandarin Chatbot
+- The Prediction Guard chatbot also has a Mandarin version, which utilizes the Yi-34B-Chat LLM. 
+- This model has the same functionality as the English version, with the added capability to process Mandarin.
+- To run it, use the `chat-mandarin.py` program instead of `chat.py`
