@@ -59,7 +59,7 @@ transactions and payments
 customers
 staff
 
-![DATA !!](data.png)
+![DATA !!](./data.png)
 ```python
 # Pull the example database
 ! git clone https://github.com/bradleygrant/sakila-sqlite3.git
@@ -311,14 +311,17 @@ print(answer)
 
 Output :
 
-![Query to Response !!](query_result.png)
+![Query to Response !!](./query_result.png)
 
 ## More advanced retrieval approach with dynamic schema information
 Assuming that your database fits one of the following scenarios:
 
 -has many tables
+
 -has tables with many columns
+
 -includes fields with "unexpected" formats for values
+
 -includes columns with non-semantically meaningful names etc.
 
 We need to go beyond the simple, naive SQL generation method. We will need to integrate a vector database to store schema information along with data dictionary descriptions of tables and columns. The column description will also include example field values for extra context.
